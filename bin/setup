@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+cd "$ROOT"
+bundle install
+
+cd "$ROOT/spec/dummy"
+bundle install
+bin/rails db:prepare
+
+echo ""
+echo "✓ Ready. Try:"
+echo "  cd spec/dummy"
+echo "  export OPENAI_API_KEY=sk-..."
+echo "  bin/rails server"
+echo "  open http://localhost:3000"
