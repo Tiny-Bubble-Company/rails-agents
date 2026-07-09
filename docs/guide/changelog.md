@@ -2,7 +2,7 @@
 
 ## 0.1.0
 
-First public release.
+First public release. Published on RubyGems as **`rails-agent-stack`** (Ruby API remains `RailsAgents`).
 
 - Agents via `RailsAgents::Agent`
 - Tools via `RailsAgents::Tool` with auto-load from `app/agents/tools/`
