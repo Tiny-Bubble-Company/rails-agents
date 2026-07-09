@@ -5,6 +5,9 @@ require "json"
 
 loader = Zeitwerk::Loader.for_gem
 loader.ignore("#{__dir__}/generators")
+# Bundler auto-requires gem "rails-agent-stack" as rails/agent/stack —
+# keep that shim off Zeitwerk so it does not define a stub Rails module.
+loader.ignore("#{__dir__}/rails")
 loader.inflector.inflect(
   "openai" => "OpenAI",
   "openai_compatible" => "OpenAICompatible",

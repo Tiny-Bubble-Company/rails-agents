@@ -7,7 +7,7 @@ Define an agent as a plain Ruby class. Say what it does, pick a provider and mod
 | | |
 |---|---|
 | **Docs** | [tiny-bubble-company.github.io/rails-agents](https://tiny-bubble-company.github.io/rails-agents/) |
-| **Gem** | [rubygems.org/gems/rails_agents](https://rubygems.org/gems/rails_agents) |
+| **Gem** | [rubygems.org/gems/rails-agent-stack](https://rubygems.org/gems/rails-agent-stack) |
 | **Source** | [github.com/Tiny-Bubble-Company/rails-agents](https://github.com/Tiny-Bubble-Company/rails-agents) |
 
 ```ruby
@@ -27,13 +27,15 @@ LeadQualifier.run("New signup from acme.com — 50 employees, asked about enterp
 
 ```ruby
 # Gemfile
-gem "rails_agents"
+gem "rails-agent-stack"
 ```
 
 ```bash
 bundle install
 bin/rails generate rails_agents:install
 ```
+
+The gem name is `rails-agent-stack`; the Ruby API is still `RailsAgents` (`require "rails_agents"`).
 
 Set API keys in `config/initializers/rails_agents.rb`, create an agent in `app/agents/`, call `.run`.
 
@@ -143,7 +145,7 @@ The gem stays small on purpose. You keep full control of your agents and tools; 
 
 ```ruby
 # Gemfile
-gem "rails_agents"
+gem "rails-agent-stack"
 ```
 
 ```bash

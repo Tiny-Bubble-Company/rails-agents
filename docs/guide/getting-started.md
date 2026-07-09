@@ -2,7 +2,7 @@
 
 From install to a working agent in a few minutes.
 
-Docs home: [Rails Agents](/) · Gem: [rails_agents on RubyGems](https://rubygems.org/gems/rails_agents) · Source: [GitHub](https://github.com/Tiny-Bubble-Company/rails-agents)
+Docs home: [Rails Agents](/) · Gem: [rails-agent-stack on RubyGems](https://rubygems.org/gems/rails-agent-stack) · Source: [GitHub](https://github.com/Tiny-Bubble-Company/rails-agents)
 
 ## After this guide
 
@@ -18,13 +18,15 @@ Add the gem to your Gemfile:
 
 ```ruby
 # Gemfile
-gem "rails_agents"
+gem "rails-agent-stack"
 ```
 
 ```bash
 bundle install
 bin/rails generate rails_agents:install
 ```
+
+The gem name is `rails-agent-stack`; the Ruby API is still `RailsAgents` (`require "rails_agents"`).
 
 This creates:
 

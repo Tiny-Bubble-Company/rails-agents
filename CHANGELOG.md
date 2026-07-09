@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 
 ## [0.1.0] — 2026-07-09
 
-First public release.
+First public release. Published on RubyGems as **`rails-agent-stack`** (Ruby API remains `RailsAgents`).
 
 - `RailsAgents::Agent` — one class for every use case (`provider`, `model`, `description`, `tools`, `skills`)
 - `RailsAgents::Tool` — app code as tools, auto-loaded from `app/agents/tools/`

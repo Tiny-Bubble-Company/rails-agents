@@ -52,7 +52,7 @@ export default defineConfig({
         operatingSystem: "Any",
         description,
         url: siteUrl,
-        downloadUrl: "https://rubygems.org/gems/rails_agents",
+        downloadUrl: "https://rubygems.org/gems/rails-agent-stack",
         codeRepository: "https://github.com/Tiny-Bubble-Company/rails-agents",
         license: "https://opensource.org/licenses/MIT",
         author: {
@@ -84,7 +84,7 @@ export default defineConfig({
           { text: "Requirements", link: "/guide/requirements" },
           {
             text: "Rubygems",
-            link: "https://rubygems.org/gems/rails_agents",
+            link: "https://rubygems.org/gems/rails-agent-stack",
           },
         ],
       },

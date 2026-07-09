@@ -7,7 +7,7 @@ module RailsAgents
     end
 
     def self.from_directory(path = nil)
-      path ||= defined?(Rails) ? Rails.root.join("app/agents/tools") : nil
+      path ||= (defined?(::Rails) && ::Rails.respond_to?(:root) ? ::Rails.root.join("app/agents/tools") : nil)
       return new unless path && Dir.exist?(path)
 
       classes = Dir.glob("#{path}/**/*.rb").filter_map do |file|

@@ -1,6 +1,6 @@
 # Release checklist
 
-Steps to publish `rails_agents` **0.1.0** to RubyGems and keep docs live.
+Steps to publish `rails-agent-stack` **0.1.0** to RubyGems and keep docs live.
 
 ## Prerequisites
 
@@ -13,23 +13,23 @@ Steps to publish `rails_agents` **0.1.0** to RubyGems and keep docs live.
 ```bash
 bundle exec rspec
 cd docs && npm ci && npm run build && cd ..
-gem build rails_agents.gemspec
+gem build rails-agent-stack.gemspec
 ```
 
 ## 2. Tag the release
 
 ```bash
-git tag -a v0.1.0 -m "rails_agents 0.1.0"
+git tag -a v0.1.0 -m "rails-agent-stack 0.1.0"
 git push origin v0.1.0
 ```
 
 ## 3. Publish the gem
 
 ```bash
-gem push rails_agents-0.1.0.gem
+gem push rails-agent-stack-0.1.0.gem
 ```
 
-Confirm at https://rubygems.org/gems/rails_agents
+Confirm at https://rubygems.org/gems/rails-agent-stack
 
 ## 4. Confirm docs
 
@@ -46,7 +46,9 @@ gh release create v0.1.0 --title "v0.1.0" --notes-file CHANGELOG.md
 ## After publish
 
 ```bash
-gem install rails_agents
+gem install rails-agent-stack
 # or
-bundle add rails_agents
+bundle add rails-agent-stack
 ```
+
+Ruby code still uses `require "rails_agents"` / `RailsAgents::Agent`.

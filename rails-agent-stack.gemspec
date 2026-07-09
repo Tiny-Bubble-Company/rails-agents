@@ -3,17 +3,17 @@
 require_relative "lib/rails_agents/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "rails_agents"
+  spec.name = "rails-agent-stack"
   spec.version = RailsAgents::VERSION
   spec.authors = ["Tiny Bubble Company"]
   spec.email = ["hello@tinybubble.company"]
 
   spec.summary = "Dead-simple AI agents for Rails — speed to production, not framework noise"
   spec.description = <<~DESC.gsub(/\s+/, " ").strip
-    Rails Agents is the simplest way to build AI agents in Ruby on Rails.
-    Define an LLM agent as a plain Ruby class, attach your app code as tools,
-    add skills like web search or spreadsheets, and call .run — minutes to
-    production, not days of framework setup.
+    Rails Agents (gem: rails-agent-stack) is the simplest way to build AI agents
+    in Ruby on Rails. Define an LLM agent as a plain Ruby class, attach your app
+    code as tools, add skills like web search or spreadsheets, and call .run —
+    minutes to production, not days of framework setup.
 
     Built for developers searching for Rails AI agents, Ruby LLM agents,
     OpenAI / Anthropic / Claude / GPT tool-calling agents, OpenRouter and
@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
   }
 
   spec.files = Dir.chdir(__dir__) do
-    Dir["{app,lib}/**/*", "README.md", "CHANGELOG.md", "MIT-LICENSE", "rails_agents.gemspec"]
+    Dir["{app,lib}/**/*", "README.md", "CHANGELOG.md", "MIT-LICENSE", "rails-agent-stack.gemspec"]
   end
 
   spec.require_paths = ["lib"]
