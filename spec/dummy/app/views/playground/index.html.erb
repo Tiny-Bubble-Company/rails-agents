@@ -1,0 +1,70 @@
+<header class="hero">
+  <p class="eyebrow">Rails Agents · sample app</p>
+  <h1>Playground</h1>
+  <p class="lede">Pick a sample agent, send input, and inspect the result. Set API keys via environment variables before running live requests.</p>
+</header>
+
+<section class="panel">
+  <h2>Run an agent</h2>
+  <%= form_with url: playground_path, method: :post, class: "form" do |f| %>
+    <label>
+      Agent
+      <%= f.select :agent, @agents.keys, { selected: @agent_name }, required: true %>
+    </label>
+    <label>
+      Input
+      <%= f.text_area :input, value: @input, rows: 4, placeholder: "Ask something or describe a task...", required: true %>
+    </label>
+    <label>
+      Save files to (optional, for SheetBuilderAgent)
+      <%= f.text_field :save_files_to, value: @save_files_to, placeholder: "tmp/sheets" %>
+    </label>
+    <%= f.submit "Run agent" %>
+  <% end %>
+</section>
+
+<% if defined?(@result) && @result %>
+  <section class="panel <%= @result.success ? "ok" : "error" %>">
+    <h2>Result</h2>
+    <% if @result.success %>
+      <pre><%= @result.output %></pre>
+      <% if @result.files.any? %>
+        <h3>Files</h3>
+        <ul>
+          <% @result.files.each do |file| %>
+            <li><code><%= file.filename %></code> → <%= file.path %> (<%= file.size %> bytes)</li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% else %>
+      <pre><%= @result.error %></pre>
+    <% end %>
+  </section>
+<% end %>
+
+<section class="panel">
+  <h2>Sample agents</h2>
+  <ul class="agents">
+    <li><strong>HelloAgent</strong> — OpenAI smoke test</li>
+    <li><strong>LeadQualifier</strong> — tools (<code>SearchCrm</code>, <code>CreateCrmNote</code>)</li>
+    <li><strong>WebResearchAgent</strong> — Anthropic <code>:web_search</code> skill</li>
+    <li><strong>SheetBuilderAgent</strong> — Anthropic <code>:xlsx</code> skill + file download</li>
+  </ul>
+</section>
+
+<% if @notes.any? %>
+  <section class="panel">
+    <h2>CRM notes (from tools)</h2>
+    <pre><%= JSON.pretty_generate(@notes) %></pre>
+  </section>
+<% end %>
+
+<section class="panel muted">
+  <h2>Console</h2>
+  <pre>cd spec/dummy
+export OPENAI_API_KEY=sk-...
+bin/rails console
+
+HelloAgent.run("Say hello")
+LeadQualifier.run("New lead from Acme Corp asking about enterprise pricing")</pre>
+</section>
