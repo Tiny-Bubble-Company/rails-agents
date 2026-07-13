@@ -9,6 +9,7 @@ Define an agent as a plain Ruby class. Say what it does, pick a provider and mod
 | **Docs** | [tiny-bubble-company.github.io/rails-agents](https://tiny-bubble-company.github.io/rails-agents/) |
 | **Gem** | [rubygems.org/gems/rails-agent-stack](https://rubygems.org/gems/rails-agent-stack) |
 | **Source** | [github.com/Tiny-Bubble-Company/rails-agents](https://github.com/Tiny-Bubble-Company/rails-agents) |
+| **Community** | [Share what you're building](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1) · [Use-case vote](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/3) |
 
 ```ruby
 class LeadQualifier < RailsAgents::Agent
@@ -448,6 +449,14 @@ CheapAgent.run("What is Rails?")
 
 - **Website / docs:** [https://tiny-bubble-company.github.io/rails-agents/](https://tiny-bubble-company.github.io/rails-agents/)
 - **Local docs:** `cd docs && npm install && npm run dev`
+
+## Community
+
+We cannot see private apps from Rubygems downloads. If you ship something with Rails Agents, tell us:
+
+- **[What are you building?](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1)** (Show and tell)
+- **[Share a use case](https://github.com/Tiny-Bubble-Company/rails-agents/issues/new?template=use_case.yml)** (structured issue)
+- **[Roadmap ideas](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/2)**
 
 ---
 

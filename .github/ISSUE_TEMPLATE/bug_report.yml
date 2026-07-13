@@ -1,0 +1,44 @@
+name: Bug report
+description: Something isn't working as expected
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options:
+        - openai
+        - anthropic
+        - openrouter
+        - grok
+        - n/a
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: "Gem, Ruby, Rails (e.g. rails-agent-stack 0.1.0 / Ruby 3.3 / Rails 8.0)"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: Smallest agent/tool snippet that shows the bug (no API keys)
+      render: ruby
+    validations:
+      required: false
