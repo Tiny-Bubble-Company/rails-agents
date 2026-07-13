@@ -1,0 +1,55 @@
+name: Share a use case
+description: Tell us what you built (or are building) with Rails Agents
+title: "Use case: "
+labels: ["use-case"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Public details help us prioritize. Prefer [Show and tell](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/categories/show-and-tell) if you want a conversation thread.
+  - type: input
+    id: one_liner
+    attributes:
+      label: One-liner
+      description: What does your agent do?
+      placeholder: Qualify inbound leads and create CRM notes
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      multiple: true
+      options:
+        - openai
+        - anthropic
+        - openrouter
+        - grok
+        - other / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: tools_skills
+    attributes:
+      label: Tools & skills
+      description: Custom tools, built-in skills (`:web_search`, `:xlsx`, …), or none yet
+      placeholder: |
+        tools: SearchCrm, CreateCrmNote
+        skills: web_search
+    validations:
+      required: false
+  - type: textarea
+    id: friction
+    attributes:
+      label: Biggest friction
+      description: What almost stopped you, or what do you wish existed?
+    validations:
+      required: false
+  - type: textarea
+    id: snippet
+    attributes:
+      label: Optional snippet
+      description: Anonymized agent class or tool (no secrets)
+      render: ruby
+    validations:
+      required: false

@@ -78,6 +78,10 @@ export default defineConfig({
       { text: "Tools", link: "/guide/tools" },
       { text: "Skills", link: "/guide/skills" },
       {
+        text: "Community",
+        link: "https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1",
+      },
+      {
         text: "v0.1.0",
         items: [
           { text: "Changelog", link: "/guide/changelog" },
@@ -96,6 +100,7 @@ export default defineConfig({
         items: [
           { text: "Why Rails Agents", link: "/guide/why" },
           { text: "Getting Started", link: "/guide/getting-started" },
+          { text: "Community", link: "/guide/community" },
         ],
       },
       {

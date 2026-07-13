@@ -16,6 +16,9 @@ hero:
       text: Why Rails Agents
       link: /guide/why
     - theme: alt
+      text: Share a use case
+      link: https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1
+    - theme: alt
       text: GitHub
       link: https://github.com/Tiny-Bubble-Company/rails-agents
 

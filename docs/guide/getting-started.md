@@ -94,3 +94,7 @@ end
 - [Tools](/guide/tools) — wire in your app code
 - [Skills](/guide/skills) — web search, spreadsheets, and more
 - [Recipes](/guide/recipes) — copy-paste patterns
+
+::: tip Built something?
+[Tell us what you're building](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1) — it directly shapes the roadmap.
+:::
