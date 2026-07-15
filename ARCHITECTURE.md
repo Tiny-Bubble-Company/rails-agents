@@ -1,0 +1,349 @@
+# Rails Agents v2 — Architecture North Star
+
+**Status:** Draft for rebuild  
+**Date:** 2026-07-15  
+**Inspiration studied:** [vercel/eve](https://github.com/vercel/eve) (local clone + eve.dev docs)  
+**Product thesis:** World’s simplest Rails agentic DX — Eve-grade power underneath, near-zero config for developers, cloud-by-default, cash + usage visibility for Tiny Bubble Company.
+
+---
+
+## 1. What Eve actually is (after full study)
+
+Eve is **not** “a chat SDK.” It is a **filesystem-first durable agent runtime**:
+
+| Layer | What it does |
+|-------|----------------|
+| **Authoring** | Capabilities live as files under `agent/` — `instructions.md`, `agent.ts`, `tools/`, `skills/`, `channels/`, `connections/`, `sandbox/`, `subagents/`, `schedules/`, `hooks/` |
+| **Discover → Compile** | Walk filesystem → `.eve/` manifests (no manual registries; path = identity) |
+| **Harness** | Model tool-loop (AI SDK), default tools (bash/files/web/todo/ask_question/agent/…) |
+| **Durability** | Session → turn → step via **Workflow SDK**; park/resume for HITL, OAuth, subagents |
+| **Sandbox** | Isolated `/workspace` for code/files; app tools keep `process.env` secrets |
+| **Channels** | Same agent over HTTP, Slack, Discord, cron, web UI |
+| **Evals** | `evals/` sibling of `agent/`; `eve eval` against local or deployed URL |
+| **CLI lifecycle** | `init` → `dev` → `eval` → `build` → `deploy` / `start` |
+| **Vercel path** | AI Gateway + Vercel Workflow + Vercel Sandbox + Cron + Connect + Agent Runs dashboard |
+
+**Mental model Eve teaches:** files are the interface; one portable agent loop for every surface; durable by default; grow by adding folders.
+
+**Critical implication for us:** Reimplementing Workflow + Sandbox + Channels in pure Ruby would take years and throw away the infra we want to monetize. **v2 inherits Eve’s runtime by compiling a Ruby DSL onto Eve projects hosted on our central Vercel org.**
+
+---
+
+## 2. Product repositioning (philosophy preserved)
+
+### Old (v0.1)
+
+> No dashboards, no cloud accounts — gem-only, BYOK providers.
+
+### New (v2)
+
+> **Cloud by default. Zero infra for Rails developers.**  
+> Author agents in Ruby. We run durable sessions, sandboxes, logs, evals, and promote sandbox → production.  
+> Still the **smallest mental model** in Rails: one agent folder, tools as Ruby, `.run` / `.stream`.
+
+We still compete on **simplicity + speed to production**. Power comes from Eve/Vercel underneath; developers never see Node, Workflow worlds, or sandbox backends unless they opt into advanced self-host later.
+
+---
+
+## 3. Target developer journey (hyper-simple)
+
+```text
+1. Sign up          → full name, email, company, website
+2. Create app       → Sandbox environment auto-provisioned on our Vercel tenancy
+3. Create API key   → paste into Rails initializer (one key)
+4. rails g …        → app/agents/<name>/ layout (Eve-shaped, Ruby)
+5. Define agent     → instructions + tools in Ruby / Markdown
+6. Local call       → LeadQualifier.run / .stream  (hits Sandbox cloud)
+7. Dashboard        → chat, logs, traces, evals, debug (Agno-like control plane)
+8. Promote          → “Go to Production” → Stripe card → Production env live
+```
+
+**Lines of code to first production agent:** initializer + one agent folder + one tool. No Vercel account for the customer. No Eve CLI. No provider key sprawl (models via our Gateway / metered billing).
+
+---
+
+## 4. System architecture
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│                         Customer Rails App                               │
+│  app/agents/lead_qualifier/{agent.rb,instructions.md,tools/*.rb,…}       │
+│  gem: rails-agent-stack                                                  │
+│    • Ruby DSL (Eve semantics, Rails-native)                              │
+│    • Sync/compile client → Cloud API                                     │
+│    • Session SDK (.run / .stream / .continue)                            │
+│    • Tool Bridge (HTTP webhook: cloud calls back into Rails tools)       │
+└───────────────────────────────┬──────────────────────────────────────────┘
+                                │ HTTPS (tenant API key)
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    Tiny Bubble Control Plane                             │
+│  • Auth / orgs / apps / environments (sandbox | production)              │
+│  • API keys, audit log, usage metering                                   │
+│  • Dashboard: agents, runs, traces, evals, promote, billing              │
+│  • Stripe: commission on top of Vercel + model usage                     │
+│  • Multi-tenant router → per-tenant Eve deployment                       │
+└───────────────────────────────┬──────────────────────────────────────────┘
+                                │ provision / deploy / proxy
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│              Central Vercel Team (Tiny Bubble Company)                   │
+│  Per tenant × env: Eve project (or namespaced multi-service)             │
+│    Vercel Workflow · Vercel Sandbox · AI Gateway · Cron · Connect        │
+│  Tenant isolation: project boundaries + auth stamps + secret scopes      │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### Why this wins
+
+| Goal | How |
+|------|-----|
+| Visibility into use cases | Every signup, agent, run, eval goes through our control plane |
+| Revenue | Stripe subscription / usage markup on Gateway + Sandbox + Workflow |
+| Simplest DX | Hide Eve/Vercel complexity; Ruby + dashboard only |
+| Most powerful | Full Eve durability, sandbox, channels, HITL, evals, schedules |
+| Rails-native | Tools stay ActiveRecord/services via Tool Bridge |
+
+---
+
+## 5. Eve → Rails Agents concept map
+
+| Eve | Rails Agents v2 | Notes |
+|-----|-----------------|-------|
+| `agent/instructions.md` | `app/agents/<id>/instructions.md` or `description` in `agent.rb` | Markdown preferred for parity |
+| `agent/agent.ts` + `defineAgent` | `app/agents/<id>/agent.rb` | `model`, limits, output schema |
+| `agent/tools/*.ts` + `defineTool` | `app/agents/<id>/tools/*.rb` | Path = tool name; Zod → dry-validation / params DSL |
+| `agent/skills/*.md` | `app/agents/<id>/skills/*.md` | Same on-demand skill model |
+| `agent/channels/` | Cloud-managed first; optional `channels/` later | Default = our HTTP channel |
+| `agent/connections/` | Dashboard “Connections” + Ruby stubs | OAuth via our Connect proxy |
+| `agent/sandbox/` | Always on in cloud; no customer config | We choose `vercel()` backend |
+| `agent/subagents/<id>/` | `app/agents/<id>/subagents/<child>/` | Nested folders |
+| `agent/schedules/` | `app/agents/<id>/schedules/*.rb` or dashboard cron | Compiles to Eve schedules |
+| `agent/hooks/` | Phase 2 | Observe-only lifecycle |
+| `evals/` | `test/agents/**/*.eval.rb` or dashboard suites | Cloud runner |
+| `eve init/dev/eval/build/deploy` | Signup + `rails g` + dashboard Promote | No Node required |
+| `useEveAgent` / HTTP session API | `RailsAgents::Session` + Hotwire/React helpers | Same session/stream contract |
+| Session / turn / step | Same vocabulary in docs & dashboard | Educate Rails devs on durability |
+| Park / HITL | `approval` on tools + dashboard / chat UI | Resume via continuation token |
+| Multi-tenant patterns | **Productized** (Eve only documents patterns) | Our differentiator |
+
+---
+
+## 6. Ruby DSL (simplified Eve)
+
+Target authoring surface — **one agent = one folder**:
+
+```text
+app/agents/
+  lead_qualifier/
+    agent.rb
+    instructions.md
+    tools/
+      search_crm.rb
+      create_crm_note.rb
+    skills/
+      enterprise_signals.md
+    subagents/
+      researcher/
+        agent.rb
+        instructions.md
+        tools/
+          fetch_url.rb
+```
+
+```ruby
+# app/agents/lead_qualifier/agent.rb
+class LeadQualifier < RailsAgents::Agent
+  model "anthropic/claude-sonnet-5"   # gateway id; we meter it
+  # tools/skills auto-discovered from sibling folders
+end
+```
+
+```ruby
+# app/agents/lead_qualifier/tools/search_crm.rb
+class SearchCrm < RailsAgents::Tool
+  description "Search CRM companies"
+  param :query, :string
+
+  def call(query:)
+    Company.search(query).limit(5).as_json(only: %i[id name plan])
+  end
+end
+```
+
+```ruby
+# app/controllers/... or job
+result = LeadQualifier.run("New signup from acme.com")
+# or
+session = LeadQualifier.session.create(message: "...")
+session.stream { |event| ... }
+session.continue("Now check Queens")
+```
+
+### Tool Bridge (Rails stays source of truth for app data)
+
+1. Developer defines tool in Ruby (runs in **their** Rails app).
+2. On sync, cloud registers a **proxy tool** on the Eve agent with the same name/schema.
+3. When the model calls the tool, Eve hits our control plane → signed webhook to the tenant’s Rails app → tool `call` → result returned to the model.
+4. Sandbox/default harness tools (bash, files) stay on Vercel Sandbox — never see Rails secrets.
+5. Optional: mark a tool `runtime: :sandbox` only if we later support generated JS/Python in sandbox (advanced).
+
+This keeps **Rails models/jobs in Rails**, and **durable agent loop + sandbox on Eve**.
+
+---
+
+## 7. Control plane + dashboard (Agno-like × Eve lifecycle)
+
+### Dashboard modules (MVP → v1)
+
+| Module | Purpose |
+|--------|---------|
+| **Apps** | Create app; Sandbox vs Production |
+| **Agents** | Synced agent tree; instructions preview |
+| **Playground** | Chat with sandbox/production agent |
+| **Runs / Traces** | Session → turn → step tree (tokens, latency, tool I/O) |
+| **Evals** | Suites, scores, CI webhook |
+| **Logs / Debug** | Stream events, park/HITL state |
+| **Keys** | Sandbox & Production API keys |
+| **Billing** | Stripe; usage; promote to production |
+| **Settings** | Company profile, webhook URL for Tool Bridge |
+
+### Environment model
+
+| Env | Behavior |
+|-----|----------|
+| **Sandbox** | Free/limited credits; auto on signup; isolated Eve project |
+| **Production** | Requires Stripe; separate Eve project + keys; promote copies agent bundle |
+
+Promote is **not** “rewrite infra” — it is “deploy same compiled agent definition to Production Eve project + flip default endpoint.”
+
+---
+
+## 8. Multi-tenancy on one Vercel account
+
+**Recommended isolation (start simple, tighten later):**
+
+1. **One Vercel team** (Tiny Bubble).
+2. **One Vercel project per (tenant_app × environment)** OR one project with strong runtime tenant stamping if Vercel limits require packing.
+3. Control plane stores mapping: `tenant_id → vercel_project_id → deployment_url`.
+4. Every session request authenticated by tenant API key; control plane injects `tenantId` into Eve route auth (Eve’s multi-tenant-auth pattern).
+5. Secrets (customer webhook signing keys, connection tokens) scoped per tenant in our vault / Vercel env per project.
+6. Hard quotas per sandbox; production metered.
+
+**Do not** give customers raw Vercel access. They only see our dashboard.
+
+---
+
+## 9. Monetization
+
+| Lever | Mechanism |
+|-------|-----------|
+| Platform fee | Seat or app subscription via Stripe |
+| Usage markup | Model tokens (AI Gateway) + sandbox compute + workflow steps |
+| Promote gate | Production requires payment method |
+| Fair sandbox | Daily free message/token cap → upgrade |
+
+Commission model: we pay Vercel; we charge customers a simpler blended rate. Dashboard shows usage transparently.
+
+---
+
+## 10. Repo / product split (mirror Eve’s monorepo spirit)
+
+Proposed layout under Tiny Bubble (can start as monorepo or sibling repos):
+
+```text
+rails-agents/                  # open-source gem + DSL + Tool Bridge
+  lib/rails_agents/            # authoring + client SDK
+  docs/                        # DX docs (VitePress)
+
+rails-agents-cloud/            # private control plane (Rails or Next)
+  apps/web/                    # dashboard
+  apps/api/                    # signup, keys, sync, billing, proxy
+  packages/compiler/           # Ruby agent tree → Eve agent/ filesystem
+  packages/provisioner/        # Vercel project create/deploy APIs
+
+eve/                           # vendor reference (already cloned) — do not fork lightly
+```
+
+Open-source gem stays MIT and beautiful. Cloud is the business.
+
+---
+
+## 11. Phased rebuild plan
+
+### Phase 0 — Spec freeze (this doc)
+- Align on architecture (compile-to-Eve, not reimplement Workflow in Ruby)
+- Name: keep **Rails Agents** / gem `rails-agent-stack`
+
+### Phase 1 — Ruby authoring + compile (OSS)
+- New folder layout under `app/agents/<id>/`
+- Compiler: Ruby/MD → Eve `agent/` tree (TypeScript tool shims that call Tool Bridge)
+- Local mode optional: keep v0.1 in-process runner for offline demos OR deprecate
+
+### Phase 2 — Control plane MVP (private)
+- Signup, apps, sandbox provision (manual ops OK at first)
+- API keys, session proxy to Eve deployment
+- Tool Bridge webhook protocol + Rails engine middleware
+- Minimal dashboard: playground + run list
+
+### Phase 3 — Agno-grade dashboard
+- Traces (session/turn/step), evals UI, logs, HITL approvals
+- Sandbox → Production promote + Stripe Checkout
+
+### Phase 4 — Channels & connections
+- Slack/etc via our Connect proxy
+- Schedules from Ruby or dashboard
+
+### Phase 5 — Scale tenancy
+- Automated Vercel project provisioning
+- Quotas, abuse controls, SSO
+
+---
+
+## 12. Compatibility with v0.1 gem
+
+| Approach | Recommendation |
+|----------|----------------|
+| Big bang rewrite | Risk losing early adopters |
+| **v2 cloud-default + v0.1 BYOK as `mode: :local`** | Preferred — one gem, two runtimes |
+| Separate gem | Confusing |
+
+```ruby
+RailsAgents.configure do |config|
+  config.mode = :cloud          # default in v2
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
+  # config.mode = :local        # legacy in-process BYOK
+end
+```
+
+---
+
+## 13. Explicit non-goals (keeps us simple)
+
+- Rebuilding Workflow SDK in Ruby
+- Forcing customers to own Vercel/Eve accounts
+- Exposing TypeScript `defineTool` to Rails developers
+- Feature parity with Eve’s every channel on day one
+- Phone-home telemetry inside customer apps beyond authenticated Cloud API usage
+
+---
+
+## 14. Decisions needed from you
+
+1. **Compile-to-Eve confirmed?** (Recommended YES — this is how we get durable + sandbox + cash without a multi-year runtime rewrite.)
+2. **Gem default:** cloud-only for new installs, or dual `cloud|local` from day one?
+3. **Dashboard stack:** Next.js (fast Agno-like UI) vs Rails (one language)?
+4. **Tenant isolation:** one Vercel project per tenant×env (cleaner, costlier) vs pooled project (cheaper, harder)?
+5. **Product URL:** `railsagents.dev` / `agents.tinybubble.company` / other?
+
+---
+
+## 15. Immediate next build steps (once decisions land)
+
+1. Scaffold `research/eve-parity.md` checklist of Eve surfaces → Rails DSL status.
+2. Spike: one hand-compiled Eve agent on your Vercel account + Tool Bridge webhook into a dummy Rails app.
+3. Spike: signup → create sandbox project via Vercel API.
+4. Redesign gem DSL for folder-based agents; keep `LeadQualifier.run` as the hero API.
+5. Skeleton control plane with playground chat.
+
+Until then, this document is the rebuild constitution.
