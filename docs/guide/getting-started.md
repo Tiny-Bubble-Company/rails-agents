@@ -45,17 +45,22 @@ Open **`/agents`** in your app → create an account (or paste keys). Copy crede
 rails-agents new weather
 ```
 
-Creates:
+Creates a complete agent directory:
 
 ```text
-app/agents/weather/
-  instructions.md      # who it is (complete agent)
-  agent.json
-  schedules/morning.yml
-  tools/               # optional Tool Bridge helpers
+app/agents/weather/          # complete agent
+  agent.json                 # the model it runs on
+  instructions.md            # who it is
+  tools/                     # what it can do
+    fetch_forecast.rb
+    post_summary.rb
+  skills/                    # what it knows
+    cities-and-units.md
+  schedules/                 # when it acts on its own
+    morning.yml
 ```
 
-Edit `instructions.md` for cities, tone, and tools. Implement Tool Bridge tools in Rails (`FetchForecast`, `PostSummary`, …).
+Edit `instructions.md` and the skill for cities/units. Wire Tool Bridge tools in Rails to match `tools/` (`FetchForecast`, `PostSummary`, …).
 
 ## 3. Test locally
 

@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+# what it can do — Tool Bridge / local tool stub
+
+class PostSummary < RailsAgents::Tool
+  description "Post the weather brief (Slack, email, DB, …)"
+
+  param :body, :string, description: "Short markdown brief"
+
+  def call(body:)
+    # Implement via Tool Bridge into your Rails notifier.
+    {ok: true, preview: body.to_s[0, 120]}
+  end
+end
