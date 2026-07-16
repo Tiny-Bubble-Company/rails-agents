@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.2.0.pre] — 2026-07-16
+
+Cloud-only rebuild (pre-release).
+
+- **Breaking:** `.run` calls Rails Agents Cloud (requires `RAILS_AGENTS_API_KEY`)
+- Tool Bridge endpoint + HMAC signature helpers
+- Installer mounts `RailsAgents::Engine` at `/rails_agents`
+- Architecture: compile-to-Eve, one Vercel project with logical tenancy (`sandbox` \| `production`)
+- Docs + Next.js control plane scaffold (`rails-agents-cloud`)
+
 ## [0.1.0] — 2026-07-09
 
 First public release. Published on RubyGems as **`rails-agent-stack`** (Ruby API remains `RailsAgents`).

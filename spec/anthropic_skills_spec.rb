@@ -71,7 +71,11 @@ RSpec.describe "Anthropic skills integration" do
     end
 
     Dir.mktmpdir do |dir|
-      result = ReportAgent.run("Build a sales report", save_files_to: dir)
+      result = RailsAgents::Runner.new(
+        ReportAgent,
+        input: "Build a sales report",
+        context: {save_files_to: dir}
+      ).call
 
       expect(result.success).to be true
       expect(result.output).to include("spreadsheet")

@@ -22,6 +22,9 @@ require_relative "rails_agents/error"
 require_relative "rails_agents/skill_declaration"
 require_relative "rails_agents/generated_file"
 require_relative "rails_agents/providers/openai_compatible"
+require_relative "rails_agents/cloud/client"
+require_relative "rails_agents/cloud/session"
+require_relative "rails_agents/cloud/bridge/signature"
 
 module RailsAgents
   class << self

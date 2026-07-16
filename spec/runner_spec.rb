@@ -45,7 +45,7 @@ RSpec.describe RailsAgents::Runner do
       )
     ])
 
-    result = TestAgent.run("hi")
+    result = RailsAgents::Runner.new(TestAgent, input: "hi").call
     expect(result.success).to be true
     expect(result.output).to eq("hello")
   end
@@ -72,7 +72,7 @@ RSpec.describe RailsAgents::Runner do
       )
     ])
 
-    result = TestAgent.run("add 2 and 3")
+    result = RailsAgents::Runner.new(TestAgent, input: "add 2 and 3").call
     expect(result.output).to eq("5")
   end
 
@@ -86,14 +86,6 @@ RSpec.describe RailsAgents::Runner do
       description "Test agent"
     end
     expect { agent.resolved_model }.to raise_error(RailsAgents::ConfigurationError, /model/)
-  end
-end
-
-RSpec.describe RailsAgents::Configuration do
-  it "reads API keys from the environment" do
-    config = described_class.new
-    expect(config.default_provider).to eq(:openai)
-    expect(config.openrouter_api_key).to eq(ENV["OPENROUTER_API_KEY"])
   end
 end
 

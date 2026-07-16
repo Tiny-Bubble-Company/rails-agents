@@ -16,6 +16,15 @@ module RailsAgents
 
       tools_path = agents_path.join("tools")
       app.autoloaders.main.collapse(tools_path.to_s) if tools_path.exist?
+
+      # Collapse per-agent tool folders: app/agents/<id>/tools
+      Dir.glob(agents_path.join("*/tools").to_s).each do |path|
+        app.autoloaders.main.collapse(path)
+      end
+    end
+
+    initializer "rails_agents.engine" do
+      require "rails_agents/engine"
     end
 
     rake_tasks do

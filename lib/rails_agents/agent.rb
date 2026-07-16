@@ -98,17 +98,21 @@ module RailsAgents
       end
 
       def run(input = nil, save_files_to: nil, callbacks: {}, parse_json: false, **context)
-        Runner.new(
+        message = input.nil? ? context : input
+        Cloud::Client.new.run_agent(
           self,
-          input: input.nil? ? context : input,
-          context: context.merge(save_files_to:),
-          callbacks: callbacks,
-          parse_json: parse_json
-        ).call
+          message: message.is_a?(Hash) ? message.to_json : message.to_s,
+          parse_json: parse_json,
+          metadata: context.except(:save_files_to)
+        )
       end
 
       alias ask run
       alias call run
+
+      def session
+        Cloud::Session.for(self)
+      end
 
       private
 

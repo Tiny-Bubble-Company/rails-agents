@@ -219,18 +219,19 @@ Promote is **not** “rewrite infra” — it is “deploy same compiled agent d
 
 ---
 
-## 8. Multi-tenancy on one Vercel account
+## 8. Multi-tenancy — one Vercel project, logical isolation
 
-**Recommended isolation (start simple, tighten later):**
+**Locked:** All tenants share **one** Tiny Bubble Vercel project (Eve + Workflow + Sandbox + Gateway). Isolation is logical — `tenant_id` + `environment` (`sandbox` \| `production`) — like serverless account separation on shared infra.
 
-1. **One Vercel team** (Tiny Bubble).
-2. **One Vercel project per (tenant_app × environment)** OR one project with strong runtime tenant stamping if Vercel limits require packing.
-3. Control plane stores mapping: `tenant_id → vercel_project_id → deployment_url`.
-4. Every session request authenticated by tenant API key; control plane injects `tenantId` into Eve route auth (Eve’s multi-tenant-auth pattern).
-5. Secrets (customer webhook signing keys, connection tokens) scoped per tenant in our vault / Vercel env per project.
-6. Hard quotas per sandbox; production metered.
+Full model: [TENANCY.md](./TENANCY.md).
 
-**Do not** give customers raw Vercel access. They only see our dashboard.
+Summary:
+
+1. API key → `{ tenant_id, app_id, environment }`.
+2. Agent artifacts versioned under that composite key (not separate Vercel projects).
+3. Sessions/traces/quotas/secrets always scoped by tenant+env.
+4. Tool Bridge webhooks only to that app’s Rails URL.
+5. Customers never see Vercel — only our Next.js dashboard.
 
 ---
 
@@ -302,19 +303,21 @@ Open-source gem stays MIT and beautiful. Cloud is the business.
 
 ## 12. Compatibility with v0.1 gem
 
-| Approach | Recommendation |
-|----------|----------------|
-| Big bang rewrite | Risk losing early adopters |
-| **v2 cloud-default + v0.1 BYOK as `mode: :local`** | Preferred — one gem, two runtimes |
-| Separate gem | Confusing |
+**Locked: cloud-only.** The supported product path is Cloud API + Tool Bridge.
 
 ```ruby
 RailsAgents.configure do |config|
-  config.mode = :cloud          # default in v2
-  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
-  # config.mode = :local        # legacy in-process BYOK
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]           # rak_sandbox_… or rak_live_…
+  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://api.railsagents.dev")
+  config.tool_bridge_secret = ENV["RAILS_AGENTS_BRIDGE_SECRET"]
 end
 ```
+
+In-process BYOK provider loops from v0.1 are **not** a supported product mode (may remain briefly as private test doubles). Docs and generator ship cloud-only.
+
+Docs site remains on **GitHub Pages**. Dashboard/API host on the shared Vercel project.
+
+Decisions log: [DECISIONS.md](./DECISIONS.md).
 
 ---
 
@@ -322,28 +325,17 @@ end
 
 - Rebuilding Workflow SDK in Ruby
 - Forcing customers to own Vercel/Eve accounts
+- One Vercel project per tenant
 - Exposing TypeScript `defineTool` to Rails developers
 - Feature parity with Eve’s every channel on day one
-- Phone-home telemetry inside customer apps beyond authenticated Cloud API usage
+- Supported local BYOK runtime
 
 ---
 
-## 14. Decisions needed from you
+## 14. Build sequence (in progress)
 
-1. **Compile-to-Eve confirmed?** (Recommended YES — this is how we get durable + sandbox + cash without a multi-year runtime rewrite.)
-2. **Gem default:** cloud-only for new installs, or dual `cloud|local` from day one?
-3. **Dashboard stack:** Next.js (fast Agno-like UI) vs Rails (one language)?
-4. **Tenant isolation:** one Vercel project per tenant×env (cleaner, costlier) vs pooled project (cheaper, harder)?
-5. **Product URL:** `railsagents.dev` / `agents.tinybubble.company` / other?
-
----
-
-## 15. Immediate next build steps (once decisions land)
-
-1. Scaffold `research/eve-parity.md` checklist of Eve surfaces → Rails DSL status.
-2. Spike: one hand-compiled Eve agent on your Vercel account + Tool Bridge webhook into a dummy Rails app.
-3. Spike: signup → create sandbox project via Vercel API.
-4. Redesign gem DSL for folder-based agents; keep `LeadQualifier.run` as the hero API.
-5. Skeleton control plane with playground chat.
-
-Until then, this document is the rebuild constitution.
+1. ~~Lock decisions~~ → [DECISIONS.md](./DECISIONS.md) + [TENANCY.md](./TENANCY.md)
+2. Cloud-only gem client + Tool Bridge mount
+3. Next.js control plane scaffold (`cloud/`)
+4. Compiler spike: one agent → Eve artifact on shared project
+5. Dashboard: signup, keys, playground, promote + Stripe

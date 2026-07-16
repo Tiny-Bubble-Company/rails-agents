@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Rails Agents
   text: Agents for your Rails app
-  tagline: Define an agent as a plain Ruby class. Attach your app code as tools. Call .run. Speed to production — not framework noise.
+  tagline: Define an agent in Ruby. Call .run. Durable cloud runtime by default — sandbox to production with zero infra.
   image:
     src: /logo-dark.svg
     alt: Rails Agents
