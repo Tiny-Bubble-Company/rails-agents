@@ -12,16 +12,16 @@ Your agent is a directory. An `instructions.md` is enough to start. Schedules, t
 | **Architecture** | [ARCHITECTURE.md](./ARCHITECTURE.md) · [TENANCY.md](./TENANCY.md) · [PRICING.md](./PRICING.md) |
 
 ```bash
-rails-agents new accidental_damage_sync
-rails-agents test accidental_damage_sync
-rails-agents deploy accidental_damage_sync
+rails-agents new weather
+rails-agents test weather
+rails-agents deploy weather
 ```
 
 ```text
-app/agents/accidental_damage_sync/
-  instructions.md      # complete agent
-  schedules/poll.yml   # hosted cron after deploy
-  tools/               # optional — Tool Bridge into Rails
+app/agents/weather/
+  instructions.md         # complete agent
+  schedules/morning.yml   # hosted cron after deploy
+  tools/                  # optional — Tool Bridge into Rails
 ```
 
 ---

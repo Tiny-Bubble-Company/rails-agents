@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Rails Agents
   text: The framework for building agents in Rails
-  tagline: Like Eve for Ruby apps. Build durable agents with one directory — production already included.
+  tagline: Like Eve for Ruby apps. An agent is a directory — instructions.md, tools, schedules. Production already included.
   actions:
     - theme: brand
       text: Get started

@@ -7,7 +7,7 @@ An agent is a directory. Production — durable execution, hosted schedules, Too
 ## An agent is a directory
 
 ```text
-app/agents/accidental_damage_sync/
+app/agents/weather/
   agent.json                 # the model it runs on
   instructions.md            # who it is
   tools/                     # what it can do

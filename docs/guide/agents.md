@@ -3,21 +3,21 @@
 Your agent is a directory. Same idea as Eve: **`instructions.md` is a complete agent.**
 
 ```bash
-rails-agents new accidental_damage_sync
-rails-agents test accidental_damage_sync
-rails-agents deploy accidental_damage_sync
+rails-agents new weather
+rails-agents test weather
+rails-agents deploy weather
 ```
 
 ```text
-app/agents/accidental_damage_sync/
-  instructions.md      # required — complete agent
-  agent.json           # model + triggers
-  schedules/poll.yml   # hosted cron after deploy
-  tools/               # optional
+app/agents/weather/
+  instructions.md         # required — complete agent
+  agent.json              # model + triggers
+  schedules/morning.yml   # hosted cron after deploy
+  tools/                  # optional
 ```
 
 ```ruby
-RailsAgents["accidental_damage_sync"].run("Poll new ADC agreements")
+RailsAgents["weather"].run("What's the weather in Berlin today?")
 ```
 
 That:

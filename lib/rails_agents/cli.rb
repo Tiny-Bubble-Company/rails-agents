@@ -9,9 +9,9 @@ require "net/http"
 module RailsAgents
   # Developer CLI — the only commands you need:
   #
-  #   rails-agents new accidental_damage_sync
-  #   rails-agents test accidental_damage_sync
-  #   rails-agents deploy accidental_damage_sync
+  #   rails-agents new weather
+  #   rails-agents test weather
+  #   rails-agents deploy weather
   #
   class CLI
     CLOUD_DASHBOARD = ENV.fetch("RAILS_AGENTS_DASHBOARD", "https://agents.meerkatagents.com")
@@ -58,20 +58,19 @@ module RailsAgents
         "name" => id,
         "triggers" => ["schedule"]
       }))
-      File.write(root.join("schedules/poll.yml"), <<~YAML)
+      File.write(root.join("schedules/morning.yml"), <<~YAML)
         # Hosted cron (Eve-shaped). Cloud runs this on your schedule.
-        cron: "*/15 * * * *"
+        cron: "0 7 * * *"
         timezone: UTC
         message: |
-          Poll for new accidental damage cover agreements since the last run.
-          For each new agreement, build the provider payload and upload via FTP.
-          Log each agreement id as success or failure. Do not re-upload already synced ids.
+          Fetch today's weather for configured cities and post a short morning brief.
+          Keep it practical: conditions, high/low, and any notable alerts.
       YAML
       File.write(root.join("tools/.keep"), "")
 
       say "✓ Created app/agents/#{id}/"
       say ""
-      say "  1. Edit instructions.md (describe your sync rules)"
+      say "  1. Edit instructions.md (describe the agent)"
       say "  2. rails-agents test #{id}"
       say "  3. rails-agents deploy #{id}"
     end
@@ -82,19 +81,19 @@ module RailsAgents
       say "  instructions.md  ✓ (#{agent.instructions.bytesize} bytes)"
       say "  model            #{agent.model}"
 
-      schedule = agent.root.join("schedules/poll.yml")
-      if schedule.file?
-        say "  schedule         ✓ #{schedule.relative_path_from(rails_root)}"
+      schedule = Dir.glob(agent.root.join("schedules/*.{yml,yaml}").to_s).first
+      if schedule
+        say "  schedule         ✓ #{Pathname(schedule).relative_path_from(rails_root)}"
       else
         say "  schedule         — (optional)"
       end
 
       say ""
       say "Dry-run plan (local — no Cloud call):"
-      say "  • Read new Accidental Damage Cover agreements from your Rails DB (via Tool Bridge)"
-      say "  • Transform each into the insurer FTP payload"
-      say "  • Upload to the provider FTP server"
-      say "  • Record sync status so reruns are idempotent"
+      say "  • Read configured cities / prefs from Rails (via Tool Bridge)"
+      say "  • Fetch today's forecast for each city"
+      say "  • Compose a short morning weather brief"
+      say "  • Post the summary (Slack, email, DB, …)"
       say ""
       say "Preview instructions (first 280 chars):"
       preview = agent.instructions.to_s.encode("UTF-8", invalid: :replace, undef: :replace).strip
@@ -104,7 +103,7 @@ module RailsAgents
       if live
         say "Running against Cloud sandbox (--live)…"
         result = agent.run(
-          "Local test: describe the steps you would take for one new accidental damage cover agreement. Do not call external systems."
+          "Local test: describe the steps you would take for a morning weather brief for Berlin. Do not call external systems."
         )
         if result.respond_to?(:success) && result.success
           say "✓ Cloud sandbox OK"
@@ -213,10 +212,10 @@ module RailsAgents
     end
 
     def read_schedule(agent)
-      path = agent.root.join("schedules/poll.yml")
-      return nil unless path.file?
+      path = Dir.glob(agent.root.join("schedules/*.{yml,yaml}").to_s).min
+      return nil unless path
 
-      path.read
+      File.read(path)
     end
 
     def agents_root
@@ -239,23 +238,21 @@ module RailsAgents
 
         # Job
 
-        Monitor newly created agreements of type **Accidental Damage Cover**.
-        For each new agreement, sync a payload file to the insurance provider FTP server.
+        Produce a short daily weather brief for configured cities.
+        Fetch the forecast, summarize conditions in plain language, and post the result via Tool Bridge tools.
 
         # Rules
 
-        1. Only process agreements with type / product = Accidental Damage Cover.
-        2. Never re-upload an agreement that already has a successful sync record.
-        3. Use Tool Bridge tools for DB reads/writes and FTP upload (never invent credentials).
-        4. On FTP failure, retry once, then mark the agreement failed with the error message.
-        5. Summarize: processed count, uploaded count, failures.
+        1. Prefer Tool Bridge tools over guessing temperatures or conditions.
+        2. Keep answers short and practical (city, conditions, high/low).
+        3. Never invent API keys or secrets.
+        4. If a forecast fetch fails, say so clearly and continue with other cities.
+        5. Summarize: cities covered, failures if any.
 
         # Tools you may use
 
-        - `ListNewAgreements` — agreements created since the watermark / last run
-        - `BuildProviderPayload` — map agreement → insurer file format
-        - `UploadFtp` — upload file to the provider FTP server
-        - `MarkAgreementSynced` — persist success/failure + remote path
+        - `FetchForecast` — current / daily forecast for a city
+        - `PostSummary` — deliver the brief (Slack, email, DB, …)
 
         # Output
 
@@ -276,12 +273,12 @@ module RailsAgents
           rails-agents deploy <name>    Deploy to Cloud (signup/subscribe if needed)
           rails-agents status [name]    Show agent status / list from Cloud
 
-        Example (Accidental Damage Cover → insurer FTP):
+        Example (weather brief):
 
-          rails-agents new accidental_damage_sync
-          # edit app/agents/accidental_damage_sync/instructions.md
-          rails-agents test accidental_damage_sync
-          rails-agents deploy accidental_damage_sync
+          rails-agents new weather
+          # edit app/agents/weather/instructions.md
+          rails-agents test weather
+          rails-agents deploy weather
       HELP
     end
   end

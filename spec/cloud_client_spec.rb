@@ -15,7 +15,13 @@ RSpec.describe RailsAgents::Cloud::Client do
     description "Weather helper"
   end
 
+  def stub_sync!
+    stub_request(:put, "https://api.example.test/v1/agents/weather")
+      .to_return(status: 200, body: {ok: true}.to_json, headers: {"Content-Type" => "application/json"})
+  end
+
   it "posts a cloud run and returns a Result" do
+    stub_sync!
     stub_request(:post, "https://api.example.test/v1/agents/weather/run")
       .with { |req|
         body = JSON.parse(req.body)
@@ -40,6 +46,7 @@ RSpec.describe RailsAgents::Cloud::Client do
   end
 
   it "raises PaymentRequired when Credits are missing" do
+    stub_sync!
     stub_request(:post, "https://api.example.test/v1/agents/weather/run")
       .to_return(
         status: 402,
