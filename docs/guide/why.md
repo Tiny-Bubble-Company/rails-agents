@@ -1,58 +1,34 @@
 # Why Rails Agents
 
-**Like Eve for Rails.** Your agent is a directory. Durable execution, hosted schedules, and Tool Bridge into your app — without managing Node, Workflow, or Render cron yourself.
+Agents today are where the web was before frameworks — everyone hand-rolling the same plumbing. Eve made that shape a framework for TypeScript. **Rails Agents is that shape for Rails.**
 
-Eve’s pitch is right: production agents need more than a chat loop. Rails Agents brings that model to Ruby — with a Rails-native DX and cloud that ships.
+An agent is a directory. Production — durable execution, hosted schedules, Tool Bridge, dashboard — ships with the product.
 
-## What makes it special
+## An agent is a directory
 
-| Capability | What you get |
-|------------|--------------|
-| **Directory DX** | `app/agents/<name>/instructions.md` is a complete agent. Optional `schedules/`, `tools/`, skills as it grows. |
-| **Durable execution** | Checkpointed runs on Rails Agents Cloud. Park between turns, resume on delivery. Survives crashes and deploys. |
-| **Hosted schedules** | Cron in `schedules/poll.yml` after `rails-agents deploy` — no Render workers for polling jobs. |
-| **Tool Bridge** | Cloud calls your Rails models/jobs/services. Credentials stay in your app. |
-| **CLI path** | `rails-agents new \| test \| deploy` — signup/subscribe when you go live. |
-| **Honest billing** | Prepaid Credits before hosted runs. Free to build; pay for what you run. |
+```text
+app/agents/accidental_damage_sync/
+  agent.json                 # the model it runs on
+  instructions.md            # who it is
+  tools/                     # what it can do
+  skills/                    # what it knows
+  schedules/                 # when it acts on its own
+```
 
-## What we optimize for
+Each file is one component. At a glance you see what the agent is, what it does, and when it runs.
 
-| Priority | In practice |
-|----------|-------------|
-| **Speed to production** | Directory → test → deploy → dashboard |
-| **Durability** | Cloud runtime owns persistence and schedules |
-| **Rails-native tools** | Your existing code, not a second stack |
-| **Zero agent infra for you** | We run the durable runtime; you write Markdown + Ruby |
+## Batteries included
+
+| | |
+|---|---|
+| **Durable execution** | Checkpointed runs. Park between messages. Resume on delivery. |
+| **Hosted schedules** | Cron from `schedules/` after deploy — no Render workers. |
+| **Tool Bridge** | Signed callbacks into your Rails app. Secrets stay home. |
+| **Dashboard** | Status, runs, logs at [agents.meerkatagents.com](https://agents.meerkatagents.com). |
+| **CLI** | `rails-agents new · test · deploy` |
 
 ## vs RubyLLM
 
-[RubyLLM](https://rubyllm.com) is an excellent **general-purpose AI toolkit** — chat, images, embeddings, model registry, Rails chat persistence. You host it and own the runtime.
+RubyLLM is an excellent **LLM toolkit** you host. Rails Agents is the **agent product path**: directory → durable cloud → schedules.
 
-| | **RubyLLM** | **Rails Agents** |
-|---|-------------|------------------|
-| **Job** | Broad LLM SDK for Rails | **Production agents** — durable, scheduled, deployable |
-| **Shape** | `RubyLLM.chat` + rich macros | Agent **directory** + `instructions.md` (+ optional class DSL) |
-| **Runtime** | Your process / your infra | **Cloud** — checkpointed runs, park/resume, hosted cron |
-| **Ops** | You wire Sidekiq/cron/hosts | `rails-agents deploy` + dashboard status & logs |
-| **Tools** | In-process tool classes | Tool Bridge — tools stay in *your* Rails app |
-| **Best when** | Multimodal toolkit, embeddings, DIY persistence | Durable agents that must survive deploys and run on a schedule |
-
-**Use RubyLLM** when you need a full AI SDK you control end-to-end.
-
-**Use Rails Agents** when you want Eve-style durability for Rails: directory in, deploy out, cloud runs the hard parts.
-
-## vs rolling your own
-
-You could call provider APIs and hang a rake task on Render. You’d re-solve:
-
-- Multi-turn tool loops and provider shapes  
-- Crash-safe state between messages  
-- Cron that doesn’t die with a dyno restart  
-- Secure callbacks into Rails for DB/FTP/CRM  
-- A place to see runs and failures  
-
-That’s the product. We ship it as gem + Cloud.
-
-## Next
-
-→ [Getting Started](/guide/getting-started) · [Cloud](https://agents.meerkatagents.com) · [Billing](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md)
+→ [Getting Started](/guide/getting-started) · [Home](/)
