@@ -69,7 +69,9 @@ result = SupportAgent.run("How do I reset my password?")
 result.output
 ```
 
-That's it. Use the dashboard playground for logs, traces, and evals. When ready, **Promote to production** (Stripe) and switch to a `rak_live_…` key.
+That's it. Use the dashboard playground for logs, traces, and evals.
+
+**Billing:** sandbox starts with a free trial (limited models/credits — same idea as Vercel’s free AI tier). When the trial ends, you **must subscribe** to keep running. Production keys only after payment. Usage is metered as Rails Agents Credits = underlying Vercel AI/cloud cost + margin. Details: [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md).
 
 ## What's next?
 

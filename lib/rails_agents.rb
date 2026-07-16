@@ -19,6 +19,7 @@ loader.setup
 require_relative "rails_agents/message"
 require_relative "rails_agents/result"
 require_relative "rails_agents/error"
+require_relative "rails_agents/payment_required"
 require_relative "rails_agents/skill_declaration"
 require_relative "rails_agents/generated_file"
 require_relative "rails_agents/providers/openai_compatible"
