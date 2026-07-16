@@ -1,20 +1,28 @@
 # Getting Started
 
-From install to a working agent in a few minutes.
+Cloud by default. Sign up → sandbox API key → define an agent in Ruby → `.run`.
 
-Docs home: [Rails Agents](/) · Gem: [rails-agent-stack on RubyGems](https://rubygems.org/gems/rails-agent-stack) · Source: [GitHub](https://github.com/Tiny-Bubble-Company/rails-agents)
+Docs home: [Rails Agents](/) · Gem: [rails-agent-stack](https://rubygems.org/gems/rails-agent-stack) · Source: [GitHub](https://github.com/Tiny-Bubble-Company/rails-agents)
 
 ## After this guide
 
 You will know how to:
 
-1. Install the gem and run the generator
-2. Configure API keys
-3. Define an agent and call `.run`
+1. Create a sandbox account and API key
+2. Install the gem and mount the Tool Bridge
+3. Define an agent and call `.run` against Rails Agents Cloud
 
-## 1. Install
+## 1. Sign up (sandbox)
 
-Add the gem to your Gemfile:
+Create an account (full name, email, company, website) in the [Cloud dashboard](https://github.com/Tiny-Bubble-Company/rails-agents-cloud) and copy:
+
+- `RAILS_AGENTS_API_KEY` — starts with `rak_sandbox_`
+- `RAILS_AGENTS_BRIDGE_SECRET` — signs Tool Bridge webhooks
+- `RAILS_AGENTS_APP_ID` — your app id
+
+You do **not** need a Vercel account, Eve CLI, or provider API keys. Models and durable runtime run on our shared cloud (Eve on Vercel) with logical sandbox isolation.
+
+## 2. Install
 
 ```ruby
 # Gemfile
@@ -26,75 +34,45 @@ bundle install
 bin/rails generate rails_agents:install
 ```
 
-The gem name is `rails-agent-stack`; the Ruby API is still `RailsAgents` (`require "rails_agents"`).
-
 This creates:
 
-- `config/initializers/rails_agents.rb` — API keys only
-- `app/agents/` and `app/agents/tools/` — where your agents live
+- `config/initializers/rails_agents.rb` — cloud API key + bridge secret
+- mounts `RailsAgents::Engine` at `/rails_agents` (Tool Bridge)
+- `app/agents/` — where your agents live
 
-## 2. Configure API keys
-
-The initializer holds **API keys only**. Models are set on each agent.
+## 3. Configure
 
 ```ruby
 # config/initializers/rails_agents.rb
 RailsAgents.configure do |config|
-  config.openai_api_key = ENV["OPENAI_API_KEY"]
-  config.anthropic_api_key = ENV["ANTHROPIC_API_KEY"]
-  config.openrouter_api_key = ENV["OPENROUTER_API_KEY"]
-  config.grok_api_key = ENV["XAI_API_KEY"]
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
+  config.app_id = ENV["RAILS_AGENTS_APP_ID"]
+  config.tool_bridge_secret = ENV["RAILS_AGENTS_BRIDGE_SECRET"]
 end
 ```
 
-Set only the keys you use. See [Configuration](/guide/configuration) for all options.
+Expose your Rails app to the cloud Tool Bridge (ngrok/Cloudflare Tunnel in development).
 
-## 3. Define and run an agent
-
-Every agent needs three things — nothing more to get started:
+## 4. Define and run an agent
 
 ```ruby
 # app/agents/support_agent.rb
 class SupportAgent < RailsAgents::Agent
-  provider :openai                    # :openai, :anthropic, :openrouter, :grok
-  model "gpt-4o-mini"                 # required — set per agent
-  description "Answers customer questions using docs and account data."
-  tools "SearchDocs", "LookupAccount" # optional
+  model "anthropic/claude-sonnet-5"
+  description "Answers customer questions using account tools."
+  tools "LookupAccount"
 end
-```
-
-```bash
-export OPENAI_API_KEY=sk-...
-bin/rails console
 ```
 
 ```ruby
 result = SupportAgent.run("How do I reset my password?")
-result.output   # => the agent's reply
-result.success  # => true/false
+result.output
 ```
 
-That's it. Add [tools](/guide/tools) and [skills](/guide/skills) when you need them — not before.
-
-::: tip Free models via OpenRouter
-Don't want to pay while learning? Use OpenRouter with a free model:
-
-```ruby
-class CheapAgent < RailsAgents::Agent
-  provider :openrouter
-  model "meta-llama/llama-3.3-70b-instruct:free"
-  description "Answer briefly."
-end
-```
-:::
+That's it. Use the dashboard playground for logs, traces, and evals. When ready, **Promote to production** (Stripe) and switch to a `rak_live_…` key.
 
 ## What's next?
 
-- [Agents](/guide/agents) — the only class you need
-- [Tools](/guide/tools) — wire in your app code
-- [Skills](/guide/skills) — web search, spreadsheets, and more
-- [Recipes](/guide/recipes) — copy-paste patterns
-
-::: tip Built something?
-[Tell us what you're building](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1) — it directly shapes the roadmap.
-:::
+- [Architecture](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/ARCHITECTURE.md) — Eve compile-to-cloud design
+- [Tenancy](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/TENANCY.md) — sandbox vs production on shared infra
+- [Agents](/guide/agents) · [Tools](/guide/tools) · [Community](/guide/community)

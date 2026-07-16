@@ -1,30 +1,33 @@
 # Rails Agents
 
-**Dead-simple AI agents for Rails — speed to production, not framework noise.**
+**Dead-simple AI agents for Rails — cloud by default, speed to production.**
 
-Define an agent as a plain Ruby class. Say what it does, pick a provider and model, attach your app code as tools, call `.run`. No dashboards, no cloud accounts, no agent lifecycle UI.
+Define an agent in Ruby. Attach your app code as tools. Call `.run`. Durable sessions, sandboxes, logs, and evals run on **Rails Agents Cloud** (Eve on our Vercel infra). You never manage Node, Workflow, or provider keys.
 
 | | |
 |---|---|
 | **Docs** | [tiny-bubble-company.github.io/rails-agents](https://tiny-bubble-company.github.io/rails-agents/) |
 | **Gem** | [rubygems.org/gems/rails-agent-stack](https://rubygems.org/gems/rails-agent-stack) |
-| **Source** | [github.com/Tiny-Bubble-Company/rails-agents](https://github.com/Tiny-Bubble-Company/rails-agents) |
-| **Community** | [Share what you're building](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1) · [Use-case vote](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/3) |
+| **Cloud** | [rails-agents-cloud](https://github.com/Tiny-Bubble-Company/rails-agents-cloud) (Next.js dashboard) |
+| **Architecture** | [ARCHITECTURE.md](./ARCHITECTURE.md) · [TENANCY.md](./TENANCY.md) |
+| **Community** | [Share what you're building](https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1) |
 
 ```ruby
 class LeadQualifier < RailsAgents::Agent
-  provider :openrouter
-  model "meta-llama/llama-3.3-70b-instruct:free"
-  description "Qualifies inbound leads, answers basic questions, and creates a CRM note when a lead looks promising."
+  model "anthropic/claude-sonnet-5"
+  description "Qualifies inbound leads and creates a CRM note when promising."
   tools "SearchCrm", "CreateCrmNote"
 end
 
-LeadQualifier.run("New signup from acme.com — 50 employees, asked about enterprise pricing")
+LeadQualifier.run("New signup from acme.com — 50 employees, enterprise pricing")
 ```
 
 ---
 
 ## Install
+
+1. Create a **sandbox** account + API key in Cloud (signup: name, email, company, website).
+2. Add the gem:
 
 ```ruby
 # Gemfile
@@ -36,9 +39,9 @@ bundle install
 bin/rails generate rails_agents:install
 ```
 
-The gem name is `rails-agent-stack`; the Ruby API is still `RailsAgents` (`require "rails_agents"`).
-
-Set API keys in `config/initializers/rails_agents.rb`, create an agent in `app/agents/`, call `.run`.
+3. Set `RAILS_AGENTS_API_KEY`, `RAILS_AGENTS_APP_ID`, `RAILS_AGENTS_BRIDGE_SECRET`.
+4. Define agents under `app/agents/`, call `.run`.
+5. Promote to **production** from the dashboard (Stripe) when ready.
 
 Full walkthrough: **[Getting Started](https://tiny-bubble-company.github.io/rails-agents/guide/getting-started)**
 
@@ -70,16 +73,16 @@ We believe the best agent framework for Rails is the one that gets out of your w
 | Priority | What it means in practice |
 |----------|---------------------------|
 | **Developer experience** | One mental model, one agent class, a DSL that reads like Ruby |
-| **Speed to implementation** | `rails generate`, drop a class in `app/agents/`, call `.run` — minutes, not days |
-| **Lightweight** | API keys in an initializer, agents in your app — no engine, no control plane, no telemetry stack |
-| **Ease of getting started** | Three required declarations: `provider`, `model`, `description`. Everything else is optional |
-| **Rails-native** | Your tools are your models, jobs, and services — wired in with plain Ruby classes |
+| **Speed to production** | Signup → sandbox key → `.run` → promote (Stripe). No customer infra |
+| **Cloud by default** | Durable Eve runtime + sandbox on our Vercel project; logical tenant isolation |
+| **Ease of getting started** | API key + `model` + `description` (+ tools when needed) |
+| **Rails-native tools** | Tool Bridge calls your models/jobs/services in *your* Rails app |
 
 ### What we deliberately don't build
 
-Chat persistence, model registries, agent versioning, hosted dashboards, or a general-purpose AI toolkit. Other gems do those well. We stay focused on one job:
+Customer-owned Vercel/Eve accounts, Node toolchains for Rails developers, or a general-purpose multimodal AI toolkit. We stay focused on one job:
 
-> **Get a working agent into your Rails app with the least code and the least ceremony.**
+> **Fastest path from Rails idea to production agent — least code, zero infra.**
 
 ### Who this is for
 

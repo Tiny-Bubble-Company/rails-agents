@@ -8,20 +8,20 @@ Gem::Specification.new do |spec|
   spec.authors = ["Tiny Bubble Company"]
   spec.email = ["hello@tinybubble.company"]
 
-  spec.summary = "Dead-simple AI agents for Rails — speed to production, not framework noise"
+  spec.summary = "Dead-simple AI agents for Rails — cloud by default, speed to production"
   spec.description = <<~DESC.gsub(/\s+/, " ").strip
-    Rails Agents (gem: rails-agent-stack) is the simplest way to build AI agents
-    in Ruby on Rails. Define an LLM agent as a plain Ruby class, attach your app
-    code as tools, add skills like web search or spreadsheets, and call .run —
-    minutes to production, not days of framework setup.
+    Rails Agents (gem: rails-agent-stack) is the simplest way to add production
+    AI agents to Ruby on Rails. Define an agent in Ruby, attach your app code as
+    tools, call .run — durable sessions, sandboxes, logs, and evals run on Rails
+    Agents Cloud (Eve on shared Vercel infra). Cloud by default: signup, sandbox
+    API key, Tool Bridge back into your Rails app, then promote to production.
 
     Built for developers searching for Rails AI agents, Ruby LLM agents,
-    OpenAI / Anthropic / Claude / GPT tool-calling agents, OpenRouter and
-    Grok (xAI) integrations, agentic workflows, RAG helpers, and a lighter
-    alternative to RubyLLM, LangChain, or rolling your own multi-turn tool loop.
+    OpenAI / Anthropic / Claude / GPT tool-calling, agentic workflows, and a
+    simpler alternative to RubyLLM or LangChain when you want zero infra.
 
-    One mental model: RailsAgents::Agent. No dashboards, no cloud lock-in,
-    no agent lifecycle UI — just provider, model, description, tools, and skills.
+    One mental model: RailsAgents::Agent. Fastest path to a production agent
+    with the least code.
   DESC
 
   spec.homepage = "https://tiny-bubble-company.github.io/rails-agents/"
@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
   }
 
   spec.files = Dir.chdir(__dir__) do
-    Dir["{app,lib}/**/*", "README.md", "CHANGELOG.md", "MIT-LICENSE", "rails-agent-stack.gemspec"]
+    Dir["{app,config,lib}/**/*", "README.md", "CHANGELOG.md", "ARCHITECTURE.md", "TENANCY.md", "DECISIONS.md", "MIT-LICENSE", "rails-agent-stack.gemspec"]
   end
 
   spec.require_paths = ["lib"]
