@@ -3,7 +3,7 @@ import { defineConfig } from "vitepress";
 const siteUrl = process.env.DOCS_SITE_URL || "https://rails.meerkatagents.com";
 const base = process.env.DOCS_BASE || "/";
 const description =
-  "Dead-simple AI agents for Rails — cloud by default. Define agents in Ruby, prepaid Credits, Tool Bridge into your app. Fastest path to production.";
+  "Durable agents for Rails — like Eve for Ruby apps. Your agent is a directory (instructions.md). Checkpointed cloud runs, hosted schedules, Tool Bridge into Rails. Faster to production than RubyLLM when you need agents that survive deploys.";
 
 export default defineConfig({
   title: "Rails Agents",
@@ -26,17 +26,17 @@ export default defineConfig({
       {
         name: "keywords",
         content:
-          "rails agents, ruby ai agents, rails llm, openai rails, anthropic rails, claude agents, gpt agents, ai agents ruby, llm tools rails, agent framework rails, rubyllm alternative, langchain ruby, openrouter rails, grok rails, ai workflow rails",
+          "rails agents, durable agents rails, eve for rails, ruby ai agents, rails llm agents, rubyllm alternative, langchain ruby, tool bridge rails, hosted cron agents, openai rails, anthropic rails, claude agents, gpt agents, agent framework rails",
       },
     ],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:site_name", content: "Rails Agents" }],
-    ["meta", { property: "og:title", content: "Rails Agents — Dead-simple AI agents for Rails" }],
+    ["meta", { property: "og:title", content: "Rails Agents — Durable agents for Rails" }],
     ["meta", { property: "og:description", content: description }],
     ["meta", { property: "og:url", content: siteUrl }],
     ["meta", { property: "og:image", content: `${siteUrl}/og.png` }],
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
-    ["meta", { name: "twitter:title", content: "Rails Agents — Dead-simple AI agents for Rails" }],
+    ["meta", { name: "twitter:title", content: "Rails Agents — Durable agents for Rails" }],
     ["meta", { name: "twitter:description", content: description }],
     ["meta", { name: "twitter:image", content: `${siteUrl}/og.png` }],
     [
