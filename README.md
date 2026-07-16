@@ -26,7 +26,7 @@ LeadQualifier.run("New signup from acme.com — 50 employees, enterprise pricing
 
 ## Install
 
-1. Create a **sandbox** account + API key in Cloud (signup: name, email, company, website).
+1. **Sign up** in Cloud (name, email, company, website) → sandbox API key (runs stay blocked until funded).
 2. Add the gem:
 
 ```ruby
@@ -40,10 +40,11 @@ bin/rails generate rails_agents:install
 ```
 
 3. Set `RAILS_AGENTS_API_KEY`, `RAILS_AGENTS_APP_ID`, `RAILS_AGENTS_BRIDGE_SECRET`.
-4. Define agents under `app/agents/`, call `.run`.
-5. Promote to **production** from the dashboard (Stripe) when ready.
+4. Define agents under `app/agents/`.
+5. **Top up Credits** (min $10) — or use optional BYOK in sandbox — then `.run`.
+6. **Subscribe + promote** to production when ready (`rak_live_…`).
 
-Full walkthrough: **[Getting Started](https://tiny-bubble-company.github.io/rails-agents/guide/getting-started)**
+Billing: [PRICING.md](./PRICING.md) · Walkthrough: **[Getting Started](https://tiny-bubble-company.github.io/rails-agents/guide/getting-started)**
 
 ---
 

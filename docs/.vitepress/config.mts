@@ -3,7 +3,7 @@ import { defineConfig } from "vitepress";
 const siteUrl = "https://tiny-bubble-company.github.io/rails-agents";
 const base = process.env.DOCS_BASE || "/";
 const description =
-  "Dead-simple AI agents for Rails. Build LLM agents with tools, skills, and OpenAI, Anthropic, OpenRouter, or Grok — faster than RubyLLM when you only need agents. Speed to production, not framework noise.";
+  "Dead-simple AI agents for Rails — cloud by default. Define agents in Ruby, prepaid Credits for durable Eve runtime on Vercel, Tool Bridge into your app. Fastest path to production.";
 
 export default defineConfig({
   title: "Rails Agents",
@@ -100,6 +100,7 @@ export default defineConfig({
         items: [
           { text: "Why Rails Agents", link: "/guide/why" },
           { text: "Getting Started", link: "/guide/getting-started" },
+          { text: "Billing", link: "/guide/billing" },
           { text: "Community", link: "/guide/community" },
         ],
       },
@@ -109,7 +110,6 @@ export default defineConfig({
           { text: "Agents", link: "/guide/agents" },
           { text: "Tools", link: "/guide/tools" },
           { text: "Skills", link: "/guide/skills" },
-          { text: "Providers", link: "/guide/providers" },
           { text: "Configuration", link: "/guide/configuration" },
         ],
       },

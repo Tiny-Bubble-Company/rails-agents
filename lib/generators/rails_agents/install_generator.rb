@@ -23,9 +23,9 @@ module RailsAgents
 
       def finish
         say "\n✓ Rails Agents (cloud) installed.", :green
-        say "  1. Sign up and create a sandbox API key"
-        say "  2. Set RAILS_AGENTS_API_KEY and RAILS_AGENTS_BRIDGE_SECRET"
-        say "  3. Create an agent under app/agents/<name>/"
+        say "  1. Sign up → set RAILS_AGENTS_API_KEY, APP_ID, BRIDGE_SECRET"
+        say "  2. Create an agent under app/agents/<name>/"
+        say "  3. Add Credits (min $10) or BYOK — then .run"
         say "  4. Docs: https://tiny-bubble-company.github.io/rails-agents/"
       end
     end

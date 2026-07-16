@@ -38,6 +38,25 @@ RSpec.describe RailsAgents::Cloud::Client do
     RailsAgents.config.api_key = nil
     expect { WeatherAgent.run("hi") }.to raise_error(RailsAgents::ConfigurationError, /RAILS_AGENTS_API_KEY/)
   end
+
+  it "raises PaymentRequired when Credits are missing" do
+    stub_request(:post, "https://api.example.test/v1/agents/weather/run")
+      .to_return(
+        status: 402,
+        body: {
+          error: {
+            code: "payment_required",
+            message: "Add Credits to run agents on Rails Agents Cloud.",
+            checkout_url: "https://cloud.example/billing"
+          }
+        }.to_json,
+        headers: {"Content-Type" => "application/json"}
+      )
+
+    expect { WeatherAgent.run("hi") }.to raise_error(RailsAgents::PaymentRequired, /Credits/) do |error|
+      expect(error.checkout_url).to eq("https://cloud.example/billing")
+    end
+  end
 end
 
 RSpec.describe RailsAgents::Cloud::Bridge::Signature do
