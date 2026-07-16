@@ -1,0 +1,41 @@
+<% id = @agent_id %>
+<% status = @agent["status"] || @agent[:status] %>
+<section class="ra-card" style="margin-bottom:1.25rem">
+  <p class="ra-muted" style="margin:0 0 0.5rem"><%= link_to "← Agents", root_path %></p>
+  <h1 style="margin:0"><%= id %></h1>
+  <p class="ra-muted">
+    Status <span class="ra-status-<%= status %>"><%= status %></span>
+    · <%= @agent["environment"] || @agent[:environment] %>
+    · <%= @agent["model"] || @agent[:model] %>
+  </p>
+  <p style="margin-top:1rem">
+    <%= link_to "Open in Cloud", "#{dashboard_url}/dashboard/agents/#{id}", class: "ra-btn", target: "_blank", rel: "noopener" %>
+  </p>
+</section>
+
+<section class="ra-card">
+  <h2>Recent runs</h2>
+  <% runs = @runs.is_a?(Hash) ? (@runs["runs"] || @runs[:runs] || []) : Array(@runs) %>
+  <% if runs.blank? %>
+    <p class="ra-muted">No runs yet.</p>
+  <% else %>
+    <table class="ra-table">
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Status</th>
+          <th>Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% runs.first(20).each do |run| %>
+          <tr>
+            <td><%= run["created_at"] || run[:created_at] || run["at"] || "—" %></td>
+            <td><%= run["status"] || run[:status] || "—" %></td>
+            <td><%= truncate((run["output"] || run[:output] || run["message"] || run[:message] || "").to_s, length: 120) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>

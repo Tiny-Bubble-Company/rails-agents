@@ -73,7 +73,7 @@ Each Ruby tool compiles to a TypeScript `defineTool` whose `execute` POSTs to th
 
 ## Rails gem responsibilities
 
-1. Mount bridge endpoint (`RailsAgents::Engine`).
+1. Mount the engine (`mount RailsAgents::Engine => "/agents"`) — bridge is `POST /agents/bridge`.
 2. Verify signature.
 3. Resolve `tool` name → `RailsAgents::Tool` class for that `agent_id`.
 4. Call `#call(**arguments)` and return JSON.
