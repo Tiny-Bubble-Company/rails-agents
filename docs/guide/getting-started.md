@@ -1,31 +1,28 @@
-# Getting Started
+# Getting Started — Accidental Damage Cover → FTP (the reference job)
 
-Cloud by default. Sign up → define agents in Ruby → add Credits → `.run`.
+Replace rake + Render cron with:
 
-Docs home: [Rails Agents](/) · Gem: [rails-agent-stack](https://rubygems.org/gems/rails-agent-stack) · Source: [GitHub](https://github.com/Tiny-Bubble-Company/rails-agents) · Billing: [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md)
+```bash
+bundle add rails-agent-stack
+bin/rails generate rails_agents:install
+rails-agents new accidental_damage_sync
+# edit app/agents/accidental_damage_sync/instructions.md
+rails-agents test accidental_damage_sync
+rails-agents deploy accidental_damage_sync
+```
 
-## After this guide
+Docs: [rails.meerkatagents.com](https://rails.meerkatagents.com) · Cloud: [agents.meerkatagents.com](https://agents.meerkatagents.com)
 
-You will know how to:
+## What you get
 
-1. Create a Cloud account and API key
-2. Install the gem and mount the Tool Bridge
-3. Define an agent
-4. Fund Credits (or BYOK) and call `.run`
+| Today (pain) | With Rails Agents |
+|--------------|-------------------|
+| Vibe-code a rake task | `instructions.md` in `app/agents/…` |
+| Deploy to Render | `rails-agents deploy` |
+| Cron on Render | `schedules/poll.yml` hosted after deploy |
+| No visibility | Dashboard: status, runs, logs |
 
-## 1. Sign up
-
-Create an account (full name, email, company, website) in [Rails Agents Cloud](https://github.com/Tiny-Bubble-Company/rails-agents-cloud) and copy:
-
-- `RAILS_AGENTS_API_KEY` — `rak_sandbox_…` (or `rak_live_…` after production)
-- `RAILS_AGENTS_BRIDGE_SECRET` — signs Tool Bridge webhooks
-- `RAILS_AGENTS_APP_ID` — your app id
-
-Signup is free. **Hosted model/sandbox runs are not** — add Credits before `.run` (or use BYOK in sandbox).
-
-You do **not** need your own Vercel account, Eve CLI, or (unless BYOK) provider keys.
-
-## 2. Install
+## 1. Install
 
 ```ruby
 # Gemfile
@@ -37,53 +34,59 @@ bundle install
 bin/rails generate rails_agents:install
 ```
 
-This creates:
+## 2. Create the agent folder
 
-- `config/initializers/rails_agents.rb` — cloud API key + bridge secret
-- mounts `RailsAgents::Engine` at `/rails_agents` (Tool Bridge)
-- `app/agents/` — where your agents live
-
-## 3. Configure
-
-```ruby
-# config/initializers/rails_agents.rb
-RailsAgents.configure do |config|
-  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
-  config.app_id = ENV["RAILS_AGENTS_APP_ID"]
-  config.tool_bridge_secret = ENV["RAILS_AGENTS_BRIDGE_SECRET"]
-end
+```bash
+rails-agents new accidental_damage_sync
 ```
 
-Expose your Rails app so Cloud can call the Tool Bridge (ngrok/Cloudflare Tunnel in development).
+Creates:
 
-## 4. Define an agent
-
-```ruby
-# app/agents/support_agent.rb
-class SupportAgent < RailsAgents::Agent
-  model "anthropic/claude-sonnet-5"
-  description "Answers customer questions using account tools."
-  tools "LookupAccount"
-end
+```text
+app/agents/accidental_damage_sync/
+  instructions.md      # your sync rules (complete agent)
+  agent.json
+  schedules/poll.yml   # hosted cron
+  tools/               # optional Tool Bridge helpers
 ```
 
-## 5. Fund, then run
+Edit `instructions.md` for your collection fields, FTP layout, and idempotency rules. Implement Tool Bridge tools in Rails (`ListNewAgreements`, `UploadFtp`, …).
 
-1. In the dashboard: **Billing → Add Credits** (minimum **$10**), **or** enable sandbox **BYOK** with your own provider key.
-2. Call:
+## 3. Test locally
 
-```ruby
-result = SupportAgent.run("How do I reset my password?")
-result.output
+```bash
+rails-agents test accidental_damage_sync          # validate folder (no Cloud)
+rails-agents test accidental_damage_sync --live   # sandbox run (needs API key + Credits)
 ```
 
-If the account is unfunded, the gem raises `RailsAgents::PaymentRequired` with a checkout URL.
+## 4. Deploy to production
 
-Usage burns **Rails Agents Credits** = underlying Vercel AI/cloud cost + margin. Production keys require a subscription + promote.
+```bash
+rails-agents deploy accidental_damage_sync
+```
 
-## What's next?
+If you have no Cloud account yet, the CLI opens signup. Production deploy requires:
 
-- [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md) — prepaid Credits, BYOK, margins
-- [ARCHITECTURE.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/ARCHITECTURE.md) — Eve compile-to-cloud
-- [TENANCY.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/TENANCY.md) — sandbox vs production
-- [Agents](/guide/agents) · [Tools](/guide/tools) · [Community](/guide/community)
+1. Account + **subscription** (dashboard Billing)
+2. Prepaid **Credits** (min $10)
+
+Then the CLI syncs the directory, marks the agent deployed, and opens the dashboard with status + telemetry.
+
+```bash
+# .env
+RAILS_AGENTS_API_KEY=rak_live_…
+RAILS_AGENTS_APP_ID=app_…
+RAILS_AGENTS_BRIDGE_SECRET=…
+# optional override:
+# RAILS_AGENTS_API_BASE=https://agents.meerkatagents.com/api
+```
+
+## 5. Dashboard
+
+- Agents list — status (`draft` / `deployed`), env, schedule, last run  
+- Agent detail — run history + log lines  
+- Billing — subscribe + Credits  
+
+## Related
+
+- [Agents](/guide/agents) · [Billing](/guide/billing) · [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md)

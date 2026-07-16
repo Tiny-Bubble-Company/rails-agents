@@ -2,7 +2,7 @@
 
 module RailsAgents
   class Configuration
-    DEFAULT_API_BASE = "https://api.railsagents.dev"
+    DEFAULT_API_BASE = "https://agents.meerkatagents.com/api"
 
     attr_accessor :api_key, :api_base, :tool_bridge_secret, :tool_bridge_path,
       :app_id, :default_environment,
