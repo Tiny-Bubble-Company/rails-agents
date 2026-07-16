@@ -1,9 +1,9 @@
 import { defineConfig } from "vitepress";
 
-const siteUrl = "https://tiny-bubble-company.github.io/rails-agents";
+const siteUrl = process.env.DOCS_SITE_URL || "https://rails.meerkatagents.com";
 const base = process.env.DOCS_BASE || "/";
 const description =
-  "Dead-simple AI agents for Rails — cloud by default. Define agents in Ruby, prepaid Credits for durable Eve runtime on Vercel, Tool Bridge into your app. Fastest path to production.";
+  "Dead-simple AI agents for Rails — cloud by default. Define agents in Ruby, prepaid Credits, Tool Bridge into your app. Fastest path to production.";
 
 export default defineConfig({
   title: "Rails Agents",
@@ -78,11 +78,15 @@ export default defineConfig({
       { text: "Tools", link: "/guide/tools" },
       { text: "Skills", link: "/guide/skills" },
       {
+        text: "Cloud",
+        link: "https://agents.meerkatagents.com",
+      },
+      {
         text: "Community",
         link: "https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1",
       },
       {
-        text: "v0.1.0",
+        text: "Gem",
         items: [
           { text: "Changelog", link: "/guide/changelog" },
           { text: "Requirements", link: "/guide/requirements" },
