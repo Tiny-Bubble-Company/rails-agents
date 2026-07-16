@@ -26,6 +26,8 @@ require_relative "rails_agents/providers/openai_compatible"
 require_relative "rails_agents/cloud/client"
 require_relative "rails_agents/cloud/session"
 require_relative "rails_agents/cloud/bridge/signature"
+require_relative "rails_agents/directory_agent"
+require_relative "rails_agents/cli"
 
 module RailsAgents
   class << self
@@ -41,6 +43,15 @@ module RailsAgents
 
     def tools(*classes)
       ToolSet.use(*classes)
+    end
+
+    # Eve-shaped DX: RailsAgents["weather"].run("…") / RailsAgents.run("weather", "…")
+    def [](id)
+      DirectoryAgent[id]
+    end
+
+    def run(id, message, **options)
+      DirectoryAgent.run(id, message, **options)
     end
   end
 end

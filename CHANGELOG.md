@@ -14,8 +14,8 @@ Cloud-only rebuild (pre-release).
 - Architecture: compile-to-Eve, one Vercel project with logical tenancy (`sandbox` \| `production`)
 - Billing: **prepaid Credits** (min $10) before hosted runs; free = build only; optional BYOK; `PaymentRequired` on 402
 - **Directory DX (Eve-shaped):** `app/agents/<name>/instructions.md` + `RailsAgents["name"].run(…)` (syncs then runs)
-- **CLI:** `rails-agents new | test | deploy | status` (ADC→FTP reference scaffold + schedule)
-- Generator: `rails generate rails_agents:agent NAME` (instructions + `schedules/poll.yml`)
+- **CLI:** `rails-agents new | test | deploy | status` (weather brief reference scaffold + schedule)
+- Generator: `rails generate rails_agents:agent NAME` (instructions + `schedules/morning.yml`)
 - Cloud portal: agents list, detail runs/logs, subscribe + deploy gate
 - Host: Hetzner beside Meerkat (`agents.meerkatagents.com`)
 

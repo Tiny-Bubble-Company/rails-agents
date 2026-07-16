@@ -168,6 +168,157 @@ html {
   color: var(--vp-c-text-2);
 }
 
+.mkt-lead code {
+  font-size: 0.95em;
+}
+
+/* Eve-style directory panel (HTML — always visible, no broken SVG) */
+.mkt-dir {
+  margin: 0 0 0.5rem;
+  padding: 1.35rem 1.5rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid #e5e5e5;
+  background: #fafafa;
+  color: #171717;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.mkt-dir-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.mkt-dir-path {
+  font-family: var(--vp-font-family-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #171717;
+}
+
+.mkt-dir-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c2410c;
+  background: #ffedd5;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+}
+
+.mkt-dir-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.mkt-dir-tree li {
+  display: grid;
+  grid-template-columns: minmax(11rem, max-content) 1fr;
+  gap: 0.75rem 1.25rem;
+  align-items: baseline;
+  padding: 0.15rem 0;
+}
+
+.mkt-dir-tree li.is-child {
+  grid-template-columns: minmax(11rem, max-content) 1fr;
+  padding-left: 1.25rem;
+}
+
+.mkt-dir-tree li.is-child .mkt-dir-name {
+  color: #737373;
+}
+
+.mkt-dir-name {
+  font-size: inherit;
+  font-weight: 500;
+  color: #262626;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.mkt-dir-note {
+  color: #a3a3a3;
+  font-size: 0.9rem;
+}
+
+.mkt-dir-caption {
+  margin: 1.15rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid #e5e5e5;
+  font-family: var(--vp-font-family-base);
+  font-size: 0.9rem;
+  color: #525252;
+}
+
+@media (max-width: 640px) {
+  .mkt-dir-tree li {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+    margin-bottom: 0.55rem;
+  }
+}
+
+/* Terminal block (HTML — replaces empty dark SVG) */
+.mkt-term {
+  margin: 0 0 0.25rem;
+  border-radius: 14px;
+  border: 1px solid #292524;
+  background: #141210;
+  overflow: hidden;
+}
+
+.mkt-term-bar {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #292524;
+  background: #0c0a09;
+}
+
+.mkt-term-bar span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #44403c;
+}
+
+.mkt-term-body {
+  margin: 0 !important;
+  padding: 1.15rem 1.25rem 1.35rem !important;
+  background: transparent !important;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  overflow-x: auto;
+  color: #fafaf9;
+}
+
+.mkt-term-body code {
+  font-family: var(--vp-font-family-mono);
+  color: inherit;
+  background: transparent !important;
+  padding: 0 !important;
+  white-space: pre;
+}
+
+.mkt-term-prompt {
+  color: #a8a29e;
+  margin-right: 0.45rem;
+}
+
+.mkt-term-ok {
+  display: block;
+  margin-top: 0.65rem;
+  color: #fb923c;
+}
+
 .mkt-figure {
   margin: 0 0 1.5rem;
   padding: 0.75rem;
@@ -175,11 +326,6 @@ html {
   border: 1px solid var(--vp-c-divider);
   background: #fafafa;
   overflow: hidden;
-}
-
-.mkt-figure--dark {
-  background: #0c0a09;
-  border-color: #292524;
 }
 
 .mkt-figure img {
@@ -193,10 +339,6 @@ html {
   margin: 0.85rem 0.35rem 0.25rem;
   font-size: 0.9rem;
   color: #525252;
-}
-
-.mkt-figure--dark figcaption {
-  color: var(--vp-c-text-3);
 }
 
 .mkt-figure a {

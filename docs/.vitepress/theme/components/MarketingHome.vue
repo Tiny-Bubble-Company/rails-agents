@@ -4,56 +4,62 @@
       <p class="mkt-kicker">An agent is a directory</p>
       <h2 class="mkt-h2">This is a Rails Agents agent.</h2>
       <p class="mkt-lead">
-        Each file describes one component — so at a glance the tree tells you who
-        the agent is, what it can do, what it knows, and when it acts on its own.
-        Same idea as Eve. Native to Rails.
+        One folder. A few files. At a glance you see who it is, what it can do,
+        what it knows, and when it runs — same idea as Eve, native to Rails.
       </p>
-      <figure class="mkt-figure">
-        <img
-          src="/images/agent-directory.svg"
-          alt="Directory tree for app/agents/accidental_damage_sync with annotated instructions, tools, skills, and schedules"
-          width="920"
-          height="640"
-          loading="eager"
-        />
-        <figcaption>An Accidental Damage Cover → FTP sync agent, readable at a glance.</figcaption>
-      </figure>
+
+      <div class="mkt-dir" role="img" aria-label="Weather agent directory structure">
+        <div class="mkt-dir-head">
+          <span class="mkt-dir-path">app/agents/weather/</span>
+          <span class="mkt-dir-badge">complete agent</span>
+        </div>
+        <ul class="mkt-dir-tree">
+          <li v-for="row in tree" :key="row.name" :class="{ 'is-child': row.child }">
+            <code class="mkt-dir-name">{{ row.name }}</code>
+            <span class="mkt-dir-note">{{ row.note }}</span>
+          </li>
+        </ul>
+        <p class="mkt-dir-caption">A weather agent, readable at a glance.</p>
+      </div>
     </section>
 
     <section class="mkt-section">
       <p class="mkt-kicker">Create an agent in minutes</p>
       <h2 class="mkt-h2">Focus on what it does — not how it runs.</h2>
       <p class="mkt-lead">
-        Production agents wait on people, call slow systems, and outlive a single
-        request. Chat SDKs give you a loop. Rails Agents ships durability, schedules,
-        and a Tool Bridge into your app — the plumbing every team rebuilds by hand.
+        Three commands. Your <code>instructions.md</code> is the agent. Cloud
+        handles durable runs, schedules, and the dashboard.
       </p>
-      <figure class="mkt-figure mkt-figure--dark">
-        <img
-          src="/images/cli-flow.svg"
-          alt="Terminal showing rails-agents new, test, and deploy"
-          width="920"
-          height="280"
-          loading="lazy"
-        />
-      </figure>
+
+      <div class="mkt-term" aria-label="CLI commands">
+        <div class="mkt-term-bar">
+          <span /><span /><span />
+        </div>
+        <pre class="mkt-term-body"><code><span class="mkt-term-prompt">$</span> rails-agents new weather
+<span class="mkt-term-prompt">$</span> rails-agents test weather
+<span class="mkt-term-prompt">$</span> rails-agents deploy weather
+<span class="mkt-term-ok">→ Deployed — dashboard opens with status &amp; run logs</span></code></pre>
+      </div>
+
       <div class="mkt-code-grid">
         <div class="mkt-code-card">
-          <p class="mkt-code-label">app/agents/…/instructions.md</p>
+          <p class="mkt-code-label">app/agents/weather/instructions.md</p>
           <pre><code># Identity
 
-You sync new Accidental Damage Cover
-agreements to the insurer FTP.
+You are a weather brief agent.
+Fetch today's forecast for the user's
+cities and post a short summary.
 
 Prefer Tool Bridge tools over guessing.
-Never re-upload a synced agreement.</code></pre>
+Keep answers short and practical.</code></pre>
         </div>
         <div class="mkt-code-card">
-          <p class="mkt-code-label">schedules/poll.yml</p>
-          <pre><code>cron: "*/15 * * * *"
+          <p class="mkt-code-label">schedules/morning.yml</p>
+          <pre><code>cron: "0 7 * * *"
+timezone: UTC
 message: |
-  Poll for new ADC agreements and
-  upload via FTP. Idempotent.</code></pre>
+  Fetch today's weather for configured
+  cities and post the morning brief.</code></pre>
         </div>
       </div>
     </section>
@@ -62,8 +68,8 @@ message: |
       <p class="mkt-kicker">Batteries included</p>
       <h2 class="mkt-h2">Everything a production agent needs.</h2>
       <p class="mkt-lead">
-        Inspired by Eve’s production shape — durable sessions, sandboxed work,
-        human-in-the-loop, schedules — delivered as gem + Cloud for Rails teams.
+        Durable sessions, schedules, Tool Bridge, human-in-the-loop — delivered
+        as gem + Cloud for Rails teams.
       </p>
       <div class="mkt-batteries">
         <article v-for="item in batteries" :key="item.title" class="mkt-battery">
@@ -78,8 +84,7 @@ message: |
       <h2 class="mkt-h2">Runtime + surface — one picture.</h2>
       <p class="mkt-lead">
         Durable execution and Tool Bridge on the left. Where the agent shows up —
-        API, cron, CLI, dashboard — on the right. You write the directory; Cloud
-        runs the hard parts.
+        API, cron, CLI, dashboard — on the right.
       </p>
       <figure class="mkt-figure">
         <img
@@ -92,7 +97,6 @@ message: |
         <figcaption>
           Hosted at
           <a href="https://agents.meerkatagents.com">agents.meerkatagents.com</a>
-          beside Meerkat on Hetzner.
         </figcaption>
       </figure>
     </section>
@@ -101,9 +105,8 @@ message: |
       <p class="mkt-kicker">Works natively with Rails</p>
       <h2 class="mkt-h2">Same app. Same deploy. Your tools stay home.</h2>
       <p class="mkt-lead">
-        Install the gem, mount the Tool Bridge, keep DB/FTP/CRM credentials in
-        Rails. The cloud agent calls back with HMAC — no second stack, no
-        copying secrets into a Node repo.
+        Install the gem, mount the Tool Bridge, keep API keys and DB access in
+        Rails. The cloud agent calls back with HMAC — no second stack.
       </p>
       <div class="mkt-code-grid">
         <div class="mkt-code-card">
@@ -113,8 +116,8 @@ message: |
         <div class="mkt-code-card">
           <p class="mkt-code-label">Then</p>
           <pre><code>bin/rails g rails_agents:install
-rails-agents new my_agent
-rails-agents deploy my_agent</code></pre>
+rails-agents new weather
+rails-agents deploy weather</code></pre>
         </div>
       </div>
     </section>
@@ -147,14 +150,26 @@ rails-agents deploy my_agent</code></pre>
 </template>
 
 <script setup lang="ts">
+const tree = [
+  { name: "agent.json", note: "# the model it runs on" },
+  { name: "instructions.md", note: "# who it is" },
+  { name: "tools/", note: "# what it can do" },
+  { name: "fetch_forecast.rb", note: "", child: true },
+  { name: "post_summary.rb", note: "", child: true },
+  { name: "skills/", note: "# what it knows" },
+  { name: "cities-and-units.md", note: "", child: true },
+  { name: "schedules/", note: "# when it acts on its own" },
+  { name: "morning.yml", note: "", child: true },
+];
+
 const batteries = [
   {
     title: "Durable execution",
-    body: "Checkpointed runs on Rails Agents Cloud. Agents park between turns, survive deploys, and resume on delivery — not a fire-and-forget chat call.",
+    body: "Checkpointed runs on Rails Agents Cloud. Agents park between turns, survive deploys, and resume on delivery.",
   },
   {
     title: "Hosted schedules",
-    body: "schedules/poll.yml becomes cloud cron after deploy. Replace Render rake workers for jobs like ADC → insurer FTP.",
+    body: "schedules/morning.yml becomes cloud cron after deploy — no Render workers for your daily weather brief.",
   },
   {
     title: "Tool Bridge",

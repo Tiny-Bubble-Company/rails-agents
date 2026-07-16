@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="280" viewBox="0 0 920 280" role="img">
-  <rect width="920" height="280" fill="#0c0a09" rx="16"/>
-  <rect x="24" y="24" width="872" height="232" fill="#141210" stroke="#292524" rx="12"/>
-  <text x="48" y="72" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#a8a29e">$</text>
-  <text x="72" y="72" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#fafaf9">rails-agents new accidental_damage_sync</text>
-  <text x="48" y="112" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#a8a29e">$</text>
-  <text x="72" y="112" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#fafaf9">rails-agents test accidental_damage_sync</text>
-  <text x="48" y="152" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#a8a29e">$</text>
-  <text x="72" y="152" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#fafaf9">rails-agents deploy accidental_damage_sync</text>
-  <text x="48" y="208" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#ea580c">? Deployed — dashboard opens with status &amp; run logs</text>
+  <rect width="920" height="280" fill="#141210" rx="16"/>
+  <rect x="24" y="24" width="872" height="232" fill="#0c0a09" stroke="#44403c" rx="12"/>
+  <text x="48" y="72" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" fill="#a8a29e">$</text>
+  <text x="72" y="72" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" fill="#fafaf9">rails-agents new weather</text>
+  <text x="48" y="112" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" fill="#a8a29e">$</text>
+  <text x="72" y="112" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" fill="#fafaf9">rails-agents test weather</text>
+  <text x="48" y="152" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" fill="#a8a29e">$</text>
+  <text x="72" y="152" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" fill="#fafaf9">rails-agents deploy weather</text>
+  <text x="48" y="208" font-family="Menlo, Monaco, Consolas, monospace" font-size="15" fill="#fb923c">Deployed - dashboard opens with status and run logs</text>
 </svg>

@@ -1,14 +1,14 @@
-# Getting Started — Accidental Damage Cover → FTP (the reference job)
+# Getting Started — weather agent (the reference job)
 
-Replace rake + Render cron with:
+Create a durable agent in one directory:
 
 ```bash
 bundle add rails-agent-stack
 bin/rails generate rails_agents:install
-rails-agents new accidental_damage_sync
-# edit app/agents/accidental_damage_sync/instructions.md
-rails-agents test accidental_damage_sync
-rails-agents deploy accidental_damage_sync
+rails-agents new weather
+# edit app/agents/weather/instructions.md
+rails-agents test weather
+rails-agents deploy weather
 ```
 
 Docs: [rails.meerkatagents.com](https://rails.meerkatagents.com) · Cloud: [agents.meerkatagents.com](https://agents.meerkatagents.com)
@@ -18,8 +18,8 @@ Docs: [rails.meerkatagents.com](https://rails.meerkatagents.com) · Cloud: [agen
 | Today (pain) | With Rails Agents |
 |--------------|-------------------|
 | Vibe-code a rake task | `instructions.md` in `app/agents/…` |
-| Deploy to Render | `rails-agents deploy` |
-| Cron on Render | `schedules/poll.yml` hosted after deploy |
+| Deploy glue yourself | `rails-agents deploy` |
+| Cron on a worker box | `schedules/morning.yml` hosted after deploy |
 | No visibility | Dashboard: status, runs, logs |
 
 ## 1. Install
@@ -37,32 +37,32 @@ bin/rails generate rails_agents:install
 ## 2. Create the agent folder
 
 ```bash
-rails-agents new accidental_damage_sync
+rails-agents new weather
 ```
 
 Creates:
 
 ```text
-app/agents/accidental_damage_sync/
-  instructions.md      # your sync rules (complete agent)
+app/agents/weather/
+  instructions.md      # who it is (complete agent)
   agent.json
-  schedules/poll.yml   # hosted cron
+  schedules/morning.yml
   tools/               # optional Tool Bridge helpers
 ```
 
-Edit `instructions.md` for your collection fields, FTP layout, and idempotency rules. Implement Tool Bridge tools in Rails (`ListNewAgreements`, `UploadFtp`, …).
+Edit `instructions.md` for cities, tone, and tools. Implement Tool Bridge tools in Rails (`FetchForecast`, `PostSummary`, …).
 
 ## 3. Test locally
 
 ```bash
-rails-agents test accidental_damage_sync          # validate folder (no Cloud)
-rails-agents test accidental_damage_sync --live   # sandbox run (needs API key + Credits)
+rails-agents test weather          # validate folder (no Cloud)
+rails-agents test weather --live   # sandbox run (needs API key + Credits)
 ```
 
 ## 4. Deploy to production
 
 ```bash
-rails-agents deploy accidental_damage_sync
+rails-agents deploy weather
 ```
 
 If you have no Cloud account yet, the CLI opens signup. Production deploy requires:

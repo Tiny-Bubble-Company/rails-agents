@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "rails_agents"
+
+# Load Rails when run inside an app so DirectoryAgent finds app/agents.
+begin
+  require "./config/environment"
+rescue LoadError
+  # Standalone / gem root — commands that need Rails.root will abort clearly.
+end
+
+RailsAgents::CLI.start(ARGV)
