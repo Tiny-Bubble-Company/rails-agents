@@ -7,12 +7,16 @@ An agent is a directory. Production — durable execution, hosted schedules, Too
 ## An agent is a directory
 
 ```text
-app/agents/weather/
+app/agents/weather/          # complete agent
   agent.json                 # the model it runs on
   instructions.md            # who it is
   tools/                     # what it can do
+    fetch_forecast.rb
+    post_summary.rb
   skills/                    # what it knows
+    cities-and-units.md
   schedules/                 # when it acts on its own
+    morning.yml
 ```
 
 Each file is one component. At a glance you see what the agent is, what it does, and when it runs.

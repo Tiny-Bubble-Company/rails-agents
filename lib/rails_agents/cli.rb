@@ -51,6 +51,7 @@ module RailsAgents
 
       FileUtils.mkdir_p(root.join("schedules"))
       FileUtils.mkdir_p(root.join("tools"))
+      FileUtils.mkdir_p(root.join("skills"))
 
       File.write(root.join("instructions.md"), instructions_template(id))
       File.write(root.join("agent.json"), JSON.pretty_generate({
@@ -59,20 +60,90 @@ module RailsAgents
         "triggers" => ["schedule"]
       }))
       File.write(root.join("schedules/morning.yml"), <<~YAML)
-        # Hosted cron (Eve-shaped). Cloud runs this on your schedule.
+        # when it acts on its own — hosted cron after deploy
         cron: "0 7 * * *"
         timezone: UTC
         message: |
           Fetch today's weather for configured cities and post a short morning brief.
           Keep it practical: conditions, high/low, and any notable alerts.
       YAML
-      File.write(root.join("tools/.keep"), "")
 
-      say "✓ Created app/agents/#{id}/"
+      write_weather_scaffold!(root) if id == "weather"
+      write_generic_scaffold!(root, id) unless id == "weather"
+
+      say "✓ Created app/agents/#{id}/  (complete agent)"
       say ""
-      say "  1. Edit instructions.md (describe the agent)"
+      say "  agent.json            # the model it runs on"
+      say "  instructions.md       # who it is"
+      say "  tools/                # what it can do"
+      say "  skills/               # what it knows"
+      say "  schedules/            # when it acts on its own"
+      say ""
+      say "  1. Edit instructions.md (+ skills/)"
       say "  2. rails-agents test #{id}"
       say "  3. rails-agents deploy #{id}"
+    end
+
+    def write_weather_scaffold!(root)
+      File.write(root.join("tools/fetch_forecast.rb"), <<~RUBY)
+        # frozen_string_literal: true
+        # what it can do — Tool Bridge / local tool stub
+
+        class FetchForecast < RailsAgents::Tool
+          description "Fetch current or daily forecast for a city"
+
+          param :city, :string, description: "City name"
+
+          def call(city:)
+            # Implement via Tool Bridge into your Rails weather client.
+            {city: city, summary: "Implement FetchForecast in your app"}
+          end
+        end
+      RUBY
+      File.write(root.join("tools/post_summary.rb"), <<~RUBY)
+        # frozen_string_literal: true
+        # what it can do — Tool Bridge / local tool stub
+
+        class PostSummary < RailsAgents::Tool
+          description "Post the weather brief (Slack, email, DB, …)"
+
+          param :body, :string, description: "Short markdown brief"
+
+          def call(body:)
+            # Implement via Tool Bridge into your Rails notifier.
+            {ok: true, preview: body.to_s[0, 120]}
+          end
+        end
+      RUBY
+      File.write(root.join("skills/cities-and-units.md"), <<~MD)
+        # cities-and-units — what it knows
+
+        Default cities: Berlin, London, New York.
+        Prefer Celsius unless the user asks for Fahrenheit.
+        Keep briefs short: city, conditions, high/low.
+      MD
+    end
+
+    def write_generic_scaffold!(root, id)
+      File.write(root.join("tools/example_tool.rb"), <<~RUBY)
+        # frozen_string_literal: true
+        # what it can do — rename / replace with your Tool Bridge tools
+
+        class ExampleTool < RailsAgents::Tool
+          description "Example tool for the #{id} agent"
+
+          param :input, :string, required: false, description: "Optional input"
+
+          def call(input: nil)
+            {ok: true, input: input}
+          end
+        end
+      RUBY
+      File.write(root.join("skills/domain.md"), <<~MD)
+        # domain — what it knows
+
+        Add domain vocabulary, policies, and examples for `#{id}` here.
+      MD
     end
 
     def cmd_test(name, live: false)

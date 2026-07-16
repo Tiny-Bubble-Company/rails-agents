@@ -23,8 +23,11 @@ RSpec.describe RailsAgents::CLI do
     dir = root.join("app/agents/weather")
     expect(dir.join("instructions.md")).to be_file
     expect(dir.join("instructions.md").read).to include("weather brief")
-    expect(dir.join("schedules/morning.yml")).to be_file
     expect(dir.join("agent.json")).to be_file
+    expect(dir.join("tools/fetch_forecast.rb")).to be_file
+    expect(dir.join("tools/post_summary.rb")).to be_file
+    expect(dir.join("skills/cities-and-units.md")).to be_file
+    expect(dir.join("schedules/morning.yml")).to be_file
   end
 
   it "validates locally with test" do
