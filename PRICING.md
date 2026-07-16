@@ -1,15 +1,18 @@
 # Pricing & revenue model — map to Vercel, money from day 1
 
-**North star growth loop**
+**North star growth loop (bootstrap — you have $0 CAC budget)**
 
 ```text
-gem installs  →  sandbox signup (free trial)  →  subscribe (card on file)
-              →  usage on our Vercel infra    →  margin  →  scale installs
+gem installs → free signup (no LLM spend) → card / prepaid credits
+            → first real .run on our Vercel → margin → scale installs
 ```
 
 Your job: **maximize installs and paid conversion**.  
 Vercel’s job: **supply AI + compute**.  
 Our product: **Rails DX + tenancy + billing glue**, with margin on every dollar of infra we resell.
+
+**Who funds LLM/sandbox usage?** Always the **customer** (prepaid Credits), never Tiny Bubble’s pocket.  
+Vercel’s ~$5/mo team free credit is only a tiny buffer for *your* account ops — not a per-developer gift.
 
 ---
 
@@ -32,47 +35,41 @@ Vercel free allowances are **per Vercel team**, not per end customer.
 
 Therefore “1-1 free with Vercel” means:
 
-> **Mirror Vercel’s free-tier *product shape*** (limited models, tight rate limits, tiny credit, try-then-pay) — **not** “give every signup $5 of Vercel credits forever.”
-
-We fund a **shared sandbox trial pool** from our team free credits + a small CAC budget. Continued use requires payment.
+> Customers buy **Credits** that we spend on Vercel (Gateway / Sandbox / Fluid) at cost × margin.  
+> Free = **product access without burning our money** (signup, keys, define agents, dashboard).  
+> **First token / sandbox second requires prepaid balance.**
 
 ---
 
-## 2. Customer tiers (product)
+## 2. Customer tiers (bootstrap-safe)
 
-### A. Free — Sandbox trial (“experience the full flow”)
+### A. Free — Build mode (no infra spend on us)
 
-Goal: complete the happy path once — signup → agent → `.run` → playground → traces — then hit paywall.
-
-| Dimension | Policy (maps to Vercel free shape) |
-|-----------|-------------------------------------|
-| Env | `sandbox` only (`rak_sandbox_…`) |
-| Models | **Free-tier allowlist only** (same spirit as Vercel AI Gateway free models) |
-| Credits | Fixed trial wallet, e.g. **$3–5 equivalent** of Gateway+compute once per org (not monthly forever) |
-| Rate limits | Strict (mirror Gateway free 429 behavior) |
-| Features | Full DX: define agent, Tool Bridge, playground, run list, 1–2 evals |
-| Production | **Blocked** |
-| After wallet empty / trial days | **Hard stop** until subscribe |
-
-Suggested defaults (tune after week-1 cost data):
-
-- **7 days** or **$5 metered wallet**, whichever first  
-- Cap: e.g. 50 agent turns / 200k tokens / 30 min sandbox CPU  
-- One app, two agents max  
-
-When blocked, UI: “Subscribe to continue — same product, production keys, full model catalog.”
-
-### B. Paid — Subscriber (required to keep using)
-
-**Nothing meaningful continues without a card.** Production always requires Paid.
+Goal: install gem, sign up, define agents, see dashboard — **zero Vercel AI/Sandbox cost to Tiny Bubble**.
 
 | Dimension | Policy |
 |-----------|--------|
-| Stripe | Card on file + subscription (or prepaid credits) |
-| Env | `sandbox` (higher limits) + `production` (`rak_live_…`) |
-| Models | Full Gateway catalog we enable |
-| Infra | Metered pass-through of **our Vercel cost** × **(1 + margin)** |
-| Platform | Small base subscription (covers Pro overhead + support) |
+| Signup / API keys | Free (`rak_sandbox_…` issued, **inactive for runs** until funded) |
+| Define agents / sync manifests | Free |
+| Dashboard UI | Free (empty playground until funded) |
+| `.run` / playground LLM | **Blocked** until Credits ≥ minimum top-up |
+| Production | Blocked |
+
+Optional free path that still costs you $0: **BYOK** — customer pastes their own OpenAI/Anthropic key for sandbox-only testing; we only charge when they use *our* Gateway/Sandbox.
+
+### B. Paid — Prepaid Credits (required before any hosted run)
+
+**You never front LLM cost.** Customer tops up first; we spend from their balance on Vercel + keep margin.
+
+| Dimension | Policy |
+|-----------|--------|
+| Stripe | Card + **minimum top-up** (e.g. **$10** Rails Agents Credits) before first `.run` |
+| Platform | **$29/mo** when they enable production (or from first top-up — pick one) |
+| Env | Funded sandbox; production after subscribe |
+| Models | Gateway catalog we enable (free-tier models still cheaper) |
+| Infra | Metered: `vercel_cost × (1 + margin)` debited from their Credits |
+
+Minimum top-up covers: first real agent runs + your margin + Stripe fees. If balance hits $0 → hard stop (`PaymentRequired`).
 
 ---
 
@@ -109,30 +106,28 @@ our_gross_margin = customer_charge - vercel_cost_usd - stripe_fees
 
 ## 4. Paywall gates (enforce in control plane)
 
-| Action | Free trial | Paid |
-|--------|------------|------|
+| Action | Free (unfunded) | Funded (Credits > 0) |
+|--------|-----------------|----------------------|
 | Signup + sandbox key | ✅ | ✅ |
-| `.run` / playground | ✅ until wallet/day cap | ✅ |
-| Sync agents | ✅ (limits) | ✅ |
-| Full model catalog | ❌ | ✅ |
-| Production keys | ❌ | ✅ |
-| Promote to production | ❌ → Stripe Checkout | ✅ |
-| Continue after trial exhausted | ❌ → Subscribe | ✅ |
-| Slack/channels (later) | ❌ | ✅ |
+| Define / sync agents | ✅ | ✅ |
+| `.run` / playground (our Gateway) | ❌ → top up | ✅ |
+| BYOK sandbox (optional) | ✅ (their key) | ✅ |
+| Production keys | ❌ | ✅ after subscribe |
+| Promote to production | ❌ → Stripe | ✅ |
 
-API responses when unpaid/exhausted:
+API when unfunded:
 
 ```json
 {
   "error": {
     "code": "payment_required",
-    "message": "Sandbox trial ended. Subscribe to continue.",
+    "message": "Add Credits to run agents on Rails Agents Cloud.",
     "checkout_url": "https://cloud…/billing"
   }
 }
 ```
 
-HTTP `402` or `403` with that body. Gem surfaces a clear `RailsAgents::PaymentRequired` error.
+HTTP `402`. Gem: `RailsAgents::PaymentRequired`.
 
 ---
 
@@ -159,34 +154,32 @@ Focus metrics (in order):
 
 ---
 
-## 6. Stripe packaging (day-1 simple)
+## 6. Stripe packaging (day-1 simple — no float)
 
 **Plan: Rails Agents Cloud**
 
-- **$29/mo** platform (includes 1 production app, sandbox + production env)  
-- **Usage:** prepaid **Rails Agents Credits** (USD wallet)  
-  - Top-ups: $20 / $50 / $100 / $500  
-  - Burn rate: Vercel meters × margins above  
-- Trial: $5 wallet, no card; card required to top up or promote  
+- **Minimum first purchase: $10 Credits** (required before hosted `.run`)  
+- **Usage:** prepaid wallet only — we never extend credit  
+  - Top-ups: $10 / $25 / $50 / $100 / $500  
+  - Burn: Vercel meters × margins  
+- **$29/mo** when enabling **production** (sandbox can be credits-only at first)  
 
-Optional later: usage-only (no platform fee) for indie — only after margins proven.
+Cashflow: Stripe settles → you top up Vercel Gateway / pay Pro invoice. Keep a small Vercel balance; pause runs if Vercel balance &lt; safety threshold.
 
 ---
 
-## 7. Free-pool economics (protect yourself)
+## 7. Bootstrap economics (you have no money)
 
-Shared trial pool per month (example):
+| Rule | Why |
+|------|-----|
+| No free hosted LLM/sandbox | You cannot subsidize strangers |
+| Prepaid only | Customer funds Vercel spend + your margin |
+| Optional BYOK for curiosity | Lets them feel DX at $0 cost to you |
+| Vercel $5 team free | Ops buffer only — ignore in customer pricing |
+| Pro plan required | Commercial multi-tenant; budget Pro from first Credit sales |
 
-```text
-budget = min(
-  our_vercel_ai_free_credits,          # ~$5 team — almost nothing at scale
-  + intentional_cac_budget             # e.g. $200/mo you choose to burn
-)
-per_org_trial = $5 equivalent
-max_concurrent_trials ≈ budget / per_org_trial
-```
-
-When pool is tight: shorten trial, lower caps, or require card for *any* model call (trial becomes “UI tour only”). **Never** let free users unbounded-drain Pro Sandbox/Gateway.
+If someone asks “is there a free trial?” →  
+“Free to install and build. **$10 to run** on our cloud (Credits). Or bring your own API key for sandbox.”
 
 ---
 
@@ -206,11 +199,11 @@ When pool is tight: shorten trial, lower caps, or require card for *any* model c
 
 **Gem / docs**
 
-> Free sandbox to run your first agent. Subscribe to keep building and go to production — powered by Vercel AI infra, billed simply in Rails Agents Credits.
+> Free to install and define agents. **Add $10 Credits** to run on Rails Agents Cloud (or BYOK in sandbox). Production = subscribe. Usage = Vercel infra + transparent margin.
 
 **Paywall**
 
-> You’ve finished the free sandbox trial (same idea as Vercel’s free AI tier: limited models & credits). Add a card to unlock full models, higher limits, and production keys. Usage maps to cloud infra + a transparent margin.
+> Hosted runs need Credits. Top up to continue — we don’t offer a free LLM allowance.
 
 ---
 
@@ -218,10 +211,12 @@ When pool is tight: shorten trial, lower caps, or require card for *any* model c
 
 | Topic | Choice |
 |-------|--------|
-| Free | Trial wallet + free-tier models + hard caps (Vercel free *shape*) |
-| Continue / production | **Paid only** (card + subscribe) |
+| Who funds runs | **Customer prepaid Credits only** |
+| Free | Signup + build DX; **no free hosted tokens** |
+| Optional $0 test | **BYOK** sandbox |
+| First hosted run | Min **$10** top-up |
 | Usage pricing | Vercel cost × (1 + margin), 1-1 meters |
-| Growth focus | Installs → trial → subscribers → margin volume |
-| Hobby Vercel | **Do not** host commercial cloud on Hobby — use Pro |
+| Growth focus | Installs → funded accounts → margin volume |
+| Hobby Vercel | **Do not** — use Pro, paid from Credit sales |
 
-Tune `M_*` and trial size after the first 50 paid runs with real invoices.
+Tune `M_*` after the first 50 paid runs with real invoices.
