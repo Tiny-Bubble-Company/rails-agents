@@ -2,23 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
-## [0.2.0.pre] — 2026-07-16
+## [0.2.0] — 2026-07-16
 
-Cloud-only rebuild (pre-release).
+Cloud-only release.
 
-- Messaging: durable / Eve-shaped directory DX; clearer vs RubyLLM (agents vs toolkit)
-
-- **Breaking:** `.run` calls Rails Agents Cloud (requires `RAILS_AGENTS_API_KEY`)
-- Tool Bridge endpoint + HMAC signature helpers
-- Installer mounts `RailsAgents::Engine` at `/agents` (Sidekiq-style Web UI + Tool Bridge at `/agents/bridge`)
-- **Web UI:** `/agents` signup → Cloud session → agents list, credits, deep links to full dashboard
-- Architecture: compile-to-Eve, one Vercel project with logical tenancy (`sandbox` \| `production`)
-- Billing: **prepaid Credits** (min $10) before hosted runs; free = build only; optional BYOK; `PaymentRequired` on 402
-- **Directory DX (Eve-shaped):** `app/agents/<name>/instructions.md` + `RailsAgents["name"].run(…)` (syncs then runs)
-- **CLI:** `rails-agents new | test | deploy | status` (weather brief reference scaffold + schedule)
-- Generator: `rails generate rails_agents:agent NAME` (instructions + `schedules/morning.yml`)
-- Cloud portal: agents list, detail runs/logs, subscribe + deploy gate
-- Host: Hetzner beside Meerkat (`agents.meerkatagents.com`)
+- **Breaking:** `.run` calls Rails Agents Cloud
+- **Directory DX:** `app/agents/<name>/` (Eve-shaped) + weather scaffold
+- **CLI:** `rails-agents new | test | deploy | status`
+  - First `deploy` signs up, writes `.env`, opens `/agents` on your Rails app
+- **Web UI:** `mount RailsAgents::Engine => "/agents"` (Sidekiq-style)
+- Tool Bridge at `/agents/bridge`
+- Billing: prepaid Credits (min $10); `PaymentRequired` on 402
+- Docs entry point: https://rails.meerkatagents.com
 
 ## [0.1.0] — 2026-07-09
 

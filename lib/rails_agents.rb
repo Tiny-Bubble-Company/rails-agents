@@ -26,6 +26,7 @@ require_relative "rails_agents/providers/openai_compatible"
 require_relative "rails_agents/cloud/client"
 require_relative "rails_agents/cloud/session"
 require_relative "rails_agents/cloud/bridge/signature"
+require_relative "rails_agents/env_file"
 require_relative "rails_agents/directory_agent"
 require_relative "rails_agents/cli"
 

@@ -1,13 +1,12 @@
 # Configuration
 
-Cloud credentials live in the initializer. The Sidekiq-style UI mounts at `/agents`.
+Most apps need **zero manual config**. `rails-agents deploy` signs up (first time), writes `.env`, and opens `/agents`.
 
 ```ruby
 # config/initializers/rails_agents.rb
 RailsAgents.configure do |config|
-  config.api_key = ENV["RAILS_AGENTS_API_KEY"]                 # rak_sandbox_… or rak_live_…
-  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://agents.meerkatagents.com/api")
-  config.dashboard_url = ENV.fetch("RAILS_AGENTS_DASHBOARD", "https://agents.meerkatagents.com")
+  # Loaded automatically from .env after `rails-agents deploy`
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
   config.app_id = ENV["RAILS_AGENTS_APP_ID"]
   config.tool_bridge_secret = ENV["RAILS_AGENTS_BRIDGE_SECRET"]
   config.tool_bridge_path = "/agents/bridge"
@@ -21,55 +20,30 @@ end
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `api_key` | `ENV["RAILS_AGENTS_API_KEY"]` | Cloud API key (`rak_sandbox_` or `rak_live_`) |
-| `api_base` | `https://agents.meerkatagents.com/api` | Control plane URL |
-| `dashboard_url` | `https://agents.meerkatagents.com` | Cloud dashboard / signup |
-| `app_id` | `ENV["RAILS_AGENTS_APP_ID"]` | Your Cloud app id |
-| `tool_bridge_secret` | `ENV["RAILS_AGENTS_BRIDGE_SECRET"]` | HMAC secret for Tool Bridge |
-| `tool_bridge_path` | `/agents/bridge` | Bridge path (engine default) |
-| `web_authorize` | `nil` | Optional `->(controller) { … }` gate for `/agents` |
+| `api_key` | from `.env` via deploy | Cloud API key |
+| `api_base` | `https://agents.meerkatagents.com/api` | Control plane |
+| `dashboard_url` | `https://agents.meerkatagents.com` | Cloud origin for signup API |
+| `app_url` | `http://127.0.0.1:3000` | Where deploy opens `/agents` |
+| `app_id` / `tool_bridge_secret` | from `.env` via deploy | Tenant + HMAC |
+| `tool_bridge_path` | `/agents/bridge` | Bridge path |
+| `web_authorize` | `nil` | Optional gate for `/agents` |
 
-Environment (`sandbox` vs `production`) is inferred from the key prefix (`rak_sandbox_` / `rak_live_`).
+Override the opened app URL with `RAILS_AGENTS_APP_URL` if your server isn’t on port 3000.
 
-## `/agents` Web UI (like Sidekiq)
+## `/agents` Web UI
 
 ```ruby
-# config/routes.rb
 mount RailsAgents::Engine => "/agents"
-
-# Recommended in production:
-authenticate :admin do
-  mount RailsAgents::Engine => "/agents"
-end
 ```
 
-Visit `https://your-app.com/agents` to:
-
-1. Sign up (server-side to Cloud) or paste existing keys  
-2. See agents, status, schedules, credits  
-3. Jump into full Cloud billing / agent detail when needed  
-
-Tool Bridge stays at `POST /agents/bridge`.
+Visit `/agents` after deploy to see agents and details on your domain.
 
 ## Billing
 
-Hosted `.run` requires **prepaid Credits** (dashboard top-up, min $10). Unfunded calls raise `RailsAgents::PaymentRequired`.
-
-See [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md).
+Hosted `.run` requires prepaid Credits (min $10). See [Billing](/guide/billing).
 
 ## Install generator
 
 ```bash
 bin/rails generate rails_agents:install
 ```
-
-Creates:
-
-- `config/initializers/rails_agents.rb`
-- mounts `RailsAgents::Engine` at `/agents`
-- `app/agents/`
-
-## Next
-
-- [Getting Started](/guide/getting-started)
-- [Agents](/guide/agents)

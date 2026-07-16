@@ -19,8 +19,8 @@ Gem::Specification.new do |spec|
     without Render rake+cron glue or managing Node/Workflow yourself.
     Built for durable Rails AI agents, tool-calling workflows, and a simpler path
     than RubyLLM or LangChain when you want production agents, not a full multimodal
-    AI toolkit. Prepaid Credits before hosted runs. Docs: rails.meerkatagents.com ·
-    Cloud: agents.meerkatagents.com.
+    AI toolkit. Prepaid Credits before hosted runs.
+    Docs + entry point: https://rails.meerkatagents.com
   DESC
 
   spec.homepage = "https://rails.meerkatagents.com"
@@ -28,11 +28,11 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.2"
 
   spec.metadata = {
-    "homepage_uri" => spec.homepage,
-    "source_code_uri" => "https://github.com/Tiny-Bubble-Company/rails-agents",
-    "changelog_uri" => "https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/CHANGELOG.md",
+    "homepage_uri" => "https://rails.meerkatagents.com",
+    "source_code_uri" => "https://rails.meerkatagents.com",
+    "changelog_uri" => "https://rails.meerkatagents.com/guide/changelog",
     "documentation_uri" => "https://rails.meerkatagents.com",
-    "bug_tracker_uri" => "https://github.com/Tiny-Bubble-Company/rails-agents/issues",
+    "bug_tracker_uri" => "https://rails.meerkatagents.com",
     "rubygems_mfa_required" => "true",
   }
 

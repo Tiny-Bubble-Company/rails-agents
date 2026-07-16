@@ -121,11 +121,15 @@ module RailsAgents
       end
 
       def request_json(method, path, payload)
-        response = connection.public_send(method, path) do |req|
+        # Relative path so Faraday keeps "/api" from api_base (absolute "/v1/..." would drop it).
+        relative = path.to_s.sub(%r{\A/}, "")
+        response = connection.public_send(method, relative) do |req|
           req.headers["Authorization"] = "Bearer #{@config.require_api_key!}"
-          req.headers["Content-Type"] = "application/json"
+          req.headers["Content-Type"] = "application/json; charset=utf-8"
           req.headers["X-Rails-Agents-Environment"] = @config.environment
-          req.body = JSON.generate(payload) unless payload.nil?
+          unless payload.nil?
+            req.body = JSON.generate(payload).encode("UTF-8")
+          end
         end
 
         body = parse_body(response.body)
@@ -145,7 +149,9 @@ module RailsAgents
       end
 
       def connection
-        @connection ||= Faraday.new(url: @config.api_base) do |f|
+        base = @config.api_base.to_s
+        base = "#{base}/" unless base.end_with?("/")
+        @connection ||= Faraday.new(url: base) do |f|
           f.request :url_encoded
           f.adapter Faraday.default_adapter
         end
