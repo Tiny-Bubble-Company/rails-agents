@@ -66,11 +66,20 @@ module RailsAgents
           req.body = JSON.generate(payload)
         end
 
+        body = parse_body(response.body)
+
+        if response.status == 402 || body.dig("error", "code") == "payment_required"
+          raise PaymentRequired.new(
+            body.dig("error", "message") || "Sandbox trial ended. Subscribe to continue.",
+            checkout_url: body.dig("error", "checkout_url")
+          )
+        end
+
         unless response.success?
           raise CloudError, "Cloud API #{response.status}: #{response.body}"
         end
 
-        JSON.parse(response.body)
+        body
       end
 
       def connection
@@ -78,6 +87,12 @@ module RailsAgents
           f.request :url_encoded
           f.adapter Faraday.default_adapter
         end
+      end
+
+      def parse_body(raw)
+        JSON.parse(raw.to_s)
+      rescue JSON::ParserError
+        {}
       end
     end
 

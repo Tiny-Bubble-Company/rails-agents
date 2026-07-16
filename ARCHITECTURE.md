@@ -235,16 +235,19 @@ Summary:
 
 ---
 
-## 9. Monetization
+## 9. Monetization (day-1 cash)
+
+Full model: [PRICING.md](./PRICING.md).
 
 | Lever | Mechanism |
 |-------|-----------|
-| Platform fee | Seat or app subscription via Stripe |
-| Usage markup | Model tokens (AI Gateway) + sandbox compute + workflow steps |
-| Promote gate | Production requires payment method |
-| Fair sandbox | Daily free message/token cap → upgrade |
+| Free | Short sandbox **trial** — free-tier models + small wallet (Vercel free *shape*, shared pool) |
+| Paywall | Trial exhausted or promote → **Stripe subscribe**; no continued use without payment |
+| Usage | 1-1 Vercel meters (Gateway, Sandbox, Fluid) × **(1 + margin)** |
+| Platform | Small monthly fee per production app (covers Pro overhead) |
+| Growth | Optimize **gem installs → trial → paid → usage margin** |
 
-Commission model: we pay Vercel; we charge customers a simpler blended rate. Dashboard shows usage transparently.
+We resell Vercel AI/cloud infra with margin; we do not invent a separate AI pricing economy.
 
 ---
 
