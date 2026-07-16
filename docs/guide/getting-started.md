@@ -71,7 +71,7 @@ result.output
 
 That's it. Use the dashboard playground for logs, traces, and evals.
 
-**Billing:** sandbox starts with a free trial (limited models/credits — same idea as Vercel’s free AI tier). When the trial ends, you **must subscribe** to keep running. Production keys only after payment. Usage is metered as Rails Agents Credits = underlying Vercel AI/cloud cost + margin. Details: [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md).
+**Billing:** free to sign up and define agents. **Hosted `.run` needs prepaid Credits** (min top-up) — or optional BYOK in sandbox. Production requires a subscription. Usage = Vercel AI/cloud cost + margin. Details: [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md).
 
 ## What's next?
 
