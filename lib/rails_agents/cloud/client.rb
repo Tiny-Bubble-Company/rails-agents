@@ -36,6 +36,10 @@ module RailsAgents
         get_json("/v1/agents/#{agent_id}/runs")
       end
 
+      def billing_balance
+        get_json("/v1/billing/balance")
+      end
+
       def run_agent_id(agent_id, message:, **options)
         body = post_json("/v1/agents/#{agent_id}/run", {
           message: message,

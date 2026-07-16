@@ -70,14 +70,23 @@ gem "rails-agent-stack"
 ```bash
 bundle install
 bin/rails generate rails_agents:install
-rails-agents new my_agent
+# → mounts /agents (Sidekiq-style UI on your domain)
+rails-agents new weather
 ```
 
-1. Sign up at [agents.meerkatagents.com](https://agents.meerkatagents.com)  
-2. Set `RAILS_AGENTS_API_KEY`, `RAILS_AGENTS_APP_ID`, `RAILS_AGENTS_BRIDGE_SECRET`  
-3. Edit `app/agents/my_agent/instructions.md`  
-4. `rails-agents test my_agent` → `rails-agents deploy my_agent`  
+1. Open **`/agents`** → sign up (or paste Cloud keys)  
+2. Set `RAILS_AGENTS_API_KEY`, `RAILS_AGENTS_APP_ID`, `RAILS_AGENTS_BRIDGE_SECRET` in ENV  
+3. Edit `app/agents/weather/instructions.md`  
+4. `rails-agents test weather` → `rails-agents deploy weather`  
 5. Add Credits (min $10) / subscribe for production  
+
+```ruby
+# config/routes.rb — like Sidekiq::Web
+authenticate :admin do
+  mount RailsAgents::Engine => "/agents"
+end
+```
+
 
 Walkthrough: **[Getting Started](https://rails.meerkatagents.com/guide/getting-started)**
 

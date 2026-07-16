@@ -128,6 +128,7 @@ message: |
         <div class="mkt-code-card">
           <p class="mkt-code-label">Then</p>
           <pre><code>bin/rails g rails_agents:install
+# open /agents on your domain
 rails-agents new weather
 rails-agents deploy weather</code></pre>
         </div>

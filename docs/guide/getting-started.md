@@ -5,6 +5,7 @@ Create a durable agent in one directory:
 ```bash
 bundle add rails-agent-stack
 bin/rails generate rails_agents:install
+# open https://your-app.com/agents → sign up (Sidekiq-style UI on your domain)
 rails-agents new weather
 # edit app/agents/weather/instructions.md
 rails-agents test weather
@@ -12,6 +13,8 @@ rails-agents deploy weather
 ```
 
 Docs: [rails.meerkatagents.com](https://rails.meerkatagents.com) · Cloud: [agents.meerkatagents.com](https://agents.meerkatagents.com)
+
+The installer mounts **`/agents`** — signup, agent list, and Cloud links on your own domain (like Sidekiq’s `/sidekiq`).
 
 ## What you get
 
@@ -33,6 +36,8 @@ gem "rails-agent-stack"
 bundle install
 bin/rails generate rails_agents:install
 ```
+
+Open **`/agents`** in your app → create an account (or paste keys). Copy credentials into ENV.
 
 ## 2. Create the agent folder
 

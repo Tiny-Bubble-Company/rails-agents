@@ -10,7 +10,8 @@ Cloud-only rebuild (pre-release).
 
 - **Breaking:** `.run` calls Rails Agents Cloud (requires `RAILS_AGENTS_API_KEY`)
 - Tool Bridge endpoint + HMAC signature helpers
-- Installer mounts `RailsAgents::Engine` at `/rails_agents`
+- Installer mounts `RailsAgents::Engine` at `/agents` (Sidekiq-style Web UI + Tool Bridge at `/agents/bridge`)
+- **Web UI:** `/agents` signup → Cloud session → agents list, credits, deep links to full dashboard
 - Architecture: compile-to-Eve, one Vercel project with logical tenancy (`sandbox` \| `production`)
 - Billing: **prepaid Credits** (min $10) before hosted runs; free = build only; optional BYOK; `PaymentRequired` on 402
 - **Directory DX (Eve-shaped):** `app/agents/<name>/instructions.md` + `RailsAgents["name"].run(…)` (syncs then runs)

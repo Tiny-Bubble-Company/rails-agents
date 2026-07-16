@@ -1,0 +1,69 @@
+<% if @credentials.present? %>
+  <section class="ra-card" style="margin-bottom:1.25rem">
+    <h2>Save these in ENV</h2>
+    <p class="ra-muted">Session is connected. Persist keys so CLI, Tool Bridge, and restarts keep working:</p>
+    <div class="ra-code">RAILS_AGENTS_API_KEY=<%= @credentials["api_key"] %>
+RAILS_AGENTS_APP_ID=<%= @credentials["app_id"] %>
+RAILS_AGENTS_BRIDGE_SECRET=<%= @credentials["bridge_secret"] %></div>
+  </section>
+<% end %>
+
+<div class="ra-grid ra-layout">
+  <aside class="ra-aside ra-card">
+    <p class="ra-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 0.75rem">Menu</p>
+    <%= link_to "Agents", root_path, class: "is-active" %>
+    <%= link_to "Billing (Cloud)", "#{dashboard_url}/dashboard/billing", target: "_blank", rel: "noopener" %>
+    <%= link_to "Full Cloud UI", "#{dashboard_url}/dashboard", target: "_blank", rel: "noopener" %>
+    <div style="margin-top:1.25rem">
+      <p class="ra-muted" style="margin:0">Credits</p>
+      <p class="ra-stat">$<%= @balance || "—" %></p>
+      <p class="ra-muted" style="margin:0.35rem 0 0">Sub: <%= @subscription || "none" %></p>
+    </div>
+  </aside>
+
+  <section class="ra-card">
+    <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+      <div>
+        <h1 style="margin:0">Agents</h1>
+        <p class="ra-muted" style="margin:0.35rem 0 0">Deployed from <code>app/agents/</code> via <code>rails-agents deploy</code>.</p>
+      </div>
+      <%= link_to "Open Cloud", "#{dashboard_url}/dashboard", class: "ra-btn", target: "_blank", rel: "noopener" %>
+    </div>
+
+    <% if @error.present? %>
+      <div class="ra-flash ra-flash-alert"><%= @error %></div>
+    <% end %>
+
+    <% if @agents.blank? %>
+      <p class="ra-muted">No agents yet. Create one in your app:</p>
+      <div class="ra-code">rails-agents new weather
+rails-agents test weather
+rails-agents deploy weather</div>
+    <% else %>
+      <table class="ra-table">
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Status</th>
+            <th>Env</th>
+            <th>Schedule</th>
+            <th>Last run</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @agents.each do |agent| %>
+            <% id = agent["agent_id"] || agent[:agent_id] %>
+            <% status = agent["status"] || agent[:status] || "draft" %>
+            <tr>
+              <td><%= link_to id, agent_path(id) %></td>
+              <td class="ra-status-<%= status %>"><%= status %></td>
+              <td><%= agent["environment"] || agent[:environment] %></td>
+              <td><%= (agent["schedule"] || agent[:schedule]) ? "yes" : "—" %></td>
+              <td><%= agent["last_run_at"] || agent[:last_run_at] || "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </section>
+</div>
