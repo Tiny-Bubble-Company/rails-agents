@@ -86,19 +86,31 @@ message: |
         Durable execution and Tool Bridge on the left. Where the agent shows up —
         API, cron, CLI, dashboard — on the right.
       </p>
-      <figure class="mkt-figure">
-        <img
-          src="/images/runtime-architecture.svg"
-          alt="Rails Agents Cloud runtime architecture with durable workflow, Tool Bridge, schedules, and surfaces"
-          width="1100"
-          height="720"
-          loading="lazy"
-        />
-        <figcaption>
-          Hosted at
-          <a href="https://agents.meerkatagents.com">agents.meerkatagents.com</a>
-        </figcaption>
-      </figure>
+      <div class="mkt-arch" aria-label="Rails Agents runtime and surface architecture">
+        <div class="mkt-arch-col">
+          <p class="mkt-arch-label">Runtime</p>
+          <p class="mkt-arch-sub">Durable execution, state persistence, event streaming</p>
+          <article v-for="item in runtime" :key="item.title" class="mkt-arch-card">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.body }}</p>
+            <span v-if="item.tag" class="mkt-arch-tag">{{ item.tag }}</span>
+          </article>
+        </div>
+        <div class="mkt-arch-col">
+          <p class="mkt-arch-label">Surface</p>
+          <p class="mkt-arch-sub">Where your agent gets surfaced</p>
+          <article class="mkt-arch-card mkt-arch-card--surface">
+            <h3>Where it runs</h3>
+            <ul>
+              <li v-for="s in surfaces" :key="s">{{ s }}</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+      <p class="mkt-arch-caption">
+        Hosted at
+        <a href="https://agents.meerkatagents.com">agents.meerkatagents.com</a>
+      </p>
     </section>
 
     <section class="mkt-section">
@@ -187,5 +199,45 @@ const batteries = [
     title: "Honest billing",
     body: "Free to sign up and define agents. Prepaid Credits before hosted runs. No pretend “free LLM” tokens.",
   },
+];
+
+const runtime = [
+  {
+    title: "Durable workflow",
+    body: "Checkpointed steps, park between messages, resume on delivery.",
+    tag: "Rails Agents Cloud",
+  },
+  {
+    title: "Model runtime",
+    body: "Model calls, streaming, prepaid Credits metering.",
+    tag: "AI Gateway",
+  },
+  {
+    title: "Tool Bridge",
+    body: "Signed callbacks into your Rails app. Secrets stay in Rails.",
+    tag: "HMAC /rails_agents",
+  },
+  {
+    title: "Hosted schedules",
+    body: "Cron from schedules/morning.yml — no Render workers.",
+    tag: "Cron",
+  },
+  {
+    title: "Tools & subagents",
+    body: "Rails tools, child agents, optional skills.",
+  },
+];
+
+const surfaces = [
+  "API · Agent.run",
+  "Hosted cron",
+  "CLI · rails-agents deploy",
+  "Dashboard · runs & logs",
+  "Tool Bridge · Rails",
+  "DB / weather APIs",
+  "Sandbox keys",
+  "Production keys",
+  "Slack / web (roadmap)",
+  "Eval suites (roadmap)",
 ];
 </script>
