@@ -3,7 +3,7 @@ import { defineConfig } from "vitepress";
 const siteUrl = process.env.DOCS_SITE_URL || "https://rails.meerkatagents.com";
 const base = process.env.DOCS_BASE || "/";
 const description =
-  "Durable agents for Rails — like Eve for Ruby apps. Your agent is a directory (instructions.md). Checkpointed cloud runs, hosted schedules, Tool Bridge into Rails. Faster to production than RubyLLM when you need agents that survive deploys.";
+  "The framework for building agents in Rails. Like Eve for Ruby apps — an agent is a directory, durable execution and hosted schedules included. Tool Bridge into your Rails app. Docs + Cloud for production agents.";
 
 export default defineConfig({
   title: "Rails Agents",
@@ -31,14 +31,14 @@ export default defineConfig({
     ],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:site_name", content: "Rails Agents" }],
-    ["meta", { property: "og:title", content: "Rails Agents — Durable agents for Rails" }],
+    ["meta", { property: "og:title", content: "Rails Agents — The framework for building agents in Rails" }],
     ["meta", { property: "og:description", content: description }],
     ["meta", { property: "og:url", content: siteUrl }],
-    ["meta", { property: "og:image", content: `${siteUrl}/og.png` }],
+    ["meta", { property: "og:image", content: `${siteUrl}/images/runtime-architecture.svg` }],
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
-    ["meta", { name: "twitter:title", content: "Rails Agents — Durable agents for Rails" }],
+    ["meta", { name: "twitter:title", content: "Rails Agents — The framework for building agents in Rails" }],
     ["meta", { name: "twitter:description", content: description }],
-    ["meta", { name: "twitter:image", content: `${siteUrl}/og.png` }],
+    ["meta", { name: "twitter:image", content: `${siteUrl}/images/agent-directory.svg` }],
     [
       "script",
       {

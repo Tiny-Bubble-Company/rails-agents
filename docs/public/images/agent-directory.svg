@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="640" viewBox="0 0 920 640" role="img" aria-labelledby="title desc">
+  <title id="title">An agent is a directory</title>
+  <desc id="desc">Rails Agents directory structure for an Accidental Damage Cover sync agent</desc>
+  <rect width="920" height="640" fill="#fafafa" rx="16"/>
+  <rect x="40" y="40" width="840" height="560" fill="#ffffff" stroke="#e5e5e5" stroke-width="1" rx="12"/>
+  <text x="72" y="96" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#171717">app/agents/accidental_damage_sync/</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#404040">
+    <text x="96" y="148">agent.json</text>
+    <text x="360" y="148" fill="#a3a3a3"># the model it runs on</text>
+    <text x="96" y="196">instructions.md</text>
+    <text x="360" y="196" fill="#a3a3a3"># who it is</text>
+    <text x="96" y="244">tools/</text>
+    <text x="360" y="244" fill="#a3a3a3"># what it can do</text>
+    <text x="120" y="284" fill="#737373">list_new_agreements.rb</text>
+    <text x="120" y="316" fill="#737373">upload_ftp.rb</text>
+    <text x="96" y="364">skills/</text>
+    <text x="360" y="364" fill="#a3a3a3"># what it knows</text>
+    <text x="120" y="404" fill="#737373">provider-payload.md</text>
+    <text x="96" y="452">schedules/</text>
+    <text x="360" y="452" fill="#a3a3a3"># when it acts on its own</text>
+    <text x="120" y="492" fill="#737373">poll.yml</text>
+    <text x="96" y="540">channels/</text>
+    <text x="360" y="540" fill="#a3a3a3"># where it surfaces (API, cron, dashboard)</text>
+  </g>
+</svg>

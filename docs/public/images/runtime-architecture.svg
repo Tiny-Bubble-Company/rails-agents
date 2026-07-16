@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="720" viewBox="0 0 1100 720" role="img" aria-labelledby="title desc">
+  <title id="title">Rails Agents Cloud runtime</title>
+  <desc id="desc">Durable runtime and surfaces for Rails Agents</desc>
+  <rect width="1100" height="720" fill="#fafafa"/>
+  <text x="48" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600" fill="#737373" letter-spacing="0.08em">RUNTIME</text>
+  <text x="48" y="74" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#a3a3a3">Durable execution, state persistence, event streaming</text>
+  <text x="620" y="52" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600" fill="#737373" letter-spacing="0.08em">SURFACE</text>
+  <text x="620" y="74" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#a3a3a3">Where your agent gets surfaced</text>
+
+  <g font-family="ui-sans-serif, system-ui, sans-serif">
+    <rect x="48" y="100" width="520" height="92" fill="#fff" stroke="#e5e5e5" rx="12"/>
+    <text x="72" y="136" font-size="17" font-weight="600" fill="#171717">Durable workflow</text>
+    <text x="72" y="162" font-size="14" fill="#525252">Checkpointed steps, park between messages, resume on delivery.</text>
+    <rect x="72" y="174" width="168" height="24" fill="#f5f5f5" stroke="#e5e5e5" rx="6"/>
+    <text x="84" y="191" font-size="12" fill="#404040">Rails Agents Cloud</text>
+
+    <rect x="48" y="208" width="520" height="92" fill="#fff" stroke="#e5e5e5" rx="12"/>
+    <text x="72" y="244" font-size="17" font-weight="600" fill="#171717">Model runtime</text>
+    <text x="72" y="270" font-size="14" fill="#525252">Model calls, streaming, prepaid Credits metering.</text>
+    <rect x="72" y="282" width="120" height="24" fill="#f5f5f5" stroke="#e5e5e5" rx="6"/>
+    <text x="84" y="299" font-size="12" fill="#404040">AI Gateway</text>
+
+    <rect x="48" y="316" width="520" height="92" fill="#fff" stroke="#e5e5e5" rx="12"/>
+    <text x="72" y="352" font-size="17" font-weight="600" fill="#171717">Tool Bridge</text>
+    <text x="72" y="378" font-size="14" fill="#525252">Signed callbacks into your Rails app. Secrets stay in Rails.</text>
+    <rect x="72" y="390" width="168" height="24" fill="#f5f5f5" stroke="#e5e5e5" rx="6"/>
+    <text x="84" y="407" font-size="12" fill="#404040">HMAC /rails_agents</text>
+
+    <rect x="48" y="424" width="520" height="92" fill="#fff" stroke="#e5e5e5" rx="12"/>
+    <text x="72" y="460" font-size="17" font-weight="600" fill="#171717">Hosted schedules</text>
+    <text x="72" y="486" font-size="14" fill="#525252">Cron from schedules/poll.yml — no Render workers.</text>
+    <rect x="72" y="498" width="90" height="24" fill="#f5f5f5" stroke="#e5e5e5" rx="6"/>
+    <text x="84" y="515" font-size="12" fill="#404040">Cron</text>
+
+    <rect x="48" y="532" width="520" height="92" fill="#fff" stroke="#e5e5e5" rx="12"/>
+    <text x="72" y="568" font-size="17" font-weight="600" fill="#171717">Tools &amp; subagents</text>
+    <text x="72" y="594" font-size="14" fill="#525252">Rails tools, child agents, optional skills.</text>
+  </g>
+
+  <rect x="620" y="100" width="432" height="524" fill="#fff" stroke="#e5e5e5" rx="12"/>
+  <text x="644" y="140" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17" font-weight="600" fill="#171717">Where it runs</text>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" fill="#404040">
+    <text x="644" y="188">API · Agent.run</text>
+    <text x="644" y="228">Hosted cron</text>
+    <text x="644" y="268">CLI · rails-agents deploy</text>
+    <text x="644" y="308">Dashboard · runs &amp; logs</text>
+    <text x="644" y="348">Tool Bridge · Rails</text>
+    <text x="644" y="388">DB / FTP / CRM tools</text>
+    <text x="644" y="428">Sandbox keys</text>
+    <text x="644" y="468">Production keys</text>
+    <text x="644" y="508">Slack / web (roadmap)</text>
+    <text x="644" y="548">Eval suites (roadmap)</text>
+  </g>
+</svg>
