@@ -1,14 +1,17 @@
 # Changelog
 
+## 0.2.0.pre
+
+Cloud-only rebuild (pre-release).
+
+- `.run` → Rails Agents Cloud (`RAILS_AGENTS_API_KEY`)
+- Tool Bridge + prepaid **Credits** (min $10); free = build only; optional BYOK
+- `PaymentRequired` when unfunded
+- Logical tenancy on one Vercel project (`sandbox` \| `production`)
+- Docs: [billing](/guide/billing) · [PRICING.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/PRICING.md)
+
 ## 0.1.0
 
-First public release. Published on RubyGems as **`rails-agent-stack`** (Ruby API remains `RailsAgents`).
+First public gem release (in-process BYOK providers). Superseded by cloud-only direction in 0.2.
 
-- Agents via `RailsAgents::Agent`
-- Tools via `RailsAgents::Tool` with auto-load from `app/agents/tools/`
-- Skills: web search/fetch (portable + Anthropic native), Anthropic document skills
-- Providers: OpenAI, Anthropic, OpenRouter, Grok
-- Install generator and sample playground app
-- Docs: [tiny-bubble-company.github.io/rails-agents](https://tiny-bubble-company.github.io/rails-agents/)
-
-See also the root [CHANGELOG.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/CHANGELOG.md).
+See root [CHANGELOG.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/CHANGELOG.md).

@@ -10,6 +10,7 @@ Cloud-only rebuild (pre-release).
 - Tool Bridge endpoint + HMAC signature helpers
 - Installer mounts `RailsAgents::Engine` at `/rails_agents`
 - Architecture: compile-to-Eve, one Vercel project with logical tenancy (`sandbox` \| `production`)
+- Billing: **prepaid Credits** (min $10) before hosted runs; free = build only; optional BYOK; `PaymentRequired` on 402
 - Docs + Next.js control plane scaffold (`rails-agents-cloud`)
 
 ## [0.1.0] — 2026-07-09

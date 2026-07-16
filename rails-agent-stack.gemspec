@@ -12,9 +12,9 @@ Gem::Specification.new do |spec|
   spec.description = <<~DESC.gsub(/\s+/, " ").strip
     Rails Agents (gem: rails-agent-stack) is the simplest way to add production
     AI agents to Ruby on Rails. Define an agent in Ruby, attach your app code as
-    tools, call .run — durable sessions, sandboxes, logs, and evals run on Rails
-    Agents Cloud (Eve on shared Vercel infra). Cloud by default: signup, sandbox
-    API key, Tool Bridge back into your Rails app, then promote to production.
+    tools via Tool Bridge, call .run — durable sessions and sandboxes run on
+    Rails Agents Cloud (Eve on shared Vercel infra). Free to sign up and build;
+    prepaid Credits (or BYOK) before hosted runs; promote to production when ready.
 
     Built for developers searching for Rails AI agents, Ruby LLM agents,
     OpenAI / Anthropic / Claude / GPT tool-calling, agentic workflows, and a

@@ -70,7 +70,7 @@ module RailsAgents
 
         if response.status == 402 || body.dig("error", "code") == "payment_required"
           raise PaymentRequired.new(
-            body.dig("error", "message") || "Sandbox trial ended. Subscribe to continue.",
+            body.dig("error", "message") || "Add Credits to run agents on Rails Agents Cloud.",
             checkout_url: body.dig("error", "checkout_url")
           )
         end

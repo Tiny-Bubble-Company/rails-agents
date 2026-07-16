@@ -147,10 +147,10 @@ You do **not** invent a separate AI economy. You:
 
 Focus metrics (in order):
 
-1. `gem installs` / weekly unique `rak_sandbox_` creations  
-2. `% trial → paid` (card + subscribe)  
+1. `gem installs` / weekly unique signups  
+2. `% signup → first Credit top-up`  
 3. `gross margin $` = collected − Vercel − Stripe  
-4. `usage $ / paid org`  
+4. `usage $ / funded org`  
 
 ---
 
@@ -185,13 +185,13 @@ If someone asks “is there a free trial?” →
 
 ## 8. Implementation checklist (control plane)
 
-- [ ] `organizations.trial_wallet_cents`, `trial_ends_at`, `stripe_customer_id`, `plan_status`  
+- [ ] `organizations.credit_balance_cents`, `stripe_customer_id`, `plan_status`, `byok_enabled`  
 - [ ] Meter every Eve/Gateway/Sandbox call with `tenant_id` + cost estimate  
-- [ ] Debit wallet before/after run; reject with `payment_required`  
-- [ ] Stripe Checkout for subscribe + credit top-up  
-- [ ] Promote to production only if `plan_status == active`  
-- [ ] Admin: Vercel credit balance alert → pause new free signups  
-- [ ] Gem: raise `PaymentRequired` with dashboard URL  
+- [ ] Reject hosted `.run` if `credit_balance_cents < estimated_cost` (`payment_required`)  
+- [ ] Stripe Checkout for Credit top-up (min $10) + production subscribe  
+- [ ] Promote to production only if subscribed + funded  
+- [ ] Admin: Vercel credit balance alert → pause hosted runs  
+- [ ] Gem: raise `PaymentRequired` with checkout URL (done)  
 
 ---
 

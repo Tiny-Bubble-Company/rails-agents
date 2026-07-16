@@ -48,17 +48,17 @@ We still compete on **simplicity + speed to production**. Power comes from Eve/V
 ## 3. Target developer journey (hyper-simple)
 
 ```text
-1. Sign up          → full name, email, company, website
-2. Create app       → Sandbox environment auto-provisioned on our Vercel tenancy
-3. Create API key   → paste into Rails initializer (one key)
-4. rails g …        → app/agents/<name>/ layout (Eve-shaped, Ruby)
-5. Define agent     → instructions + tools in Ruby / Markdown
-6. Local call       → LeadQualifier.run / .stream  (hits Sandbox cloud)
-7. Dashboard        → chat, logs, traces, evals, debug (Agno-like control plane)
-8. Promote          → “Go to Production” → Stripe card → Production env live
+1. Sign up          → full name, email, company, website (free)
+2. Create app/key   → sandbox key issued (runs blocked until funded)
+3. rails g …        → app/agents/<name>/ + Tool Bridge mount
+4. Define agent     → Ruby + tools
+5. Add Credits      → min $10 prepaid (or enable BYOK for sandbox)
+6. .run / playground → hosted Eve on our Vercel tenancy
+7. Dashboard        → logs, traces, evals
+8. Subscribe        → promote → rak_live_… production
 ```
 
-**Lines of code to first production agent:** initializer + one agent folder + one tool. No Vercel account for the customer. No Eve CLI. No provider key sprawl (models via our Gateway / metered billing).
+**Lines of code to first hosted agent:** initializer + one agent + one tool + Credits top-up. No customer Vercel/Eve account.
 
 ---
 
@@ -235,19 +235,20 @@ Summary:
 
 ---
 
-## 9. Monetization (day-1 cash)
+## 9. Monetization (bootstrap — $0 CAC)
 
 Full model: [PRICING.md](./PRICING.md).
 
 | Lever | Mechanism |
 |-------|-----------|
-| Free | Short sandbox **trial** — free-tier models + small wallet (Vercel free *shape*, shared pool) |
-| Paywall | Trial exhausted or promote → **Stripe subscribe**; no continued use without payment |
-| Usage | 1-1 Vercel meters (Gateway, Sandbox, Fluid) × **(1 + margin)** |
-| Platform | Small monthly fee per production app (covers Pro overhead) |
-| Growth | Optimize **gem installs → trial → paid → usage margin** |
+| Free | Signup + define agents + dashboard (**no hosted LLM/sandbox spend**) |
+| Optional $0 test | **BYOK** in sandbox (customer’s provider key) |
+| Paywall | **Min $10 Credits** before any hosted `.run`; production needs subscribe |
+| Usage | 1-1 Vercel meters (Gateway, Sandbox, Fluid) × **(1 + margin)** — prepaid only |
+| Platform | Small monthly fee when enabling production |
+| Growth | **gem installs → funded accounts → usage margin** |
 
-We resell Vercel AI/cloud infra with margin; we do not invent a separate AI pricing economy.
+Tiny Bubble never fronts token/sandbox cost. Vercel’s team free credit is ops buffer only.
 
 ---
 
