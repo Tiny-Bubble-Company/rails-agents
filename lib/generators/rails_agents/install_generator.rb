@@ -14,8 +14,7 @@ module RailsAgents
 
       def mount_engine
         route <<~RUBY.rstrip
-          # Rails Agents — Sidekiq-style UI at /agents (signup + Cloud dashboard)
-          # Tip: wrap with authenticate :user / :admin in production.
+          # Rails Agents — Sidekiq-style UI at /agents
           mount RailsAgents::Engine => "/agents"
         RUBY
       end
@@ -27,15 +26,10 @@ module RailsAgents
 
       def finish
         say "\n✓ Rails Agents installed.", :green
-        say "  1. Visit /agents → sign up (or paste API keys)"
-        say "  2. Set RAILS_AGENTS_API_KEY, APP_ID, BRIDGE_SECRET in ENV"
-        say "  3. rails-agents new weather && rails-agents deploy weather"
-        say "  4. Docs: https://rails.meerkatagents.com"
-        say ""
-        say "  Secure the UI (like Sidekiq):"
-        say '    authenticate :admin do'
-        say '      mount RailsAgents::Engine => "/agents"'
-        say "    end"
+        say "  rails-agents new weather"
+        say "  rails-agents deploy weather"
+        say "  → signup (first time) writes .env, opens /agents"
+        say "  Docs: https://rails.meerkatagents.com"
       end
     end
   end

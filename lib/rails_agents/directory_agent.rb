@@ -44,14 +44,14 @@ module RailsAgents
       schedule_path = first_schedule_path
       if schedule_path
         rel = schedule_path.relative_path_from(root).to_s
-        files[rel] = schedule_path.read
+        files[rel] = schedule_path.read(encoding: "UTF-8")
       end
 
       {
         "agent_id" => id,
         "model" => model,
         "instructions" => instructions,
-        "schedule" => schedule_path&.read,
+        "schedule" => schedule_path&.read(encoding: "UTF-8"),
         "files" => files
       }.compact
     end

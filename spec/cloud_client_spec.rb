@@ -42,7 +42,7 @@ RSpec.describe RailsAgents::Cloud::Client do
 
   it "requires an API key" do
     RailsAgents.config.api_key = nil
-    expect { WeatherAgent.run("hi") }.to raise_error(RailsAgents::ConfigurationError, /RAILS_AGENTS_API_KEY/)
+    expect { WeatherAgent.run("hi") }.to raise_error(RailsAgents::ConfigurationError, /rails-agents deploy/)
   end
 
   it "raises PaymentRequired when Credits are missing" do

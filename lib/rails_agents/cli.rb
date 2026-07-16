@@ -7,11 +7,11 @@ require "uri"
 require "net/http"
 
 module RailsAgents
-  # Developer CLI — the only commands you need:
+  # Developer CLI - the only commands you need:
   #
   #   rails-agents new weather
   #   rails-agents test weather
-  #   rails-agents deploy weather
+  #   rails-agents deploy weather   # signup -> .env -> Cloud -> opens /agents
   #
   class CLI
     CLOUD_DASHBOARD = ENV.fetch("RAILS_AGENTS_DASHBOARD", "https://agents.meerkatagents.com")
@@ -21,6 +21,7 @@ module RailsAgents
     end
 
     def start(argv)
+      @signup_flags = extract_signup_flags!(argv)
       command = argv.shift
       case command
       when "new", "generate", "g"
@@ -42,6 +43,20 @@ module RailsAgents
 
     private
 
+    def extract_signup_flags!(argv)
+      flags = {}
+      argv.reject! do |arg|
+        case arg
+        when /\A--email=(.+)\z/ then flags[:email] = $1; true
+        when /\A--name=(.+)\z/ then flags[:full_name] = $1; true
+        when /\A--company=(.+)\z/ then flags[:company_name] = $1; true
+        when /\A--website=(.+)\z/ then flags[:company_website] = $1; true
+        else false
+        end
+      end
+      flags
+    end
+
     def cmd_new(name)
       abort "Usage: rails-agents new <agent_name>" if name.to_s.strip.empty?
 
@@ -60,7 +75,7 @@ module RailsAgents
         "triggers" => ["schedule"]
       }))
       File.write(root.join("schedules/morning.yml"), <<~YAML)
-        # when it acts on its own — hosted cron after deploy
+        # when it acts on its own - hosted cron after deploy
         cron: "0 7 * * *"
         timezone: UTC
         message: |
@@ -71,7 +86,7 @@ module RailsAgents
       write_weather_scaffold!(root) if id == "weather"
       write_generic_scaffold!(root, id) unless id == "weather"
 
-      say "✓ Created app/agents/#{id}/  (complete agent)"
+      say "OK Created app/agents/#{id}/  (complete agent)"
       say ""
       say "  agent.json            # the model it runs on"
       say "  instructions.md       # who it is"
@@ -79,44 +94,34 @@ module RailsAgents
       say "  skills/               # what it knows"
       say "  schedules/            # when it acts on its own"
       say ""
-      say "  1. Edit instructions.md (+ skills/)"
-      say "  2. rails-agents test #{id}"
-      say "  3. rails-agents deploy #{id}"
+      say "  Next: rails-agents deploy #{id}"
     end
 
     def write_weather_scaffold!(root)
       File.write(root.join("tools/fetch_forecast.rb"), <<~RUBY)
         # frozen_string_literal: true
-        # what it can do — Tool Bridge / local tool stub
 
         class FetchForecast < RailsAgents::Tool
           description "Fetch current or daily forecast for a city"
-
           param :city, :string, description: "City name"
-
           def call(city:)
-            # Implement via Tool Bridge into your Rails weather client.
             {city: city, summary: "Implement FetchForecast in your app"}
           end
         end
       RUBY
       File.write(root.join("tools/post_summary.rb"), <<~RUBY)
         # frozen_string_literal: true
-        # what it can do — Tool Bridge / local tool stub
 
         class PostSummary < RailsAgents::Tool
-          description "Post the weather brief (Slack, email, DB, …)"
-
+          description "Post the weather brief (Slack, email, DB, ...)"
           param :body, :string, description: "Short markdown brief"
-
           def call(body:)
-            # Implement via Tool Bridge into your Rails notifier.
             {ok: true, preview: body.to_s[0, 120]}
           end
         end
       RUBY
       File.write(root.join("skills/cities-and-units.md"), <<~MD)
-        # cities-and-units — what it knows
+        # cities-and-units - what it knows
 
         Default cities: Berlin, London, New York.
         Prefer Celsius unless the user asks for Fahrenheit.
@@ -127,20 +132,17 @@ module RailsAgents
     def write_generic_scaffold!(root, id)
       File.write(root.join("tools/example_tool.rb"), <<~RUBY)
         # frozen_string_literal: true
-        # what it can do — rename / replace with your Tool Bridge tools
 
         class ExampleTool < RailsAgents::Tool
           description "Example tool for the #{id} agent"
-
           param :input, :string, required: false, description: "Optional input"
-
           def call(input: nil)
             {ok: true, input: input}
           end
         end
       RUBY
       File.write(root.join("skills/domain.md"), <<~MD)
-        # domain — what it knows
+        # domain - what it knows
 
         Add domain vocabulary, policies, and examples for `#{id}` here.
       MD
@@ -148,51 +150,41 @@ module RailsAgents
 
     def cmd_test(name, live: false)
       agent = load_agent!(name)
-      say "Validating #{agent.id}…"
-      say "  instructions.md  ✓ (#{agent.instructions.bytesize} bytes)"
+      say "Validating #{agent.id}..."
+      say "  instructions.md  OK (#{agent.instructions.bytesize} bytes)"
       say "  model            #{agent.model}"
 
       schedule = Dir.glob(agent.root.join("schedules/*.{yml,yaml}").to_s).first
       if schedule
-        say "  schedule         ✓ #{Pathname(schedule).relative_path_from(rails_root)}"
+        say "  schedule         OK #{Pathname(schedule).relative_path_from(rails_root)}"
       else
-        say "  schedule         — (optional)"
+        say "  schedule         - (optional)"
       end
 
       say ""
-      say "Dry-run plan (local — no Cloud call):"
-      say "  • Read configured cities / prefs from Rails (via Tool Bridge)"
-      say "  • Fetch today's forecast for each city"
-      say "  • Compose a short morning weather brief"
-      say "  • Post the summary (Slack, email, DB, …)"
-      say ""
-      say "Preview instructions (first 280 chars):"
-      preview = agent.instructions.to_s.encode("UTF-8", invalid: :replace, undef: :replace).strip
-      say preview[0, 280].to_s
-      say ""
-
+      say "Local validation passed."
       if live
-        say "Running against Cloud sandbox (--live)…"
+        ensure_cloud_credentials!
+        say "Running against Cloud sandbox (--live)..."
         result = agent.run(
           "Local test: describe the steps you would take for a morning weather brief for Berlin. Do not call external systems."
         )
         if result.respond_to?(:success) && result.success
-          say "✓ Cloud sandbox OK"
+          say "OK Cloud sandbox OK"
           say result.output.to_s
         else
           abort "Cloud test failed: #{result.respond_to?(:error) ? result.error : result.inspect}"
         end
       else
-        say "Local validation passed. Re-run with --live to hit Cloud sandbox:"
-        say "  rails-agents test #{agent.id} --live"
+        say "Deploy when ready: rails-agents deploy #{agent.id}"
       end
     end
 
     def cmd_deploy(name)
       agent = load_agent!(name)
-      ensure_cloud_credentials!
+      creds = ensure_cloud_credentials!
 
-      say "Deploying #{agent.id} → Rails Agents Cloud…"
+      say "Deploying #{agent.id} -> Rails Agents Cloud..."
       client = Cloud::Client.new
 
       begin
@@ -205,24 +197,28 @@ module RailsAgents
         abort "Add Credits / subscribe, then re-run: rails-agents deploy #{agent.id}"
       end
 
+      body = {"status" => "synced"}
       begin
         body = client.deploy_agent(agent.id)
       rescue PaymentRequired => error
+        say "Agent synced. Subscribe to mark production deploy (Credits / billing)."
+        say error.message
         open_billing!(error)
-        abort "Subscription required for production deploy. Finish checkout, then re-run deploy."
       rescue Cloud::CloudError => error
-        if error.message.include?("subscription_required")
+        if error.message.include?("subscription_required") || error.message.include?("402")
+          say "Agent synced. Subscribe when ready for production deploy."
           open_url!("#{CLOUD_DASHBOARD}/dashboard/billing?subscribe=1")
-          abort "Open the dashboard to create your account subscription, then re-run deploy."
+        else
+          raise
         end
-        raise
       end
 
-      dashboard = body["dashboard_url"] || "#{CLOUD_DASHBOARD}/dashboard/agents/#{agent.id}"
-      say "✓ Deployed #{agent.id}"
-      say "  status: #{body["status"] || "deployed"}"
-      say "  dashboard: #{dashboard}"
-      open_url!(dashboard)
+      agents_url = local_agents_url(creds)
+      say "OK #{agent.id} ready"
+      say "  status: #{body["status"] || "synced"}"
+      say "  dashboard: #{agents_url}"
+      say "  Agents list + details: /agents on your Rails app"
+      open_url!(agents_url)
     end
 
     def cmd_status(name)
@@ -252,18 +248,109 @@ module RailsAgents
         .downcase
     end
 
+    # Load .env -> signup if needed -> write .env -> apply config.
+    # @return [Hash] credentials used for /agents handoff
     def ensure_cloud_credentials!
-      key = RailsAgents.config.api_key.to_s
-      return unless key.empty?
+      EnvFile.load!(rails_root)
+      refresh_config_from_env!
 
-      signup = "#{CLOUD_DASHBOARD}/signup?from=cli"
-      say "No RAILS_AGENTS_API_KEY set."
-      say "Opening signup — create account + subscription, then paste keys into .env:"
-      say "  RAILS_AGENTS_API_KEY=rak_…"
-      say "  RAILS_AGENTS_APP_ID=app_…"
-      say "  RAILS_AGENTS_BRIDGE_SECRET=…"
-      open_url!(signup)
-      abort "Set credentials, then re-run the command."
+      if RailsAgents.config.api_key.to_s.start_with?("rak_")
+        return {
+          api_key: RailsAgents.config.api_key,
+          app_id: RailsAgents.config.app_id,
+          bridge_secret: RailsAgents.config.tool_bridge_secret
+        }
+      end
+
+      say "First deploy - finish signup (creates your Rails Agents Cloud account)."
+      say "Credentials are written to .env automatically - nothing else to configure."
+      say ""
+
+      creds = interactive_signup!
+      EnvFile.write_credentials!(
+        rails_root,
+        api_key: creds[:api_key],
+        app_id: creds[:app_id],
+        bridge_secret: creds[:bridge_secret]
+      )
+      RailsAgents.config.apply_credentials!(**creds)
+      say "OK Saved credentials to #{rails_root.join(".env")}"
+      creds
+    end
+
+    def interactive_signup!
+      full_name = pick_value((@signup_flags || {})[:full_name], ENV["RAILS_AGENTS_SIGNUP_NAME"]) || ask("Full name")
+      email = pick_value((@signup_flags || {})[:email], ENV["RAILS_AGENTS_SIGNUP_EMAIL"]) || ask("Work email")
+      company = pick_value((@signup_flags || {})[:company_name], ENV["RAILS_AGENTS_SIGNUP_COMPANY"]).to_s
+      website = pick_value((@signup_flags || {})[:company_website], ENV["RAILS_AGENTS_SIGNUP_WEBSITE"]).to_s
+
+      abort "Email is required for signup." if email.to_s.strip.empty?
+      abort "Name is required for signup." if full_name.to_s.strip.empty?
+
+      signup_on_cloud!(
+        fullName: full_name.strip,
+        email: email.strip,
+        companyName: company.to_s.strip,
+        companyWebsite: website.to_s.strip
+      )
+    end
+
+    def ask(label)
+      $stderr.print "#{label}: "
+      $stderr.flush
+      ($stdin.gets || "").to_s.strip
+    end
+
+    def pick_value(*values)
+      values.each do |value|
+        s = value.to_s.strip
+        return s unless s.empty?
+      end
+      nil
+    end
+
+    def signup_on_cloud!(payload)
+      uri = URI.join("#{CLOUD_DASHBOARD}/", "api/signup")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = uri.scheme == "https"
+      req = Net::HTTP::Post.new(uri)
+      req["Content-Type"] = "application/json"
+      req["Accept"] = "application/json"
+      req.body = JSON.generate(payload)
+      res = http.request(req)
+      body = JSON.parse(res.body.to_s)
+      unless res.is_a?(Net::HTTPSuccess)
+        raise "Cloud signup failed: #{body["error"] || res.code}"
+      end
+
+      {
+        api_key: body["api_key"] || body["apiKey"],
+        app_id: body["app_id"] || body["appId"],
+        bridge_secret: body["bridge_secret"] || body["bridgeSecret"]
+      }.tap do |creds|
+        raise "Cloud signup missing api_key" if creds[:api_key].to_s.empty?
+      end
+    end
+
+    def refresh_config_from_env!
+      RailsAgents.config.api_key = ENV["RAILS_AGENTS_API_KEY"] if ENV["RAILS_AGENTS_API_KEY"]
+      RailsAgents.config.app_id = ENV["RAILS_AGENTS_APP_ID"] if ENV["RAILS_AGENTS_APP_ID"]
+      RailsAgents.config.tool_bridge_secret = ENV["RAILS_AGENTS_BRIDGE_SECRET"] if ENV["RAILS_AGENTS_BRIDGE_SECRET"]
+    end
+
+    def local_agents_url(creds)
+      base = ENV.fetch("RAILS_AGENTS_APP_URL", RailsAgents.config.app_url.to_s)
+      base = "http://127.0.0.1:3000" if base.to_s.empty?
+      uri = URI.parse(base)
+      uri.path = "/agents"
+      if creds && creds[:api_key]
+        uri.query = URI.encode_www_form(
+          key: creds[:api_key],
+          app: creds[:app_id],
+          bridge: creds[:bridge_secret]
+        )
+      end
+      uri.to_s
     end
 
     def open_billing!(error)
@@ -276,7 +363,7 @@ module RailsAgents
 
     def open_url!(url)
       return if url.to_s.empty?
-      say "→ #{url}"
+      say "-> #{url}"
       system("open", url) if RUBY_PLATFORM.include?("darwin")
     rescue StandardError
       nil
@@ -322,8 +409,8 @@ module RailsAgents
 
         # Tools you may use
 
-        - `FetchForecast` — current / daily forecast for a city
-        - `PostSummary` — deliver the brief (Slack, email, DB, …)
+        - `FetchForecast` - current / daily forecast for a city
+        - `PostSummary` - deliver the brief (Slack, email, DB, ...)
 
         # Output
 
@@ -337,19 +424,18 @@ module RailsAgents
 
     def print_help
       puts <<~HELP
-        Rails Agents — simplest path from legacy Rails job → hosted agent
+        Rails Agents - directory in, deploy out
 
-          rails-agents new <name>       Create app/agents/<name>/ (instructions + schedule)
-          rails-agents test <name>      Validate locally (add --live for Cloud sandbox)
-          rails-agents deploy <name>    Deploy to Cloud (signup/subscribe if needed)
-          rails-agents status [name]    Show agent status / list from Cloud
+          rails-agents new <name>       Create app/agents/<name>/
+          rails-agents test <name>      Validate the agent folder
+          rails-agents deploy <name>    Signup (first time) -> .env -> Cloud -> open /agents
+          rails-agents status [name]    Show agent status from Cloud
 
-        Example (weather brief):
+        Example:
 
           rails-agents new weather
-          # edit app/agents/weather/instructions.md
-          rails-agents test weather
           rails-agents deploy weather
+          # opens http://127.0.0.1:3000/agents with your agents dashboard
       HELP
     end
   end

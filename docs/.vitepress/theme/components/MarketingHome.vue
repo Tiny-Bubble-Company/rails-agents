@@ -2,7 +2,7 @@
   <div class="mkt">
     <section class="mkt-section">
       <p class="mkt-kicker">An agent is a directory</p>
-      <h2 class="mkt-h2">This is a Rails Agents agent.</h2>
+      <h2 class="mkt-h2">This is a Rails Agent.</h2>
       <p class="mkt-lead">
         One folder. A few files. At a glance you see who it is, what it can do,
         what it knows, and when it runs — same idea as Eve, native to Rails.
@@ -38,7 +38,7 @@
         <pre class="mkt-term-body"><code><span class="mkt-term-prompt">$</span> rails-agents new weather
 <span class="mkt-term-prompt">$</span> rails-agents test weather
 <span class="mkt-term-prompt">$</span> rails-agents deploy weather
-<span class="mkt-term-ok">→ Deployed — dashboard opens with status &amp; run logs</span></code></pre>
+<span class="mkt-term-ok">→ Signup (first time) → .env → opens /agents on your app</span></code></pre>
       </div>
 
       <div class="mkt-code-grid">
@@ -152,11 +152,9 @@ rails-agents deploy weather</code></pre>
 
     <section class="mkt-cta">
       <h2>Build your first durable agent today.</h2>
-      <p>Docs, gem, and Cloud — one path from instructions.md to production.</p>
+      <p>Install the gem, run <code>rails-agents deploy</code>, open <code>/agents</code> on your app.</p>
       <div class="mkt-cta-actions">
         <a class="mkt-btn mkt-btn--brand" href="/guide/getting-started">Get started</a>
-        <a class="mkt-btn mkt-btn--alt" href="https://agents.meerkatagents.com">Open Cloud</a>
-        <a class="mkt-btn mkt-btn--alt" href="https://github.com/Tiny-Bubble-Company/rails-agents">GitHub</a>
       </div>
     </section>
   </div>
@@ -194,8 +192,9 @@ const batteries = [
   },
   {
     title: "Dashboard & logs",
-    body: "Status, environment, last run, and log lines at agents.meerkatagents.com after rails-agents deploy.",
+    body: "Status, environment, last run, and log lines at /agents on your Rails app after deploy.",
   },
+
   {
     title: "Honest billing",
     body: "Free to sign up and define agents. Prepaid Credits before hosted runs. No pretend “free LLM” tokens.",

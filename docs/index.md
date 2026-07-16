@@ -9,12 +9,6 @@ hero:
     - theme: brand
       text: Get started
       link: /guide/getting-started
-    - theme: brand
-      text: Open Cloud
-      link: https://agents.meerkatagents.com
-    - theme: alt
-      text: Why Rails Agents
-      link: /guide/why
     - theme: alt
       text: GitHub
       link: https://github.com/Tiny-Bubble-Company/rails-agents
@@ -25,5 +19,5 @@ features:
   - title: An agent is a directory
     details: instructions.md is a complete agent. Tools, skills, and schedules are optional building blocks.
   - title: Native to Rails
-    details: Same app, Tool Bridge into your models. No Node harness for you to operate.
+    details: Same app, Tool Bridge into your models. Dashboard at /agents on your domain.
 ---

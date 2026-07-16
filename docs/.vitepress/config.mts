@@ -77,25 +77,7 @@ export default defineConfig({
       { text: "Agents", link: "/guide/agents" },
       { text: "Tools", link: "/guide/tools" },
       { text: "Skills", link: "/guide/skills" },
-      {
-        text: "Cloud",
-        link: "https://agents.meerkatagents.com",
-      },
-      {
-        text: "Community",
-        link: "https://github.com/Tiny-Bubble-Company/rails-agents/discussions/1",
-      },
-      {
-        text: "Gem",
-        items: [
-          { text: "Changelog", link: "/guide/changelog" },
-          { text: "Requirements", link: "/guide/requirements" },
-          {
-            text: "Rubygems",
-            link: "https://rubygems.org/gems/rails-agent-stack",
-          },
-        ],
-      },
+      { text: "Changelog", link: "/guide/changelog" },
     ],
 
     sidebar: [
