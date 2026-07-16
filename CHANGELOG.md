@@ -6,12 +6,18 @@ All notable changes to this project are documented in this file.
 
 Cloud-only rebuild (pre-release).
 
+- Messaging: durable / Eve-shaped directory DX; clearer vs RubyLLM (agents vs toolkit)
+
 - **Breaking:** `.run` calls Rails Agents Cloud (requires `RAILS_AGENTS_API_KEY`)
 - Tool Bridge endpoint + HMAC signature helpers
 - Installer mounts `RailsAgents::Engine` at `/rails_agents`
 - Architecture: compile-to-Eve, one Vercel project with logical tenancy (`sandbox` \| `production`)
 - Billing: **prepaid Credits** (min $10) before hosted runs; free = build only; optional BYOK; `PaymentRequired` on 402
-- Docs + Next.js control plane scaffold (`rails-agents-cloud`)
+- **Directory DX (Eve-shaped):** `app/agents/<name>/instructions.md` + `RailsAgents["name"].run(…)` (syncs then runs)
+- **CLI:** `rails-agents new | test | deploy | status` (ADC→FTP reference scaffold + schedule)
+- Generator: `rails generate rails_agents:agent NAME` (instructions + `schedules/poll.yml`)
+- Cloud portal: agents list, detail runs/logs, subscribe + deploy gate
+- Host: Hetzner beside Meerkat (`agents.meerkatagents.com`)
 
 ## [0.1.0] — 2026-07-09
 

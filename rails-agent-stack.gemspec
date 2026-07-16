@@ -8,23 +8,22 @@ Gem::Specification.new do |spec|
   spec.authors = ["Tiny Bubble Company"]
   spec.email = ["hello@tinybubble.company"]
 
-  spec.summary = "Dead-simple AI agents for Rails — cloud by default, speed to production"
+  spec.summary = "Durable agents for Rails — your agent is a directory"
   spec.description = <<~DESC.gsub(/\s+/, " ").strip
-    Rails Agents (gem: rails-agent-stack) is the simplest way to add production
-    AI agents to Ruby on Rails. Define an agent in Ruby, attach your app code as
-    tools via Tool Bridge, call .run — durable sessions and sandboxes run on
-    Rails Agents Cloud (Eve on shared Vercel infra). Free to sign up and build;
-    prepaid Credits (or BYOK) before hosted runs; promote to production when ready.
-
-    Built for developers searching for Rails AI agents, Ruby LLM agents,
-    OpenAI / Anthropic / Claude / GPT tool-calling, agentic workflows, and a
-    simpler alternative to RubyLLM or LangChain when you want zero infra.
-
-    One mental model: RailsAgents::Agent. Fastest path to a production agent
-    with the least code.
+    Rails Agents (gem: rails-agent-stack) is the production agent framework for
+    Ruby on Rails — like Eve for Rails apps. An app/agents/<name>/instructions.md
+    file is a complete agent; add schedules, tools, and skills as it grows.
+    CLI: rails-agents new | test | deploy. Runs on Rails Agents Cloud with durable
+    execution (checkpointed steps, park between turns, resume on delivery), hosted
+    cron, Tool Bridge into your Rails models/jobs, and a dashboard with run logs —
+    without Render rake+cron glue or managing Node/Workflow yourself.
+    Built for durable Rails AI agents, tool-calling workflows, and a simpler path
+    than RubyLLM or LangChain when you want production agents, not a full multimodal
+    AI toolkit. Prepaid Credits before hosted runs. Docs: rails.meerkatagents.com ·
+    Cloud: agents.meerkatagents.com.
   DESC
 
-  spec.homepage = "https://tiny-bubble-company.github.io/rails-agents/"
+  spec.homepage = "https://rails.meerkatagents.com"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2"
 
@@ -32,15 +31,17 @@ Gem::Specification.new do |spec|
     "homepage_uri" => spec.homepage,
     "source_code_uri" => "https://github.com/Tiny-Bubble-Company/rails-agents",
     "changelog_uri" => "https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/CHANGELOG.md",
-    "documentation_uri" => "https://tiny-bubble-company.github.io/rails-agents/",
+    "documentation_uri" => "https://rails.meerkatagents.com",
     "bug_tracker_uri" => "https://github.com/Tiny-Bubble-Company/rails-agents/issues",
     "rubygems_mfa_required" => "true",
   }
 
   spec.files = Dir.chdir(__dir__) do
-    Dir["{app,config,lib}/**/*", "README.md", "CHANGELOG.md", "ARCHITECTURE.md", "TENANCY.md", "DECISIONS.md", "MIT-LICENSE", "rails-agent-stack.gemspec"]
+    Dir["{app,config,exe,lib}/**/*", "README.md", "CHANGELOG.md", "ARCHITECTURE.md", "TENANCY.md", "DECISIONS.md", "PRICING.md", "MIT-LICENSE", "rails-agent-stack.gemspec"]
   end
 
+  spec.bindir = "exe"
+  spec.executables = ["rails-agents"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "faraday", ">= 2.9", "< 3"
