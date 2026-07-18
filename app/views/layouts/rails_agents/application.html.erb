@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rails Agent · Kip</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag "rails_agents/application", media: "all" %>
+  </head>
+  <body class="rails-agents-body">
+    <% unless configured? %>
+      <header class="rails-agents-header">
+        <div class="rails-agents-brand">
+          <span class="rails-agents-mascot" aria-hidden="true">??</span>
+          <span class="rails-agents-logo">Rails Agent</span>
+        </div>
+        <nav class="rails-agents-nav">
+          <%= link_to "Docs", "https://meerkatagents.com/docs/getting-started", target: "_blank", rel: "noopener" %>
+          <%= link_to "Cloud", "https://meerkatagents.com/signup", target: "_blank", rel: "noopener" %>
+        </nav>
+      </header>
+    <% end %>
+
+    <main class="rails-agents-main <%= "rails-agents-main--embed" if configured? %>">
+      <%= yield %>
+    </main>
+
+    <% unless configured? %>
+      <footer class="rails-agents-footer">
+        <p>Built for Rails developers · <a href="https://meerkatagents.com">meerkatagents.com</a></p>
+      </footer>
+    <% end %>
+  </body>
+</html>

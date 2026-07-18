@@ -3,48 +3,38 @@
 require_relative "lib/rails_agents/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "rails-agent-stack"
-  spec.version = RailsAgents::VERSION
-  spec.authors = ["Tiny Bubble Company"]
-  spec.email = ["hello@tinybubble.company"]
+  spec.name          = "rails-agent-stack"
+  spec.version       = RailsAgents::VERSION
+  spec.authors       = ["Rails Agent Team"]
+  spec.email         = ["hello@railsagents.dev"]
 
-  spec.summary = "Durable agents for Rails — your agent is a directory"
-  spec.description = <<~DESC.gsub(/\s+/, " ").strip
-    Rails Agents (gem: rails-agent-stack) is the production agent framework for
-    Ruby on Rails — like Eve for Rails apps. An app/agents/<name>/instructions.md
-    file is a complete agent; add schedules, tools, and skills as it grows.
-    CLI: rails-agents new | test | deploy. Runs on Rails Agents Cloud with durable
-    execution (checkpointed steps, park between turns, resume on delivery), hosted
-    cron, Tool Bridge into your Rails models/jobs, and a dashboard with run logs —
-    without Render rake+cron glue or managing Node/Workflow yourself.
-    Built for durable Rails AI agents, tool-calling workflows, and a simpler path
-    than RubyLLM or LangChain when you want production agents, not a full multimodal
-    AI toolkit. Prepaid Credits before hosted runs.
-    Docs + entry point: https://rails.meerkatagents.com
-  DESC
+  spec.summary       = "Rails-native AI agents - mountable engine, DSL, and cloud runtime."
+  spec.description   = "Add AI agents to your Rails app with zero AI knowledge. Mount /agents, " \
+                         "define agents in app/agents/, and run on Rails Agent Cloud."
+  spec.homepage      = "https://railsagents.dev"
+  spec.license       = "MIT"
+  spec.required_ruby_version = ">= 3.1.0"
 
-  spec.homepage = "https://rails.meerkatagents.com"
-  spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.2"
-
-  spec.metadata = {
-    "homepage_uri" => "https://rails.meerkatagents.com",
-    "source_code_uri" => "https://rails.meerkatagents.com",
-    "changelog_uri" => "https://rails.meerkatagents.com/guide/changelog",
-    "documentation_uri" => "https://rails.meerkatagents.com",
-    "bug_tracker_uri" => "https://rails.meerkatagents.com",
-    "rubygems_mfa_required" => "true",
-  }
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/Tiny-Bubble-Company/rails-agents"
+  spec.metadata["rubygems_mimetype"] = "application/x-rubygem"
 
   spec.files = Dir.chdir(__dir__) do
-    Dir["{app,config,exe,lib}/**/*", "README.md", "CHANGELOG.md", "ARCHITECTURE.md", "TENANCY.md", "DECISIONS.md", "PRICING.md", "MIT-LICENSE", "rails-agent-stack.gemspec"]
+    `git ls-files -z`.split("\x0").reject do |f|
+      f == "Gemfile.lock" || f.start_with?("spec/fixtures/")
+    end
+  rescue StandardError
+    Dir["{app,config,exe,lib,docs}/**/*", "exe/*", "*.{md,gemspec,rake}", "MIT-LICENSE"]
   end
 
-  spec.bindir = "exe"
-  spec.executables = ["rails-agents"]
+  spec.bindir        = "exe"
+  spec.executables   = ["rails-agents"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "faraday", ">= 2.9", "< 3"
-  spec.add_dependency "rails", ">= 7.1", "< 9"
-  spec.add_dependency "zeitwerk", ">= 2.6", "< 3"
+  spec.add_dependency "railties", ">= 7.0"
+  spec.add_dependency "thor", "~> 1.3"
+
+  spec.add_development_dependency "rake", "~> 13.0"
+  spec.add_development_dependency "rspec", "~> 3.13"
+  spec.add_development_dependency "webmock", "~> 3.23"
 end

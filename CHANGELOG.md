@@ -1,29 +1,17 @@
 # Changelog
 
-All notable changes to this project are documented in this file.
+All notable changes to `rails-agent-stack` will be documented in this file.
 
-## [0.2.0] â€” 2026-07-16
+## [0.1.0] - 2026-07-18
 
-Cloud-only release.
+### Added
 
-- **Breaking:** `.run` calls Rails Agents Cloud
-- **Directory DX:** `app/agents/<name>/` (Eve-shaped) + weather scaffold
-- **CLI:** `rails-agents new | test | deploy | status`
-  - First `deploy` signs up, writes `.env`, opens `/agents` on your Rails app
-- **Web UI:** `mount RailsAgents::Engine => "/agents"` (Sidekiq-style)
-- Tool Bridge at `/agents/bridge`
-- Billing: prepaid Credits (min $10); `PaymentRequired` on 402
-- Docs entry point: https://rails.meerkatagents.com
-
-## [0.1.0] â€” 2026-07-09
-
-First public release. Published on RubyGems as **`rails-agent-stack`** (Ruby API remains `RailsAgents`).
-
-- `RailsAgents::Agent` â€” one class for every use case (`provider`, `model`, `description`, `tools`, `skills`)
-- `RailsAgents::Tool` â€” app code as tools, auto-loaded from `app/agents/tools/`
-- Skills: `:web_search`, `:web_fetch` (portable + Anthropic native); Anthropic `:code_execution`, `:memory`, `:pptx`, `:xlsx`, `:docx`, `:pdf`
-- Providers: OpenAI, Anthropic, OpenRouter, Grok
-- Install generator (`rails generate rails_agents:install`)
-- Sample playground app in `spec/dummy/`
-- Documentation site (VitePress) on GitHub Pages
-- Fix: `Providers.build` no longer passes a nil API key that overrode config defaults
+- Initial release of the `rails-agent-stack` gem.
+- Mountable Rails Engine at `/agents` with cloud dashboard proxy UI.
+- `RailsAgents::Base` DSL — model, memory, knowledge, tools, skills, channels.
+- Cloud HTTP client (`Net::HTTP`) for runs, deploys, channels, knowledge sync, logs, traces, evals.
+- Thor CLI (`rails-agents`) — install, new, run, deploy, logs, traces, evals.
+- Generators — `rails_agents:install`, `rails_agents:agent`.
+- Configuration block with ENV defaults.
+- Example support agent under `examples/support/`.
+- RSpec coverage for Base, Client, and Configuration.

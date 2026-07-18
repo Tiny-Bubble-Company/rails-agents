@@ -1,0 +1,4 @@
+- name: greeting
+  input: "Hello"
+  expected_contains:
+    - "help"

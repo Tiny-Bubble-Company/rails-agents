@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+# Slack channel connector — install via dashboard or:
+# RailsAgents::Client.new.install_channel(kind: :slack)
+
+RailsAgents.configure do |config|
+  # Channel OAuth handled by Rails Agent Cloud.
+end
