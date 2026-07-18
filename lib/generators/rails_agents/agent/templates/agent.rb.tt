@@ -1,0 +1,14 @@
+# frozen_string_literal: true
+
+class <%= class_name %> < RailsAgents::Base
+  model :auto
+  memory :conversation
+  knowledge_from "knowledge/**/*"
+
+  tool :ping do
+    { status: "ok", agent: "<%= file_name %>" }
+  end
+
+  skill :triage, from: "skills/triage.rb"
+  channel :slack
+end

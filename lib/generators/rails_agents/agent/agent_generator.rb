@@ -1,37 +1,40 @@
 # frozen_string_literal: true
 
-require "rails/generators"
+require "rails/generators/base"
+require "rails/generators/named_base"
 
 module RailsAgents
   module Generators
     class AgentGenerator < Rails::Generators::NamedBase
       source_root File.expand_path("templates", __dir__)
-      desc "Create Eve-shaped agent directory under app/agents/NAME"
+
+      desc "Scaffold an agent directory under app/agents/"
 
       def create_agent_directory
-        empty_directory "app/agents/#{file_name}"
-        empty_directory "app/agents/#{file_name}/schedules"
-        empty_directory "app/agents/#{file_name}/tools"
-        empty_directory "app/agents/#{file_name}/skills"
-        template "instructions.md.tt", "app/agents/#{file_name}/instructions.md"
-        template "agent.json.tt", "app/agents/#{file_name}/agent.json"
-        template "morning.yml.tt", "app/agents/#{file_name}/schedules/morning.yml"
-
-        if file_name == "weather"
-          template "fetch_forecast.rb.tt", "app/agents/#{file_name}/tools/fetch_forecast.rb"
-          template "post_summary.rb.tt", "app/agents/#{file_name}/tools/post_summary.rb"
-          template "cities-and-units.md.tt", "app/agents/#{file_name}/skills/cities-and-units.md"
-        else
-          create_file "app/agents/#{file_name}/tools/.keep", ""
-          create_file "app/agents/#{file_name}/skills/.keep", ""
-        end
+        empty_directory agent_path
+        empty_directory File.join(agent_path, "tools")
+        empty_directory File.join(agent_path, "skills")
+        empty_directory File.join(agent_path, "knowledge")
+        empty_directory File.join(agent_path, "channels")
+        empty_directory File.join(agent_path, "evals")
       end
 
-      def finish
-        say "\n✓ Complete agent at app/agents/#{file_name}/", :green
-        say "  agent.json / instructions.md / tools / skills / schedules"
-        say "  rails-agents test #{file_name}"
-        say "  rails-agents deploy #{file_name}"
+      def create_agent_files
+        template "agent.rb.tt", File.join(agent_path, "agent.rb")
+        template "prompt.md.tt", File.join(agent_path, "prompt.md")
+        template "memory.rb.tt", File.join(agent_path, "memory.rb")
+        template "channels/slack.rb.tt", File.join(agent_path, "channels/slack.rb")
+        template "evals/smoke.yml.tt", File.join(agent_path, "evals/smoke.yml")
+      end
+
+      private
+
+      def agent_path
+        File.join("app/agents", file_name)
+      end
+
+      def class_name
+        name.camelize
       end
     end
   end

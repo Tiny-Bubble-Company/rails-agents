@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+RailsAgents.configure do |config|
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
+  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://meerkatagents.com")
+  config.dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", "https://meerkatagents.com")
+  config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
+end

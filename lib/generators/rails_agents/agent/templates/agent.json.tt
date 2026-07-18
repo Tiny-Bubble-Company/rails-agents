@@ -1,5 +1,0 @@
-{
-  "model": "anthropic/claude-sonnet-4",
-  "name": "<%= file_name %>",
-  "triggers": ["schedule"]
-}

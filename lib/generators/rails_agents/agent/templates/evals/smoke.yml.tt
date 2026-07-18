@@ -1,0 +1,4 @@
+- name: smoke
+  input: "Hello"
+  expected_contains:
+    - "ok"

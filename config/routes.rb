@@ -1,13 +1,12 @@
-# frozen_string_literal: true
-
 RailsAgents::Engine.routes.draw do
-  root to: "dashboard#index"
+  root to: "dashboard#show"
 
-  post "signup", to: "dashboard#create_account", as: :signup
-  post "connect", to: "dashboard#connect", as: :connect
-  post "disconnect", to: "dashboard#disconnect", as: :disconnect
-  get "agents/:id", to: "dashboard#show", as: :agent
+  get "signin", to: "sessions#new", as: :signin
+  get "signup", to: "registrations#new", as: :signup
+  delete "signout", to: "sessions#destroy", as: :signout
 
-  # Tool Bridge (HMAC) — default path when mounted at /agents → /agents/bridge
-  post "bridge", to: "cloud/bridge#create"
+  post "handshake", to: "handshake#create", as: :handshake
+
+  get "dashboard", to: "dashboard#show", as: :dashboard
+  get "dashboard/*path", to: "dashboard#proxy", as: :dashboard_proxy
 end

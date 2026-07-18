@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+# Managed conversation memory — synced to Rails Agent Cloud.
+RailsAgents.configure do |config|
+  # Memory is cloud-managed; no local vector DB required.
+end

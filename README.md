@@ -1,58 +1,132 @@
-# Rails Agents
+# Rails Agent (`rails-agent-stack`)
 
-**Durable agents for Rails — like Eve for Ruby apps.**
+**Rails-native AI agents.** One gem. One mount. Zero API keys.
 
-Your agent is a directory. Deploy opens `/agents` on your app. First deploy signs you up and writes `.env` — nothing to configure by hand.
+Meet **Kip**, the meerkat who keeps watch while your agents run on [Rails Agent Cloud](https://meerkatagents.com). Define agents in Ruby, deploy to Slack and beyond, and monitor every run — without prompt-engineering rabbit holes or vector DB decisions.
 
-| | |
-|---|---|
-| **Docs** | [rails.meerkatagents.com](https://rails.meerkatagents.com) |
-| **Gem** | [rubygems.org/gems/rails-agent-stack](https://rubygems.org/gems/rails-agent-stack) |
+- **Website & dashboard:** [meerkatagents.com](https://meerkatagents.com)
+- **Docs:** [Getting started](https://meerkatagents.com/docs/getting-started)
+- **GitHub:** [Tiny-Bubble-Company/rails-agents](https://github.com/Tiny-Bubble-Company/rails-agents)
+
+## Why Rails Agent?
+
+- **Zero AI knowledge** — models, embeddings, memory, and tool sandboxing are cloud-managed.
+- **Rails-native** — mount `/agents` like Sidekiq, scaffold `app/agents/<name>/`, use `RailsAgents::Base`.
+- **Build → deploy → monitor** — chat authoring, logs, traces, evals, and channel deploys in one dashboard.
+
+## Install
 
 ```bash
 bundle add rails-agent-stack
-bin/rails generate rails_agents:install
-rails-agents new weather
-rails-agents deploy weather
-# → signup (first time) → .env → opens http://127.0.0.1:3000/agents
+rails generate rails_agents:install
+bin/dev
+# open http://localhost:3000/agents
 ```
 
-```text
-app/agents/weather/          # complete agent
-  agent.json                 # the model it runs on
-  instructions.md            # who it is
-  tools/                     # what it can do
-    fetch_forecast.rb
-    post_summary.rb
-  skills/                    # what it knows
-    cities-and-units.md
-  schedules/                 # when it acts on its own
-    morning.yml
+The generator mounts `RailsAgents::Engine` at `/agents` and writes `config/initializers/rails_agents.rb`.
+
+### Connect to cloud
+
+**Option A — browser (recommended)**  
+Visit `/agents`, sign up with email/password. The engine handshakes with meerkatagents.com, writes `config/rails_agents_credentials.yml`, and embeds your dashboard.
+
+**Option B — CLI**
+
+```bash
+rails-agents login
+# prints:
+# export RAILS_AGENTS_API_KEY=ra_…
+# export RAILS_AGENTS_PROJECT_ID=ten_…
 ```
+
+## Configuration
 
 ```ruby
-# config/routes.rb — like Sidekiq::Web
-authenticate :admin do
-  mount RailsAgents::Engine => "/agents"
+RailsAgents.configure do |config|
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
+  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://meerkatagents.com")
+  config.dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", "https://meerkatagents.com")
+  config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
 end
 ```
 
+API routes live at the same origin under `/api/v1`. Cloud-only for MVP — no BYOK, no self-hosting.
+
+## Agent-as-directory
+
+```bash
+rails generate rails_agents:agent support
+# or
+rails-agents new support
+```
+
+```
+app/agents/support/
+├── agent.rb            # RailsAgents::Base subclass
+├── prompt.md           # system prompt
+├── tools/              # tool definitions
+├── skills/             # composable behaviors
+├── memory.rb           # memory config
+├── knowledge/          # RAG files synced to cloud
+├── channels/           # slack.rb, discord.rb, ...
+└── evals/              # eval cases
+```
+
+### DSL example
+
+```ruby
+class Support < RailsAgents::Base
+  model :auto
+  memory :conversation
+  knowledge_from "knowledge/**/*"
+
+  tool :lookup_order do |order_id:|
+    Order.find(order_id).as_json
+  end
+
+  skill :triage, from: "skills/triage.rb"
+  channel :slack
+end
+```
+
+```bash
+rails-agents run support "Where is order 42?"
+rails-agents deploy support
+rails-agents sync support
+rails-agents logs support
+```
+
+## Engine
+
+`/agents` is Sidekiq-simple: signup handshake → credentials on disk → iframe of the cloud dashboard (`?embed=1&token=…`).
+
+## Cloud API client
+
+| Method | Endpoint |
+|--------|----------|
+| `POST` | `/api/v1/auth/handshake` |
+| `POST` | `/api/v1/runs` |
+| `PUT`  | `/api/v1/agents/:id/files` |
+| `POST` | `/api/v1/deploys` |
+| `POST` | `/api/v1/channels/:kind/install` |
+| `POST` | `/api/v1/knowledge/sync` |
+| `GET`  | `/api/v1/logs`, `/traces`, `/evals` |
+
+## Namespace
+
+The gem module is `RailsAgents`. Prefer `RailsAgents::Base` everywhere.
+
+## Development
+
+```bash
+bundle install
+bundle exec rspec
+```
+
+## License
+
+MIT — see [MIT-LICENSE](MIT-LICENSE).
+
 ---
 
-## Why this exists
-
-Chat SDKs give you a request/response loop. Production agents need **durability**: checkpointed steps, park between messages, resume on delivery, schedules that keep running after you deploy.
-
-That’s the Eve model. Rails Agents brings it to Rails with a Ruby-native DX and a hosted control plane — so you stay in `app/agents/`, not a second Node app.
-
----
-
-## vs RubyLLM
-
-[RubyLLM](https://rubyllm.com) is an excellent **general-purpose AI toolkit**. Rails Agents is the **agent product path**: directory → durable cloud → `/agents` dashboard.
-
----
-
-## Docs
-
-**https://rails.meerkatagents.com**
+Built for Rails developers, by people who'd rather write Ruby than YAML prompts. Kip approves.

@@ -1,5 +1,0 @@
-{
-  "model": "anthropic/claude-sonnet-4",
-  "name": "weather",
-  "triggers": ["schedule", "api"]
-}

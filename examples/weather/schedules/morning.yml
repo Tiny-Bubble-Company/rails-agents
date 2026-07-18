@@ -1,6 +1,0 @@
-# Hosted cron. Cloud runs this after deploy.
-cron: "0 7 * * *"
-timezone: UTC
-message: |
-  Fetch today's weather for configured cities and post a short morning brief.
-  Keep it practical: conditions, high/low, and any notable alerts.
