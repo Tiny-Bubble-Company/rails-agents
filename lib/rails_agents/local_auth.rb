@@ -50,7 +50,7 @@ module RailsAgents
     def redirect_if_configured!
       return unless configured?
 
-      redirect_to rails_agents.root_path
+      redirect_to rails_agents.dashboard_path
     end
   end
 end

@@ -1,5 +1,6 @@
 RailsAgents::Engine.routes.draw do
-  root to: "dashboard#show"
+  # First-run default: create workspace. Already connected → signup redirects to dashboard.
+  root to: "registrations#new"
 
   get "signup", to: "registrations#new", as: :signup
   post "signup", to: "registrations#create"
