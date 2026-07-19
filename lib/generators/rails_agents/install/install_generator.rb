@@ -85,7 +85,7 @@ module RailsAgents
         end
 
         say ""
-        say "Guide: https://rails-agent.com/start"
+        say "Guide: https://rails-agent.com/docs/getting-started"
       end
 
       private
