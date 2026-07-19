@@ -1,14 +1,24 @@
 /*
- * Rails Agent engine styles
- * Palette: ruby #B4182D, cream #FBF7F0, ink #0F0F10
+ * Rails Agent engine — matches rails-agent.com design system
+ * cream paper · ruby · ink · Fraunces + Inter
  */
 
 :root {
-  --ruby: #B4182D;
-  --cream: #FBF7F0;
-  --ink: #0F0F10;
-  --muted: #5c5c62;
-  --border: rgba(15, 15, 16, 0.12);
+  --ruby: #c23a3a;
+  --ruby-deep: #9e2a2a;
+  --cream: #fdfbf7;
+  --paper: #f7f3eb;
+  --ink: #1c1917;
+  --muted: #6b6560;
+  --border: rgba(28, 25, 23, 0.12);
+  --card: #fffcf8;
+  --ember: #e8a060;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 .rails-agents-body {
@@ -16,170 +26,336 @@
   min-height: 100vh;
   background: var(--cream);
   color: var(--ink);
-  font-family: "Inter", system-ui, sans-serif;
-  line-height: 1.6;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
-.rails-agents-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  border-bottom: 1px solid var(--border);
-  background: white;
-}
-
-.rails-agents-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.rails-agents-logo {
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 700;
+.rails-agents-body a {
   color: var(--ruby);
-}
-
-.rails-agents-mascot {
-  font-size: 1.5rem;
-}
-
-.rails-agents-nav {
-  display: flex;
-  gap: 1.25rem;
-}
-
-.rails-agents-nav a {
-  color: var(--ink);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.rails-agents-nav a:hover {
-  color: var(--ruby);
-}
-
-.rails-agents-main {
-  max-width: 52rem;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 4rem;
-}
-
-.rails-agents-hero h1 {
-  font-family: "Fraunces", Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3rem);
-  line-height: 1.15;
-  margin: 0 0 1rem;
-}
-
-.rails-agents-lead {
-  font-size: 1.125rem;
-  color: var(--muted);
-  margin: 0 0 2.5rem;
-}
-
-.rails-agents-panel {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem 1.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.rails-agents-panel--warn {
-  border-color: rgba(180, 24, 45, 0.25);
-}
-
-.rails-agents-panel h2 {
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 1.35rem;
-  margin: 0 0 0.5rem;
-}
-
-.rails-agents-panel p {
-  margin: 0 0 1rem;
-  color: var(--muted);
-}
-
-.rails-agents-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.rails-agents-button {
-  display: inline-block;
-  padding: 0.65rem 1.25rem;
-  background: var(--ruby);
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.rails-agents-button:hover {
-  filter: brightness(1.05);
-}
-
-.rails-agents-button--ghost {
-  background: transparent;
-  color: var(--ruby);
-  border: 1px solid var(--ruby);
-}
-
-.rails-agents-code {
-  background: var(--ink);
-  color: #f5f0e8;
-  padding: 1rem 1.25rem;
-  border-radius: 8px;
-  overflow-x: auto;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.875rem;
-  margin: 0 0 1rem;
-}
-
-.rails-agents-footer {
-  text-align: center;
-  padding: 2rem;
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.rails-agents-footer p {
-  margin: 0;
 }
 
 code {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.9em;
+  background: rgba(28, 25, 23, 0.06);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+}
+
+/* ——— Connect: split screen ——— */
+
+.rails-agents-connect {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 960px) {
+  .rails-agents-connect {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rails-agents-connect__brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 2rem;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(194, 58, 58, 0.12), transparent 70%),
+    var(--cream);
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .rails-agents-connect__brand {
+    padding: 2.5rem;
+  }
+}
+
+.rails-agents-connect__form-pane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+}
+
+@media (min-width: 960px) {
+  .rails-agents-connect__form-pane {
+    border-top: 0;
+    border-left: 1px solid var(--border);
+    padding: 2.5rem;
+    background: var(--cream);
+  }
+}
+
+.rails-agents-logo-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.rails-agents-logo-mark {
+  position: relative;
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: rgba(28, 25, 23, 0.04);
+  box-shadow: 0 0 0 1px rgba(28, 25, 23, 0.1);
+}
+
+.rails-agents-logo-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.rails-agents-logo-mark::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--ruby);
+  box-shadow: 0 0 0 2px var(--cream);
+}
+
+.rails-agents-logo-word {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.rails-agents-logo-word em {
+  font-style: normal;
+  color: var(--ruby);
+}
+
+.rails-agents-connect__copy {
+  max-width: 28rem;
+  margin: 2rem 0;
+}
+
+@media (min-width: 960px) {
+  .rails-agents-connect__copy {
+    margin: 0;
+  }
+}
+
+.rails-agents-connect__copy h1 {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.rails-agents-connect__copy h1 em {
+  font-style: italic;
+  color: var(--ruby);
+  font-weight: 600;
+}
+
+.rails-agents-connect__copy > p {
+  margin: 1.25rem 0 0;
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 26rem;
+}
+
+.rails-agents-connect__kip {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.rails-agents-connect__kip img {
+  width: auto;
+  height: 11rem;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 36px rgba(28, 25, 23, 0.18));
+}
+
+@media (min-width: 640px) {
+  .rails-agents-connect__kip img {
+    height: 14rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .rails-agents-connect__kip {
+    justify-content: flex-start;
+    margin-top: 2rem;
+  }
+
+  .rails-agents-connect__kip img {
+    height: 16rem;
+  }
+}
+
+.rails-agents-connect__meta {
+  margin: 1.5rem 0 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rails-agents-connect__card {
+  width: 100%;
+  max-width: 22rem;
+}
+
+.rails-agents-connect__card h2 {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.rails-agents-connect__card > .rails-agents-lede {
+  margin: 0.4rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.rails-agents-btn {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 550;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.rails-agents-btn--primary {
+  background: var(--ruby);
+  color: #fffaf6;
+}
+
+.rails-agents-btn--primary:hover {
+  filter: brightness(1.06);
+  color: #fffaf6;
+}
+
+.rails-agents-btn--ghost {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--border);
+}
+
+.rails-agents-btn--ghost:hover {
+  background: rgba(28, 25, 23, 0.04);
+  color: var(--ink);
+}
+
+.rails-agents-btn--ink {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.rails-agents-btn--ink:hover {
+  filter: brightness(1.15);
+  color: var(--cream);
+}
+
+.rails-agents-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rails-agents-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+}
+
+.rails-agents-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.35rem 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rails-agents-divider::before,
+.rails-agents-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 
 .rails-agents-form {
   display: grid;
-  gap: 0.85rem;
-  margin: 1.25rem 0;
+  gap: 0.75rem;
 }
 
 .rails-agents-form label {
   display: grid;
   gap: 0.35rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 500;
+  color: var(--ink);
+}
+
+.rails-agents-form label span {
+  font-weight: 400;
+  color: var(--muted);
 }
 
 .rails-agents-form input {
-  padding: 0.65rem 0.85rem;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0.65rem;
+  background: var(--card);
+  color: var(--ink);
   font: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.rails-agents-form button {
-  border: 0;
-  cursor: pointer;
-  justify-self: start;
+.rails-agents-form input:focus {
+  border-color: var(--ruby);
+  box-shadow: 0 0 0 3px rgba(194, 58, 58, 0.18);
+}
+
+.rails-agents-form .rails-agents-btn {
+  margin-top: 0.35rem;
 }
 
 .rails-agents-muted {
@@ -190,25 +366,52 @@ code {
 .rails-agents-flash {
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
-  background: rgba(180, 24, 45, 0.08);
+  border-radius: 0.65rem;
+  background: rgba(194, 58, 58, 0.08);
   color: var(--ink);
+  font-size: 0.875rem;
 }
 
 .rails-agents-flash--alert {
-  background: rgba(180, 24, 45, 0.12);
-  color: var(--ruby);
+  background: rgba(194, 58, 58, 0.12);
+  color: var(--ruby-deep);
 }
+
+.rails-agents-connect__foot {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.rails-agents-connect__foot a {
+  color: var(--ruby);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.rails-agents-connect__foot a:hover {
+  text-decoration: underline;
+}
+
+.rails-agents-github-icon {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+/* ——— Embed dashboard chrome ——— */
 
 .rails-agents-main--embed {
   max-width: none;
   padding: 0;
+  margin: 0;
 }
 
 .rails-agents-embed-shell {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 4rem);
+  min-height: 100vh;
 }
 
 .rails-agents-embed-bar {
@@ -216,17 +419,43 @@ code {
   align-items: center;
   gap: 1rem;
   justify-content: space-between;
-  padding: 0.65rem 1.25rem;
+  padding: 0.7rem 1.25rem;
   border-bottom: 1px solid var(--border);
-  background: white;
+  background: var(--cream);
   font-size: 0.8rem;
   font-weight: 500;
+}
+
+.rails-agents-embed-bar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+}
+
+.rails-agents-embed-bar__brand img {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.4rem;
+  object-fit: cover;
+  object-position: top;
+}
+
+.rails-agents-embed-bar__brand em {
+  font-style: normal;
+  color: var(--ruby);
 }
 
 .rails-agents-embed-bar a {
   color: var(--ruby);
   text-decoration: none;
   white-space: nowrap;
+  font-weight: 550;
+}
+
+.rails-agents-embed-bar a:hover {
+  text-decoration: underline;
 }
 
 .rails-agents-sync-status {
@@ -246,5 +475,5 @@ code {
   width: 100%;
   min-height: 70vh;
   border: 0;
-  background: white;
+  background: var(--cream);
 }

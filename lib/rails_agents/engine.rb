@@ -10,7 +10,11 @@ module RailsAgents
 
     initializer "rails_agents.assets" do |app|
       if app.config.respond_to?(:assets) && app.config.assets.respond_to?(:precompile)
-        app.config.assets.precompile += %w[rails_agents/application.css]
+        app.config.assets.precompile += %w[
+          rails_agents/application.css
+          rails_agents/kip-logo.png
+          rails_agents/kip-waving.png
+        ]
       end
     end
   end
