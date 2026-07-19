@@ -52,11 +52,17 @@ module RailsAgents
         say "  Rails Agents installed", :green
         say "============================================================", :green
         say ""
-        say "  1. Start your app:  bin/dev   (or rails s)", :green
-        say "  2. Open this URL:   #{url}", :green
+        say "  Restart your Rails server so /agents is loaded:", :green
+        say "    bin/dev     (or: bin/rails server)", :green
         say ""
-        say "  Sign up with GitHub or email (we'll email a 4-digit code).", :green
-        say "  Then vibe-code your first agent — files land in app/agents/.", :green
+        say "  Then open the Agents UI:", :green
+        say "    #{url}", :green
+        say ""
+        say "  What to expect:", :green
+        say "  · Sign up with GitHub or email (4-digit code)", :green
+        say "  · Paste your sandbox API key to connect this app", :green
+        say "  · Kip helps you build your first agent in chat", :green
+        say "    (files land in app/agents/ — edit anytime)", :green
         say ""
         say "============================================================", :green
         say ""
@@ -72,13 +78,14 @@ module RailsAgents
 
         if should_open
           say "Opening #{url} …", :green
+          say "(If the page isn't up yet, restart the server first.)", :yellow
           open_in_browser(url)
         else
-          say "When ready, open: #{url}"
+          say "When ready: restart the server, then open #{url}"
         end
 
         say ""
-        say "Docs: https://rails-agent.com/docs/getting-started"
+        say "Guide: https://rails-agent.com/start"
       end
 
       private
