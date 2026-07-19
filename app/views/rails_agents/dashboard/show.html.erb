@@ -157,22 +157,6 @@
           Already have an account?
           <a href="<%= signin_url %>">Sign in</a>
         </p>
-
-        <details class="rails-agents-advanced">
-          <summary>Have a sandbox API key?</summary>
-          <p class="rails-agents-muted">
-            Paste the key from Cloud → API keys to connect this Rails app.
-          </p>
-          <%= form_with url: rails_agents.handshake_path, method: :post, local: true, class: "rails-agents-form" do %>
-            <label>
-              API key
-              <input type="text" name="api_key" required autocomplete="off" placeholder="rak_sandbox_…" spellcheck="false" />
-            </label>
-            <button type="submit" class="rails-agents-btn rails-agents-btn--ink">
-              Connect this app →
-            </button>
-          <% end %>
-        </details>
       </div>
     </section>
   </div>
