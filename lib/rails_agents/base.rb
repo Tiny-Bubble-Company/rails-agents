@@ -132,17 +132,33 @@ module RailsAgents
       end
 
       def run_id
-        response["id"] || response["run_id"]
+        response["id"] ||
+          response["run_id"] ||
+          dig_data("id")
       end
 
       def stream(&block)
         client.stream_run(run_id, &block)
       end
 
+      # Prefer the sync create_run body; otherwise drain the SSE stream.
       def output
+        sync = response["output"] || dig_data("output")
+        return sync if sync.is_a?(String) && !sync.empty?
+
         chunks = []
-        stream { |event| chunks << event["content"] if event["content"] }
+        stream do |event|
+          piece = event["content"] || event["text"]
+          chunks << piece if piece.is_a?(String) && !piece.empty?
+        end
         chunks.join
+      end
+
+      private
+
+      def dig_data(key)
+        data = response["data"]
+        data.is_a?(Hash) ? data[key] : nil
       end
     end
   end
