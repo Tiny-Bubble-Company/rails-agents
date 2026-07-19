@@ -21,7 +21,7 @@ Make AI agent development a **zero-knowledge task for Rails developers**. Rails 
 
 - Install: `bundle add rails-agent-stack` + `rails agent install`.
 - Ships a **mountable Rails Engine** at `/agents` (Sidekiq-style): signup, sign-in, dashboard proxy.
-- Generator scaffolds `app/agents/` with the **agent-as-directory** convention (mirrors Eve):
+- Generator scaffolds `app/agents/` with the **agent-as-directory** convention:
 
 ```
 app/agents/support/
