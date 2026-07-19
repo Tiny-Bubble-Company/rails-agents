@@ -6,12 +6,22 @@ module RailsAgents
   class DashboardController < ApplicationController
     def show
       load_local_credentials!
+      unless configured?
+        redirect_to rails_agents.signup_path
+        return
+      end
+
       @embed_token = params[:embed_token].presence || params[:token].presence
       @dashboard_url = build_embed_url("/dashboard")
     end
 
     def proxy
       load_local_credentials!
+      unless configured?
+        redirect_to rails_agents.signup_path
+        return
+      end
+
       @embed_token = params[:embed_token].presence || params[:token].presence
       path = "/dashboard/#{params[:path]}"
       @dashboard_url = build_embed_url(path)
