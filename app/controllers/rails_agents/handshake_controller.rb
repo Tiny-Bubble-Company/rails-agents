@@ -33,8 +33,8 @@ module RailsAgents
       CredentialsWriter.write!(api_key: api_key, project_id: project_id)
       apply_runtime_config!(api_key: api_key, project_id: project_id)
 
-      redirect_to rails_agents.dashboard_path(embed_token: embed_token),
-                  notice: "Connected to Rails Agent Cloud."
+      session[:ra_embed_token] = embed_token if embed_token.present?
+      redirect_to rails_agents.dashboard_path, notice: "Connected to Rails Agent Cloud."
     rescue Client::Error => e
       flash[:alert] = e.message
       redirect_to rails_agents.root_path
