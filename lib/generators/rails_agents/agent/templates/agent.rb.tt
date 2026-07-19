@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class <%= class_name %> < RailsAgents::Base
+class <%= class_name %> < RailsAgents::ChatAgent
   model :auto
   memory :conversation
   knowledge_from "knowledge/**/*"

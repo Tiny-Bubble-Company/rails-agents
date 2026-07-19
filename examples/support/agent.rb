@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Support < RailsAgents::Base
+class Support < RailsAgents::ChatAgent
   model :auto
   memory :conversation
   knowledge_from "knowledge/**/*"

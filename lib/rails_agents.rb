@@ -7,6 +7,9 @@ require "rails_agents/credentials_writer"
 require "rails_agents/local_auth"
 require "rails_agents/local_sync"
 require "rails_agents/base"
+require "rails_agents/chat_agent"
+require "rails_agents/workflow_agent"
+require "rails_agents/background_agent"
 require "rails_agents/cli"
 
 if defined?(Rails::Engine)

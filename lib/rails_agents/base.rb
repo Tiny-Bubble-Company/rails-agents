@@ -4,10 +4,16 @@ require "pathname"
 require "active_support/core_ext/string/inflections"
 
 module RailsAgents
+  # Prefer typed subclasses for app integration:
+  # ChatAgent, WorkflowAgent, or BackgroundAgent.
   class Base
     class << self
       attr_reader :agent_name, :model_setting, :memory_setting, :knowledge_glob,
                   :tool_definitions, :skill_definitions, :channel_definitions
+
+      def agent_kind
+        :base
+      end
 
       def inherited(subclass)
         super
