@@ -97,10 +97,17 @@
   <%
     cloud = RailsAgents.config.dashboard_base.to_s.chomp("/")
     cloud = "https://cloud.rails-agent.com" if cloud.blank?
-    return_to = "#{cloud}/dashboard/keys?onboarding=1"
-    signup_url = "#{cloud}/signup?from=agents&return_to=#{ERB::Util.url_encode(return_to)}"
-    signin_url = "#{cloud}/signin?return_to=#{ERB::Util.url_encode(return_to)}"
+    return_to = "/dashboard/keys?onboarding=1"
+    port = (request.port.presence || 3000).to_s
+    # Only loopback is accepted by cloud for local_return
+    local_host = %w[localhost 127.0.0.1].include?(request.host) ? "127.0.0.1" : nil
+    local_return = local_host ? "http://#{local_host}:#{port}#{rails_agents.connect_path}" : nil
+    qs = "from=agents&return_to=#{ERB::Util.url_encode(return_to)}"
+    qs = "#{qs}&local_return=#{ERB::Util.url_encode(local_return)}" if local_return
+    signup_url = "#{cloud}/signup?#{qs}"
+    signin_url = "#{cloud}/signin?#{qs}"
     github_url = "#{cloud}/api/v1/auth/github?return_to=#{ERB::Util.url_encode(return_to)}"
+    github_url = "#{github_url}&local_return=#{ERB::Util.url_encode(local_return)}" if local_return
   %>
   <div class="rails-agents-connect">
     <aside class="rails-agents-connect__brand">

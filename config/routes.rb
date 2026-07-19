@@ -6,6 +6,7 @@ RailsAgents::Engine.routes.draw do
   delete "signout", to: "sessions#destroy", as: :signout
 
   post "handshake", to: "handshake#create", as: :handshake
+  get "connect", to: "connect#show", as: :connect
 
   # Local disk sync — called by the embed bridge after vibecode / before Test
   post "pull", to: "pulls#create", as: :pull

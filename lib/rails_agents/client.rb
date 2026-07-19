@@ -75,6 +75,10 @@ module RailsAgents
       }.compact, auth: false)
     end
 
+    def claim_connect(code)
+      post("/auth/connect/claim", { code: code }, auth: false)
+    end
+
     def logs(agent: nil, limit: 50)
       get("/logs", query: { agent: agent, limit: limit, project_id: @config.project_id }.compact)
     end
