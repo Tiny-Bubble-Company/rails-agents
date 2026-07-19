@@ -6,7 +6,6 @@
       <span class="rails-agents-muted" style="font-family:Inter,sans-serif;font-weight:400;margin-left:0.35rem">· connected</span>
     </span>
     <span id="rails-agents-sync-status" class="rails-agents-sync-status" aria-live="polite"></span>
-    <%= link_to "Open in Cloud ↗", @dashboard_url, target: "_blank", rel: "noopener" %>
   </div>
   <iframe
     id="rails-agents-dashboard-frame"
@@ -26,6 +25,8 @@
       "https://cloud.rails-agent.com": true,
       "http://localhost:3000": true,
       "http://127.0.0.1:3000": true,
+      "http://localhost:3001": true,
+      "http://127.0.0.1:3001": true,
       "http://localhost:8080": true,
       "http://127.0.0.1:8080": true
     };

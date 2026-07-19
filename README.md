@@ -101,7 +101,7 @@ Same path as the [docs](https://rails-agent.com/docs/getting-started). Don't sig
 |------|--|
 | **01 · Add the gem** | `gem "rails-agent-stack", github: "Tiny-Bubble-Company/rails-agents"` |
 | **02 · Install** | `bundle install` then `bin/rails generate rails_agents:install` |
-| **03 · Restart → /agents** | `bin/dev` → open `http://localhost:3000/agents` — like Sidekiq |
+| **03 · Start → /agents** | `bin/dev` → open `http://localhost:3000/agents` |
 | **04 · Build with Kip** | Describe the agent in plain English. Kip writes `app/agents/<name>/`. Edit the Ruby anytime. |
 
 ### What to expect
