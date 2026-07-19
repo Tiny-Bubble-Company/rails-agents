@@ -2,18 +2,10 @@ Rails Agents is mounted at /agents.
 
 Next steps:
 
-  1. Start your app and open http://localhost:3000/agents
-  2. Sign up — the engine handshakes with https://meerkatagents.com
-     and writes config/rails_agents_credentials.yml
-  3. Or run: rails-agents login
-  4. Create an agent in the dashboard (vibe-code with Kip)
-  5. Test in the sandbox, then Deploy (Studio for production)
-
-Optional .env placeholders:
-
-  RAILS_AGENTS_API_KEY=
-  RAILS_AGENTS_PROJECT_ID=
-  RAILS_AGENTS_API_BASE=https://meerkatagents.com
-  RAILS_AGENTS_DASHBOARD_BASE=https://meerkatagents.com
+  1. Start your app:  bin/dev
+  2. Open:            http://localhost:3000/agents
+  3. Sign up with GitHub or email (4-digit code)
+  4. Describe your agent in chat — files write to app/agents/
+  5. Hit Test, then Deploy when ready
 
 Docs: https://meerkatagents.com/docs/getting-started

@@ -8,15 +8,17 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Rails Agent Team"]
   spec.email         = ["hello@railsagents.dev"]
 
-  spec.summary       = "Rails-native AI agents - mountable engine, DSL, and cloud runtime."
-  spec.description   = "Add AI agents to your Rails app with zero AI knowledge. Mount /agents, " \
-                         "define agents in app/agents/, and run on Rails Agent Cloud."
-  spec.homepage      = "https://railsagents.dev"
+  spec.summary       = "Fullstack AI agents for Rails — mount /agents, vibe-code, deploy."
+  spec.description   = "The fullstack agentic platform for Rails. One gem install, chat in the " \
+                         "dashboard, and we handle code, infra and deploys. Zero AI knowledge required."
+  spec.homepage      = "https://meerkatagents.com"
   spec.license       = "MIT"
-  spec.required_ruby_version = ">= 3.1.0"
+  spec.required_ruby_version = ">= 3.2.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["documentation_uri"] = "https://meerkatagents.com/docs/getting-started"
   spec.metadata["source_code_uri"] = "https://github.com/Tiny-Bubble-Company/rails-agents"
+  spec.metadata["bug_tracker_uri"] = "https://github.com/Tiny-Bubble-Company/rails-agents/issues"
   spec.metadata["rubygems_mimetype"] = "application/x-rubygem"
 
   spec.files = Dir.chdir(__dir__) do
