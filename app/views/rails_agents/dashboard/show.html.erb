@@ -9,21 +9,100 @@
   <div class="rails-agents-embed-shell">
     <div class="rails-agents-embed-bar">
       <span>Rails Agent · connected</span>
+      <span id="rails-agents-sync-status" class="rails-agents-sync-status" aria-live="polite"></span>
       <%= link_to "Open in new tab", @dashboard_url, target: "_blank", rel: "noopener" %>
     </div>
     <iframe
+      id="rails-agents-dashboard-frame"
       class="rails-agents-embed"
       src="<%= @dashboard_url %>"
       title="Rails Agent Cloud dashboard"
       allow="clipboard-write"
     ></iframe>
   </div>
+
+  <script>
+    (function () {
+      var PULL_URL = <%= raw rails_agents.pull_path.to_json %>;
+      var CSRF = document.querySelector('meta[name="csrf-token"]');
+      var statusEl = document.getElementById("rails-agents-sync-status");
+      var ALLOWED = {
+        "https://meerkatagents.com": true,
+        "http://localhost:3000": true,
+        "http://127.0.0.1:3000": true,
+        "http://localhost:8080": true,
+        "http://127.0.0.1:8080": true
+      };
+
+      function setStatus(text, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = text || "";
+        statusEl.classList.toggle("rails-agents-sync-status--error", !!isError);
+      }
+
+      async function pullAgent(agentId) {
+        var headers = {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        };
+        if (CSRF) headers["X-CSRF-Token"] = CSRF.getAttribute("content");
+
+        var res = await fetch(PULL_URL, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: headers,
+          body: JSON.stringify({ agent_id: agentId })
+        });
+        var json = {};
+        try { json = await res.json(); } catch (e) { json = {}; }
+        if (!res.ok || json.ok === false) {
+          throw new Error(json.error || ("Pull failed (" + res.status + ")"));
+        }
+        return json;
+      }
+
+      window.addEventListener("message", function (event) {
+        if (!ALLOWED[event.origin]) return;
+        var data = event.data || {};
+        if (data.type !== "rails-agents:pull") return;
+        if (!data.agentId) return;
+
+        setStatus("Writing app/agents/…");
+        pullAgent(data.agentId)
+          .then(function (result) {
+            setStatus("Synced " + (result.count || 0) + " files → app/agents/" + result.slug + "/");
+            if (event.source && event.source.postMessage) {
+              event.source.postMessage({
+                type: "rails-agents:pull-result",
+                requestId: data.requestId,
+                ok: true,
+                count: result.count,
+                slug: result.slug,
+                written: result.written
+              }, event.origin);
+            }
+          })
+          .catch(function (err) {
+            setStatus(err.message || "Pull failed", true);
+            if (event.source && event.source.postMessage) {
+              event.source.postMessage({
+                type: "rails-agents:pull-result",
+                requestId: data.requestId,
+                ok: false,
+                error: err.message || "Pull failed"
+              }, event.origin);
+            }
+          });
+      });
+    })();
+  </script>
 <% else %>
   <div class="rails-agents-hero">
     <h1>Connect this app to Rails Agent Cloud</h1>
     <p class="rails-agents-lead">
       Like Sidekiq&rsquo;s <code>/sidekiq</code> — visit <code>/agents</code>, sign up once,
-      and Kip embeds your cloud dashboard here.
+      and Kip embeds your cloud dashboard here. Vibecode writes files into
+      <code>app/agents/</code> on this machine.
     </p>
   </div>
 

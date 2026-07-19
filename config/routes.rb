@@ -7,6 +7,9 @@ RailsAgents::Engine.routes.draw do
 
   post "handshake", to: "handshake#create", as: :handshake
 
+  # Local disk sync — called by the embed bridge after vibecode / before Test
+  post "pull", to: "pulls#create", as: :pull
+
   get "dashboard", to: "dashboard#show", as: :dashboard
   get "dashboard/*path", to: "dashboard#proxy", as: :dashboard_proxy
 end

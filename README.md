@@ -92,13 +92,16 @@ end
 ```bash
 rails-agents run support "Where is order 42?"
 rails-agents deploy support
-rails-agents sync support
+rails-agents sync support   # local → cloud
+rails-agents pull agt_…     # cloud → app/agents/<slug>/
 rails-agents logs support
 ```
 
 ## Engine
 
 `/agents` is Sidekiq-simple: signup handshake → credentials on disk → iframe of the cloud dashboard (`?embed=1&token=…`).
+
+When you vibecode (or hit **Test** / **Deploy**) inside that iframe, the cloud posts a message to the parent page. The gem’s `POST /agents/pull` fetches files from the API and writes them into `app/agents/<slug>/` on this machine — no Cursor install, no manual sync for the happy path.
 
 ## Cloud API client
 
