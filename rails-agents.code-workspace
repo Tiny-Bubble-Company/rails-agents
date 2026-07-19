@@ -13,6 +13,9 @@
     },
     {
       "path": "../rails-agents-ops"
+    },
+    {
+      "path": "../rails-agents-design"
     }
   ]
 }
