@@ -1,17 +1,10 @@
 <div class="rails-agents-embed-shell">
-  <div class="rails-agents-embed-bar">
-    <span class="rails-agents-embed-bar__brand">
-      <%= image_tag "rails_agents/kip-logo.png", alt: "", aria: { hidden: true } %>
-      Rails <em>Agent</em>
-      <span class="rails-agents-muted" style="font-family:Inter,sans-serif;font-weight:400;margin-left:0.35rem">· connected</span>
-    </span>
-    <span id="rails-agents-sync-status" class="rails-agents-sync-status" aria-live="polite"></span>
-  </div>
+  <span id="rails-agents-sync-status" class="rails-agents-sync-status rails-agents-sync-status--sr" aria-live="polite"></span>
   <iframe
     id="rails-agents-dashboard-frame"
     class="rails-agents-embed"
     src="<%= @dashboard_url %>"
-    title="Rails Agent dashboard"
+    title="Agents dashboard"
     allow="clipboard-write"
   ></iframe>
 </div>
@@ -23,6 +16,7 @@
     var statusEl = document.getElementById("rails-agents-sync-status");
     var ALLOWED = {
       "https://cloud.rails-agent.com": true,
+      "https://rails-agent.com": true,
       "http://localhost:3000": true,
       "http://127.0.0.1:3000": true,
       "http://localhost:3001": true,
