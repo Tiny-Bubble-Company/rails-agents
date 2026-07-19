@@ -98,7 +98,9 @@
     cloud = RailsAgents.config.dashboard_base.to_s.chomp("/")
     cloud = "https://cloud.rails-agent.com" if cloud.blank?
     return_to = "#{cloud}/dashboard/keys?onboarding=1"
-    workspace_default = (Rails.application.class.module_parent_name rescue "MyApp")
+    signup_url = "#{cloud}/signup?from=agents&return_to=#{ERB::Util.url_encode(return_to)}"
+    signin_url = "#{cloud}/signin?return_to=#{ERB::Util.url_encode(return_to)}"
+    github_url = "#{cloud}/api/v1/auth/github?return_to=#{ERB::Util.url_encode(return_to)}"
   %>
   <div class="rails-agents-connect">
     <aside class="rails-agents-connect__brand">
@@ -113,8 +115,7 @@
         <h1>Ship your first agent in <em>ten minutes</em>.</h1>
         <p>
           Create a workspace, open <code>/agents</code> in your Rails app,
-          and describe what the agent should do. Kip writes the files —
-          no AI course required.
+          and describe what the agent should do.
         </p>
         <div class="rails-agents-connect__kip">
           <%= image_tag "rails_agents/kip-waving.png", alt: "Kip the Rails Agent meerkat waving hello" %>
@@ -133,57 +134,45 @@
           <div class="rails-agents-flash rails-agents-flash--alert"><%= alert %></div>
         <% end %>
 
-        <h2>Connect this app</h2>
+        <h2>Create workspace</h2>
         <p class="rails-agents-lede">
-          Continue with GitHub or email — then paste your sandbox key here.
+          Continue with GitHub, or email — we send a 4-digit code.
         </p>
 
-        <div class="rails-agents-stack">
-          <a class="rails-agents-btn rails-agents-btn--ghost"
-             href="<%= cloud %>/api/v1/auth/github?return_to=<%= ERB::Util.url_encode(return_to) %>">
-            <svg class="rails-agents-github-icon" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
-            Continue with GitHub
-          </a>
-          <a class="rails-agents-btn rails-agents-btn--primary"
-             href="<%= cloud %>/signup?from=agents">
-            Continue with email
-          </a>
-        </div>
+        <a class="rails-agents-btn rails-agents-btn--ghost rails-agents-btn--spaced"
+           href="<%= github_url %>">
+          <svg class="rails-agents-github-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          Continue with GitHub
+        </a>
 
-        <div class="rails-agents-divider">or paste key</div>
+        <div class="rails-agents-divider">or email</div>
 
-        <p class="rails-agents-muted" style="margin:0 0 0.85rem">
-          Already signed up? Paste the sandbox API key from Cloud → API keys.
-        </p>
-
-        <%= form_with url: rails_agents.handshake_path, method: :post, local: true, class: "rails-agents-form" do %>
-          <label>
-            Workspace
-            <input type="text" name="workspace" placeholder="<%= workspace_default %>" autocomplete="organization" />
-          </label>
-          <label>
-            Email
-            <input type="email" name="email" autocomplete="email" placeholder="you@company.com" />
-          </label>
-          <label>
-            Password <span>(optional · legacy)</span>
-            <input type="password" name="password" minlength="8" autocomplete="current-password" />
-          </label>
-          <label>
-            API key <span>(rak_sandbox_…)</span>
-            <input type="text" name="api_key" autocomplete="off" placeholder="rak_sandbox_…" spellcheck="false" />
-          </label>
-          <button type="submit" class="rails-agents-btn rails-agents-btn--ink">
-            Connect this app →
-          </button>
-        <% end %>
+        <a class="rails-agents-btn rails-agents-btn--primary" href="<%= signup_url %>">
+          Continue with email
+        </a>
 
         <p class="rails-agents-connect__foot">
-          Need a walkthrough?
-          <a href="https://rails-agent.com/docs/getting-started" target="_blank" rel="noopener">Read the docs</a>
+          Already have an account?
+          <a href="<%= signin_url %>">Sign in</a>
         </p>
+
+        <details class="rails-agents-advanced">
+          <summary>Have a sandbox API key?</summary>
+          <p class="rails-agents-muted">
+            Paste the key from Cloud → API keys to connect this Rails app.
+          </p>
+          <%= form_with url: rails_agents.handshake_path, method: :post, local: true, class: "rails-agents-form" do %>
+            <label>
+              API key
+              <input type="text" name="api_key" required autocomplete="off" placeholder="rak_sandbox_…" spellcheck="false" />
+            </label>
+            <button type="submit" class="rails-agents-btn rails-agents-btn--ink">
+              Connect this app →
+            </button>
+          <% end %>
+        </details>
       </div>
     </section>
   </div>
