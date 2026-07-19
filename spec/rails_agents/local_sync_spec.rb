@@ -13,7 +13,7 @@ RSpec.describe RailsAgents::LocalSync do
   before do
     RailsAgents.configure do |c|
       c.api_key = "rak_sandbox_test"
-      c.api_base = "https://meerkatagents.com"
+      c.api_base = "https://cloud.rails-agent.com"
     end
   end
 

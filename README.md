@@ -6,9 +6,9 @@ The fullstack agentic platform for Rails. One gem install, chat in the dashboard
 
 | | |
 |---|---|
-| **Website** | [meerkatagents.com](https://meerkatagents.com) |
-| **Get started** | [meerkatagents.com/start](https://meerkatagents.com/start) |
-| **Docs** | [Getting started](https://meerkatagents.com/docs/getting-started) |
+| **Website** | [rails-agent.com](https://rails-agent.com) |
+| **Get started** | [rails-agent.com/start](https://rails-agent.com/start) |
+| **Docs** | [Getting started](https://rails-agent.com/docs/getting-started) |
 | **Gem** | `rails-agent-stack` |
 
 Meet **Kip**, the meerkat who keeps watch while your agents run on Rails Agent Cloud.
@@ -120,8 +120,8 @@ bundle exec rails-agents logs support
 # config/initializers/rails_agents.rb
 RailsAgents.configure do |config|
   config.api_key = ENV["RAILS_AGENTS_API_KEY"]
-  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://meerkatagents.com")
-  config.dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", "https://meerkatagents.com")
+  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://cloud.rails-agent.com")
+  config.dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", "https://cloud.rails-agent.com")
   config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
 end
 ```
@@ -146,7 +146,7 @@ When you vibecode (or hit **Test** / **Deploy**) inside that iframe, the cloud m
 | **Studio** | $49/dev/mo — production deploys & channels |
 | **Enterprise** | Custom |
 
-Details: [meerkatagents.com/pricing](https://meerkatagents.com/pricing)
+Details: [rails-agent.com/pricing](https://rails-agent.com/pricing)
 
 ---
 

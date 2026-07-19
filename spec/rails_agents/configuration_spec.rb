@@ -5,16 +5,16 @@ require "spec_helper"
 RSpec.describe RailsAgents::Configuration do
   subject(:config) { described_class.new }
 
-  it "defaults api_base to meerkatagents.com" do
-    expect(config.api_base).to eq("https://meerkatagents.com")
+  it "defaults api_base to cloud.rails-agent.com" do
+    expect(config.api_base).to eq("https://cloud.rails-agent.com")
   end
 
-  it "defaults dashboard_base to meerkatagents.com" do
-    expect(config.dashboard_base).to eq("https://meerkatagents.com")
+  it "defaults dashboard_base to cloud.rails-agent.com" do
+    expect(config.dashboard_base).to eq("https://cloud.rails-agent.com")
   end
 
   it "builds api_v1_base under /api/v1" do
-    expect(config.api_v1_base).to eq("https://meerkatagents.com/api/v1")
+    expect(config.api_v1_base).to eq("https://cloud.rails-agent.com/api/v1")
   end
 
   it "reads api_key from ENV" do

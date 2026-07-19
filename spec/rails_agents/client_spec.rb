@@ -6,7 +6,7 @@ RSpec.describe RailsAgents::Client do
   let(:config) do
     RailsAgents.config.tap do |c|
       c.api_key = "test-key"
-      c.api_base = "https://meerkatagents.com"
+      c.api_base = "https://cloud.rails-agent.com"
       c.project_id = "proj_123"
     end
   end
@@ -15,7 +15,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#create_run" do
     it "POSTs to /api/v1/runs with auth" do
-      stub_request(:post, "https://meerkatagents.com/api/v1/runs")
+      stub_request(:post, "https://cloud.rails-agent.com/api/v1/runs")
         .with(
           headers: { "Authorization" => "Bearer test-key" },
           body: hash_including("agent" => "support", "message" => "Hello")
@@ -29,7 +29,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#deploy" do
     it "POSTs to /api/v1/deploys" do
-      stub_request(:post, "https://meerkatagents.com/api/v1/deploys")
+      stub_request(:post, "https://cloud.rails-agent.com/api/v1/deploys")
         .to_return(status: 200, body: { id: "dep_1", status: "queued" }.to_json)
 
       response = client.deploy(agent: "support")
@@ -39,7 +39,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#install_channel" do
     it "POSTs to /api/v1/channels/:kind/install" do
-      stub_request(:post, "https://meerkatagents.com/api/v1/channels/slack/install")
+      stub_request(:post, "https://cloud.rails-agent.com/api/v1/channels/slack/install")
         .to_return(status: 200, body: { url: "https://oauth.example" }.to_json)
 
       response = client.install_channel(kind: "slack")
@@ -49,7 +49,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#sync_knowledge" do
     it "POSTs to /api/v1/knowledge/sync" do
-      stub_request(:post, "https://meerkatagents.com/api/v1/knowledge/sync")
+      stub_request(:post, "https://cloud.rails-agent.com/api/v1/knowledge/sync")
         .to_return(status: 200, body: { synced: 2 }.to_json)
 
       response = client.sync_knowledge(agent: "support", paths: %w[faq.md])
@@ -59,7 +59,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#sync_files" do
     it "PUTs to /api/v1/agents/:id/files" do
-      stub_request(:put, "https://meerkatagents.com/api/v1/agents/support/files")
+      stub_request(:put, "https://cloud.rails-agent.com/api/v1/agents/support/files")
         .with(body: hash_including("files" => kind_of(Array)))
         .to_return(status: 200, body: { data: [] }.to_json)
 
@@ -70,7 +70,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#handshake" do
     it "POSTs to /api/v1/auth/handshake without bearer" do
-      stub_request(:post, "https://meerkatagents.com/api/v1/auth/handshake")
+      stub_request(:post, "https://cloud.rails-agent.com/api/v1/auth/handshake")
         .with { |req| !req.headers["Authorization"] }
         .to_return(status: 201, body: { data: { api_key: "ra_x" } }.to_json)
 
@@ -81,7 +81,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#logs" do
     it "GETs /api/v1/logs" do
-      stub_request(:get, %r{https://meerkatagents.com/api/v1/logs})
+      stub_request(:get, %r{https://cloud.rails-agent.com/api/v1/logs})
         .to_return(status: 200, body: { entries: [] }.to_json)
 
       expect(client.logs(agent: "support")["entries"]).to eq([])
@@ -90,7 +90,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#traces" do
     it "GETs /api/v1/traces" do
-      stub_request(:get, %r{https://meerkatagents.com/api/v1/traces})
+      stub_request(:get, %r{https://cloud.rails-agent.com/api/v1/traces})
         .to_return(status: 200, body: { traces: [] }.to_json)
 
       expect(client.traces["traces"]).to eq([])
@@ -99,7 +99,7 @@ RSpec.describe RailsAgents::Client do
 
   describe "#evals" do
     it "GETs /api/v1/evals" do
-      stub_request(:get, %r{https://meerkatagents.com/api/v1/evals})
+      stub_request(:get, %r{https://cloud.rails-agent.com/api/v1/evals})
         .to_return(status: 200, body: { evals: [] }.to_json)
 
       expect(client.evals["evals"]).to eq([])
