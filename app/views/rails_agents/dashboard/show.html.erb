@@ -8,7 +8,7 @@
 <% if configured? %>
   <div class="rails-agents-embed-shell">
     <div class="rails-agents-embed-bar">
-      <span>Rails Agent · connected</span>
+      <span>Rails Agent - connected</span>
       <span id="rails-agents-sync-status" class="rails-agents-sync-status" aria-live="polite"></span>
       <%= link_to "Open in new tab", @dashboard_url, target: "_blank", rel: "noopener" %>
     </div>
@@ -67,10 +67,10 @@
         if (data.type !== "rails-agents:pull") return;
         if (!data.agentId) return;
 
-        setStatus("Writing app/agents/…");
+        setStatus("Writing app/agents/...");
         pullAgent(data.agentId)
           .then(function (result) {
-            setStatus("Synced " + (result.count || 0) + " files → app/agents/" + result.slug + "/");
+            setStatus("Synced " + (result.count || 0) + " files -> app/agents/" + result.slug + "/");
             if (event.source && event.source.postMessage) {
               event.source.postMessage({
                 type: "rails-agents:pull-result",
@@ -97,37 +97,62 @@
     })();
   </script>
 <% else %>
+  <%
+    cloud = RailsAgents.config.dashboard_base.to_s.chomp("/")
+    cloud = "https://meerkatagents.com" if cloud.blank?
+    return_to = "#{cloud}/dashboard?onboarding=1"
+  %>
   <div class="rails-agents-hero">
-    <h1>Connect this app to Rails Agent Cloud</h1>
+    <h1>Connect this Rails app</h1>
     <p class="rails-agents-lead">
-      Like Sidekiq&rsquo;s <code>/sidekiq</code> — visit <code>/agents</code>, sign up once,
-      and Kip embeds your cloud dashboard here. Vibecode writes files into
-      <code>app/agents/</code> on this machine.
+      Like Sidekiq&rsquo;s <code>/sidekiq</code>. Sign up once - then vibe-code agents
+      here; files write into <code>app/agents/</code> on this machine.
     </p>
   </div>
 
   <section class="rails-agents-panel">
     <h2>Sign up / sign in</h2>
-    <p>We&rsquo;ll save your API key to <code>config/rails_agents_credentials.yml</code> (and append <code>.env</code> if present).</p>
+    <p class="rails-agents-muted" style="margin-top:0">
+      Fastest path: continue on Rails Agent Cloud, then come back - we&rsquo;ll store your API key.
+    </p>
+
+    <div style="display:flex; flex-direction:column; gap:0.75rem; margin: 1.25rem 0;">
+      <a class="rails-agents-button" style="text-align:center; text-decoration:none; display:block;"
+         href="<%= cloud %>/api/v1/auth/github?return_to=<%= ERB::Util.url_encode(return_to) %>">
+        Continue with GitHub
+      </a>
+      <a class="rails-agents-button" style="text-align:center; text-decoration:none; display:block; background:#0F0F10;"
+         href="<%= cloud %>/signup?from=agents">
+        Continue with email
+      </a>
+    </div>
+
+    <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;" />
+
+    <h3 style="font-family: Fraunces, Georgia, serif; margin: 0 0 0.5rem;">Already have a code / API key?</h3>
+    <p class="rails-agents-muted">Paste the sandbox API key from the cloud dashboard (Settings), or finish email signup there and paste it here.</p>
 
     <%= form_with url: rails_agents.handshake_path, method: :post, local: true, class: "rails-agents-form" do |f| %>
       <label>
         Workspace
-        <input type="text" name="workspace" placeholder="<%= Rails.application.class.module_parent_name %>" />
+        <input type="text" name="workspace" placeholder="<%= Rails.application.class.module_parent_name rescue 'MyApp' %>" />
       </label>
       <label>
         Email
-        <input type="email" name="email" required autocomplete="email" />
+        <input type="email" name="email" autocomplete="email" />
       </label>
       <label>
-        Password
-        <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+        Password <span class="rails-agents-muted">(legacy) or leave blank if using API key below</span>
+        <input type="password" name="password" minlength="8" autocomplete="current-password" />
       </label>
-      <button type="submit" class="rails-agents-button">Connect →</button>
+      <label>
+        API key <span class="rails-agents-muted">(rak_sandbox_...)</span>
+        <input type="text" name="api_key" autocomplete="off" placeholder="rak_sandbox_..." />
+      </label>
+      <button type="submit" class="rails-agents-button">Connect this app -></button>
     <% end %>
 
     <p class="rails-agents-muted">
-      Or run <code>rails-agents login</code> and set <code>RAILS_AGENTS_API_KEY</code>.
       Docs: <a href="https://meerkatagents.com/docs/getting-started" target="_blank" rel="noopener">getting started</a>
     </p>
   </section>

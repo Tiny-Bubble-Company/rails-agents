@@ -33,5 +33,5 @@ module RailsAgents
   end
 end
 
-# PRD uses RailsAgent  alias to RailsAgents for compatibility
+# PRD uses RailsAgent - alias to RailsAgents for compatibility
 RailsAgent = RailsAgents unless defined?(RailsAgent)

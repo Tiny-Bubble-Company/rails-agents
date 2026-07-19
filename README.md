@@ -1,63 +1,79 @@
 # Rails Agent (`rails-agent-stack`)
 
-**Rails-native AI agents.** One gem. One mount. Zero API keys.
+**Build AI agents in Rails like a walk in the park.**
 
-Meet **Kip**, the meerkat who keeps watch while your agents run on [Rails Agent Cloud](https://meerkatagents.com). Define agents in Ruby, deploy to Slack and beyond, and monitor every run — without prompt-engineering rabbit holes or vector DB decisions.
+The fullstack agentic platform for Rails. One gem install, chat in the dashboard, and we handle the code, infra and deploys — you focus on the business logic.
 
-- **Website & dashboard:** [meerkatagents.com](https://meerkatagents.com)
-- **Docs:** [Getting started](https://meerkatagents.com/docs/getting-started)
-- **GitHub:** [Tiny-Bubble-Company/rails-agents](https://github.com/Tiny-Bubble-Company/rails-agents)
+| | |
+|---|---|
+| **Website** | [meerkatagents.com](https://meerkatagents.com) |
+| **Get started** | [meerkatagents.com/start](https://meerkatagents.com/start) |
+| **Docs** | [Getting started](https://meerkatagents.com/docs/getting-started) |
+| **Gem** | `rails-agent-stack` |
 
-## Why Rails Agent?
+Meet **Kip**, the meerkat who keeps watch while your agents run on Rails Agent Cloud.
 
-- **Zero AI knowledge** — models, embeddings, memory, and tool sandboxing are cloud-managed.
-- **Rails-native** — mount `/agents` like Sidekiq, scaffold `app/agents/<name>/`, use `RailsAgents::Base`.
-- **Build → deploy → monitor** — chat authoring, logs, traces, evals, and channel deploys in one dashboard.
+---
 
-## Install
+## Get started
+
+Don't sign up on the website first. Install the gem, run one command, then create your account at `/agents` — like Sidekiq.
+
+**1. Add the gem** to your Rails app `Gemfile`:
+
+```ruby
+gem "rails-agent-stack", github: "Tiny-Bubble-Company/rails-agents"
+```
+
+**2. Install:**
 
 ```bash
-bundle add rails-agent-stack
-rails generate rails_agents:install
+bundle install
+bin/rails generate rails_agents:install
+```
+
+The installer mounts `/agents`, prints `http://localhost:3000/agents`, and can open your browser (`Y` / `r`).
+
+```bash
 bin/dev
 # open http://localhost:3000/agents
 ```
 
-The generator mounts `RailsAgents::Engine` at `/agents` and writes `config/initializers/rails_agents.rb`.
+Sign up with **GitHub** or **email** (4-digit code), paste your sandbox API key, then vibe-code your first agent. Files land in `app/agents/<name>/`.
 
-### Connect to cloud
+Works with **Rails 7+** · **Ruby 3.2+** · cloud runtime included.
 
-**Option A — browser (recommended)**  
-Visit `/agents`, sign up with email/password. The engine handshakes with meerkatagents.com, writes `config/rails_agents_credentials.yml`, and embeds your dashboard.
+---
 
-**Option B — CLI**
+## Why Rails Agent?
 
-```bash
-rails-agents login
-# prints:
-# export RAILS_AGENTS_API_KEY=ra_…
-# export RAILS_AGENTS_PROJECT_ID=ten_…
-```
+| Pillar | What it means |
+|--------|----------------|
+| **Zero AI knowledge** | You don't need LLMs, embeddings, or prompt engineering. If you can write Rails, you can ship agents. |
+| **Zero config** | No API keys, no vector DB, no Redis, no Vercel setup. Install the gem — we run the stack. |
+| **Vibe coding** | Describe what you want in the dashboard chat. Kip scaffolds the agent folder in your repo. |
+| **Build → test → deploy → monitor** | One platform for the whole lifecycle. |
+| **Scalable agentic infra** | Hosted runtime, autoscaling, retries, tracing — included. |
+| **Unified debugging** | Every trace, log, error, and cost is searchable in `/agents`. |
 
-## Configuration
+---
 
-```ruby
-RailsAgents.configure do |config|
-  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
-  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://meerkatagents.com")
-  config.dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", "https://meerkatagents.com")
-  config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
-end
-```
+## How it works
 
-API routes live at the same origin under `/api/v1`. Cloud-only for MVP — no BYOK, no self-hosting.
+1. **Install** the gem and open `/agents` (Sidekiq-style mount).
+2. **Sign up** once — credentials stay on disk.
+3. **Vibe-code** an agent in the embedded dashboard.
+4. **Pull** files into `app/agents/<name>/` automatically from the iframe.
+5. **Test** in the sandbox, then **deploy** channels (Slack, web chat, cron, …).
+
+---
 
 ## Agent-as-directory
 
 ```bash
-rails generate rails_agents:agent support
+bin/rails generate rails_agents:agent support
 # or
-rails-agents new support
+bundle exec rails-agents new support
 ```
 
 ```
@@ -68,7 +84,7 @@ app/agents/support/
 ├── skills/             # composable behaviors
 ├── memory.rb           # memory config
 ├── knowledge/          # RAG files synced to cloud
-├── channels/           # slack.rb, discord.rb, ...
+├── channels/           # slack.rb, web_chat.rb, ...
 └── evals/              # eval cases
 ```
 
@@ -90,41 +106,64 @@ end
 ```
 
 ```bash
-rails-agents run support "Where is order 42?"
-rails-agents deploy support
-rails-agents sync support   # local → cloud
-rails-agents pull agt_…     # cloud → app/agents/<slug>/
-rails-agents logs support
+bundle exec rails-agents run support "Where is order 42?"
+bundle exec rails-agents deploy support
+bundle exec rails-agents pull support
+bundle exec rails-agents logs support
 ```
+
+---
+
+## Configuration
+
+```ruby
+# config/initializers/rails_agents.rb
+RailsAgents.configure do |config|
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
+  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://meerkatagents.com")
+  config.dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", "https://meerkatagents.com")
+  config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
+end
+```
+
+After you connect from `/agents`, credentials are also written to `config/rails_agents_credentials.yml`.
+
+---
 
 ## Engine
 
-`/agents` is Sidekiq-simple: signup handshake → credentials on disk → iframe of the cloud dashboard (`?embed=1&token=…`).
+`/agents` is Sidekiq-simple: signup → API key on disk → iframe of the cloud dashboard.
 
-When you vibecode (or hit **Test** / **Deploy**) inside that iframe, the cloud posts a message to the parent page. The gem’s `POST /agents/pull` fetches files from the API and writes them into `app/agents/<slug>/` on this machine — no Cursor install, no manual sync for the happy path.
+When you vibecode (or hit **Test** / **Deploy**) inside that iframe, the cloud messages the parent page. `POST /agents/pull` fetches files and writes them into `app/agents/<slug>/` on your machine.
 
-## Cloud API client
+---
 
-| Method | Endpoint |
-|--------|----------|
-| `POST` | `/api/v1/auth/handshake` |
-| `POST` | `/api/v1/runs` |
-| `PUT`  | `/api/v1/agents/:id/files` |
-| `POST` | `/api/v1/deploys` |
-| `POST` | `/api/v1/channels/:kind/install` |
-| `POST` | `/api/v1/knowledge/sync` |
-| `GET`  | `/api/v1/logs`, `/traces`, `/evals` |
+## Pricing (cloud)
 
-## Namespace
+| Plan | |
+|------|--|
+| **Developer** | Free sandbox for build & test |
+| **Studio** | $49/dev/mo — production deploys & channels |
+| **Enterprise** | Custom |
 
-The gem module is `RailsAgents`. Prefer `RailsAgents::Base` everywhere.
+Details: [meerkatagents.com/pricing](https://meerkatagents.com/pricing)
 
-## Development
+---
+
+## Development (this repo)
 
 ```bash
 bundle install
 bundle exec rspec
 ```
+
+Local path testing (see `rails-agents-boilerplate` sibling app):
+
+```ruby
+gem "rails-agent-stack", path: "../rails-agents", require: "rails_agents"
+```
+
+---
 
 ## License
 
