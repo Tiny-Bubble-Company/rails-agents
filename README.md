@@ -7,7 +7,8 @@ The fullstack agentic platform for Rails. One gem install, chat in the dashboard
 | | |
 |---|---|
 | **Website** | [rails-agent.com](https://rails-agent.com) |
-| **Get started** | [rails-agent.com/start](https://rails-agent.com/start) |
+| **Docs / Get started** | [rails-agent.com/docs/getting-started](https://rails-agent.com/docs/getting-started) |
+| **Concepts** | [rails-agent.com/docs/concepts](https://rails-agent.com/docs/concepts) |
 | **Cloud** | [cloud.rails-agent.com](https://cloud.rails-agent.com) |
 | **Gem** | `rails-agent-stack` |
 
@@ -15,28 +16,23 @@ The fullstack agentic platform for Rails. One gem install, chat in the dashboard
 
 ## Get started
 
-Same steps as [rails-agent.com/start](https://rails-agent.com/start). Don't sign up on the website first — start in your Rails app.
+Same path as the [docs](https://rails-agent.com/docs/getting-started). Don't sign up on the website first — start in your Rails app.
 
-### 01 · Add the gem
-
-In your Rails app `Gemfile`:
+### 1 · Add the gem
 
 ```ruby
+# Gemfile
 gem "rails-agent-stack", github: "Tiny-Bubble-Company/rails-agents"
 ```
 
-### 02 · Install
-
-Bundle, then run the installer. It mounts the engine and prepares credentials.
+### 2 · Install
 
 ```bash
 bundle install
 bin/rails generate rails_agents:install
 ```
 
-### 03 · Restart your Rails server
-
-Restart so the new mount is loaded. The Agents UI is at `/agents` — like Sidekiq.
+### 3 · Restart your Rails server
 
 ```bash
 bin/dev
@@ -48,14 +44,18 @@ bin/dev
 ### What to expect
 
 1. The Agents UI loads at **`/agents`** (e.g. `http://localhost:3000/agents`).
-2. Sign up with **GitHub** or **email** (4-digit code), then paste your sandbox API key to connect this app.
-3. After signup, **Kip** — your docs-free coding agent — helps you build your first agent in chat. Describe what it should do; Kip writes `app/agents/`. Edit those files anytime if you want.
+2. Sign up with **GitHub** or **email** (4-digit code). Connecting usually writes `RAILS_AGENTS_API_KEY` + `RAILS_AGENTS_PROJECT_ID` to `.env`. If not, copy them from [Dashboard → API keys](https://cloud.rails-agent.com/dashboard/keys) — and set the same vars on production later.
+3. After signup, **Kip** helps you build your first agent in chat. Describe what it should do; Kip writes `app/agents/`. Edit those files anytime if you want.
 
 Works with **Rails 7+** · **Ruby 3.2+** · cloud runtime included.
+
+Full walkthrough: [rails-agent.com/docs/getting-started](https://rails-agent.com/docs/getting-started)
 
 ---
 
 ## Why Rails Agent?
+
+Same pillars as [rails-agent.com](https://rails-agent.com):
 
 | Pillar | What it means |
 |--------|----------------|
@@ -72,9 +72,11 @@ Works with **Rails 7+** · **Ruby 3.2+** · cloud runtime included.
 
 1. **Add the gem** → `bundle install` → `bin/rails generate rails_agents:install`.
 2. **Restart** the server and open `/agents`.
-3. **Sign up** once — credentials stay on disk.
+3. **Sign up** once — credentials stay on disk (and belong in production env too).
 4. **Chat with Kip** to build your first agent (`app/agents/<name>/`).
 5. **Test** in the sandbox, then **deploy** channels (Slack, web chat, cron, …).
+
+Terminology (instructions, tools, skills, channels, …): [docs/concepts](https://rails-agent.com/docs/concepts)
 
 ---
 
