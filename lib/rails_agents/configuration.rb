@@ -2,15 +2,26 @@
 
 module RailsAgents
   class Configuration
+    # Always Rails Agent Cloud. Not overridable via ENV.
     DEFAULT_ORIGIN = "https://cloud.rails-agent.com"
 
-    attr_accessor :api_key, :api_base, :dashboard_base, :project_id
+    attr_accessor :api_key, :project_id
+    attr_reader :api_base, :dashboard_base
 
     def initialize
       @api_key = ENV["RAILS_AGENTS_API_KEY"]
-      @api_base = ENV.fetch("RAILS_AGENTS_API_BASE", DEFAULT_ORIGIN)
-      @dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", DEFAULT_ORIGIN)
       @project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
+      @api_base = DEFAULT_ORIGIN
+      @dashboard_base = DEFAULT_ORIGIN
+    end
+
+    # Kept for tests / rare overrides; production apps should not set these.
+    def api_base=(value)
+      @api_base = value.to_s.strip.presence || DEFAULT_ORIGIN
+    end
+
+    def dashboard_base=(value)
+      @dashboard_base = value.to_s.strip.presence || DEFAULT_ORIGIN
     end
 
     def configured?

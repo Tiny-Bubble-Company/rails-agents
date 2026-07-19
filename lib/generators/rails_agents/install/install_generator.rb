@@ -25,11 +25,10 @@ module RailsAgents
         env_path = File.expand_path(".env", destination_root)
         placeholders = <<~ENV
 
-          # Rails Agent Cloud (https://cloud.rails-agent.com)
+          # Rails Agent Cloud — get these at https://cloud.rails-agent.com/dashboard/keys
+          # (also written automatically when you connect from /agents)
           RAILS_AGENTS_API_KEY=
           RAILS_AGENTS_PROJECT_ID=
-          RAILS_AGENTS_API_BASE=https://cloud.rails-agent.com
-          RAILS_AGENTS_DASHBOARD_BASE=https://cloud.rails-agent.com
         ENV
 
         if File.exist?(env_path)
@@ -60,7 +59,8 @@ module RailsAgents
         say ""
         say "  What to expect:", :green
         say "  · Sign up with GitHub or email (4-digit code)", :green
-        say "  · Paste your sandbox API key to connect this app", :green
+        say "  · API keys land in .env (or copy from Dashboard → API keys)", :green
+        say "  · Also set those keys on your production host later", :green
         say "  · Kip helps you build your first agent in chat", :green
         say "    (files land in app/agents/ — edit anytime)", :green
         say ""

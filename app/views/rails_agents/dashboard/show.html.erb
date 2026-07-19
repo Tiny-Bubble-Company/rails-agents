@@ -100,7 +100,7 @@
   <%
     cloud = RailsAgents.config.dashboard_base.to_s.chomp("/")
     cloud = "https://cloud.rails-agent.com" if cloud.blank?
-    return_to = "#{cloud}/dashboard?onboarding=1"
+    return_to = "#{cloud}/dashboard/keys?onboarding=1"
   %>
   <div class="rails-agents-hero">
     <h1>Connect this Rails app</h1>
