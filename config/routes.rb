@@ -17,6 +17,9 @@ RailsAgents::Engine.routes.draw do
   # Local disk sync — called by the embed bridge after vibecode / before Test
   post "pull", to: "pulls#create", as: :pull
 
+  # ActiveRecord tables for Knowledge → Rails database connector
+  get "schema", to: "schema#show", as: :schema
+
   get "dashboard", to: "dashboard#show", as: :dashboard
   get "dashboard/*path", to: "dashboard#proxy", as: :dashboard_proxy
 end
