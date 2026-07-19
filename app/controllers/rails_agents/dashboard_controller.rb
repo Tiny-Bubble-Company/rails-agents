@@ -11,7 +11,7 @@ module RailsAgents
         return
       end
 
-      @embed_token = params[:embed_token].presence || params[:token].presence
+      @embed_token = take_embed_token!
       @dashboard_url = build_embed_url("/dashboard")
     end
 
@@ -22,13 +22,19 @@ module RailsAgents
         return
       end
 
-      @embed_token = params[:embed_token].presence || params[:token].presence
+      @embed_token = take_embed_token!
       path = "/dashboard/#{params[:path]}"
       @dashboard_url = build_embed_url(path)
       render :show
     end
 
     private
+
+    def take_embed_token!
+      session.delete(:ra_embed_token).presence ||
+        params[:embed_token].presence ||
+        params[:token].presence
+    end
 
     def load_local_credentials!
       path = Rails.root.join("config/rails_agents_credentials.yml")
@@ -45,10 +51,15 @@ module RailsAgents
 
     def build_embed_url(path)
       base = RailsAgents.config.dashboard_base.to_s.chomp("/")
-      url = "#{base}#{path}"
-      query = { embed: "1" }
-      query[:token] = @embed_token if @embed_token.present?
-      "#{url}?#{query.to_query}"
+      # Bootstrap sets the cloud session cookie, then redirects to a clean dashboard URL.
+      if @embed_token.present?
+        next_path = "#{path}?embed=1"
+        return "#{base}/api/v1/auth/embed?#{
+          { token: @embed_token, next: next_path }.to_query
+        }"
+      end
+
+      "#{base}#{path}?embed=1"
     end
   end
 end

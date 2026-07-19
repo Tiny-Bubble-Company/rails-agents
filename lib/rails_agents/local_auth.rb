@@ -42,8 +42,9 @@ module RailsAgents
         config.project_id = project_id if project_id
       end
 
-      redirect_to rails_agents.dashboard_path(embed_token: embed_token),
-                  notice: "Connected. Welcome to Rails Agent."
+      # Keep JWT out of the browser address bar — stash for the next dashboard render.
+      session[:ra_embed_token] = embed_token if embed_token.present?
+      redirect_to rails_agents.dashboard_path, notice: "Connected. Welcome to Rails Agent."
     end
 
     def redirect_if_configured!
