@@ -28,8 +28,6 @@ module RailsAgents
       RailsAgents.configure do |config|
         config.api_key = data["api_key"] if data["api_key"].present?
         config.project_id = data["project_id"] if data["project_id"].present?
-        config.api_base = data["api_base"] if data["api_base"].present?
-        config.dashboard_base = data["dashboard_base"] if data["dashboard_base"].present?
       end
     rescue Psych::SyntaxError
       nil

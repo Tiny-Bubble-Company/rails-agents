@@ -31,24 +31,22 @@ module RailsAgents
         workspace: workspace
       )
       data = response["data"] || response
-      exports = data["exports"] || {
-        "RAILS_AGENTS_API_KEY" => data["api_key"],
-        "RAILS_AGENTS_PROJECT_ID" => data["project_id"],
-        "RAILS_AGENTS_API_BASE" => "https://cloud.rails-agent.com",
-        "RAILS_AGENTS_DASHBOARD_BASE" => "https://cloud.rails-agent.com"
-      }
+      api_key = data["api_key"] || data["apiKey"]
+      api_key = api_key["token"] if api_key.is_a?(Hash)
+      project_id = data["project_id"] || data["projectId"] || data.dig("project", "id")
+      dashboard_url = data["dashboard_url"] || data["dashboardUrl"]
 
       say ""
-      say "Signed in to #{data.dig("tenant", "name") || "Rails Agent Cloud"}."
-      say "Add these to your shell or .env:"
+      say "Signed in to Rails Agent Cloud."
+      say "Cloud host is fixed — only these belong in .env (or production env):"
       say ""
-      exports.each do |key, value|
-        say "export #{key}=#{value}"
-      end
+      say "export RAILS_AGENTS_API_KEY=#{api_key}" if api_key.present?
+      say "export RAILS_AGENTS_PROJECT_ID=#{project_id}" if project_id.present?
       say ""
+      say "Get or rotate keys anytime: https://cloud.rails-agent.com/dashboard/keys"
       say "Then visit /agents in your Rails app."
-      if data["dashboard_url"]
-        say "Dashboard: #{data["dashboard_url"].split("?").first}"
+      if dashboard_url.present?
+        say "Dashboard: #{dashboard_url.to_s.split("?").first}"
       end
     rescue Client::Error => e
       say_error e.message

@@ -126,17 +126,23 @@ bundle exec rails-agents logs support
 
 ## Configuration
 
+The gem always talks to **https://cloud.rails-agent.com** — no base URL env vars.
+
 ```ruby
 # config/initializers/rails_agents.rb
 RailsAgents.configure do |config|
   config.api_key = ENV["RAILS_AGENTS_API_KEY"]
-  config.api_base = ENV.fetch("RAILS_AGENTS_API_BASE", "https://cloud.rails-agent.com")
-  config.dashboard_base = ENV.fetch("RAILS_AGENTS_DASHBOARD_BASE", "https://cloud.rails-agent.com")
   config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
 end
 ```
 
-After you connect from `/agents`, credentials are also written to `config/rails_agents_credentials.yml`.
+```bash
+# .env (local) and your production host env
+RAILS_AGENTS_API_KEY=rak_sandbox_…
+RAILS_AGENTS_PROJECT_ID=prj_…
+```
+
+Connecting from `/agents` (or `rails-agents login`) writes these for you. If they are missing, copy them from [Dashboard → API keys](https://cloud.rails-agent.com/dashboard/keys). Also set the same vars on your production server before deploy.
 
 ---
 

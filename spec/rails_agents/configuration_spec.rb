@@ -23,6 +23,18 @@ RSpec.describe RailsAgents::Configuration do
     end
   end
 
+  it "reads project_id from ENV" do
+    with_env("RAILS_AGENTS_PROJECT_ID" => "prj_test") do
+      expect(described_class.new.project_id).to eq("prj_test")
+    end
+  end
+
+  it "ignores RAILS_AGENTS_API_BASE env (cloud host is fixed)" do
+    with_env("RAILS_AGENTS_API_BASE" => "https://example.invalid") do
+      expect(described_class.new.api_base).to eq("https://cloud.rails-agent.com")
+    end
+  end
+
   it "reports configured when api_key is present" do
     config.api_key = "abc"
     expect(config).to be_configured
