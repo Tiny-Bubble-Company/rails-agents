@@ -2,22 +2,20 @@
 
 **Build AI agents in Rails like a walk in the park.**
 
-The fullstack agentic platform for Rails. One gem install, chat in the dashboard, and we handle the code, infra and deploys — you focus on the business logic.
+Fully **documentation-free**. Meet **Kip** — your built-in coding agent that already knows Rails Agent. Describe what you want in chat; Kip writes `app/agents/` for you. No new framework syntax to learn (edit those Ruby files anytime if you want).
 
 | | |
 |---|---|
 | **Website** | [rails-agent.com](https://rails-agent.com) |
 | **Get started** | [rails-agent.com/start](https://rails-agent.com/start) |
-| **Docs** | [Getting started](https://rails-agent.com/docs/getting-started) |
+| **Cloud** | [cloud.rails-agent.com](https://cloud.rails-agent.com) |
 | **Gem** | `rails-agent-stack` |
-
-Meet **Kip**, the meerkat who keeps watch while your agents run on Rails Agent Cloud.
 
 ---
 
 ## Get started
 
-Don't sign up on the website first. Install the gem, run one command, then create your account at `/agents` — like Sidekiq.
+Don't sign up on the website first. Add the gem, install, **restart your Rails server**, then open `/agents`.
 
 **1. Add the gem** to your Rails app `Gemfile`:
 
@@ -32,14 +30,20 @@ bundle install
 bin/rails generate rails_agents:install
 ```
 
-The installer mounts `/agents`, prints `http://localhost:3000/agents`, and can open your browser (`Y` / `r`).
+**3. Restart your Rails server** so `/agents` is loaded:
 
 ```bash
 bin/dev
-# open http://localhost:3000/agents
+# or: bin/rails server
+
+# → http://localhost:3000/agents
 ```
 
-Sign up with **GitHub** or **email** (4-digit code), paste your sandbox API key, then vibe-code your first agent. Files land in `app/agents/<name>/`.
+### What to expect
+
+1. The Agents UI loads at **`/agents`** (Sidekiq-style).
+2. Sign up with **GitHub** or **email** (4-digit code), then paste your sandbox API key.
+3. After signup, **Kip** helps you build your first agent in chat — describe what it should do; files land in `app/agents/<name>/`.
 
 Works with **Rails 7+** · **Ruby 3.2+** · cloud runtime included.
 
@@ -49,21 +53,21 @@ Works with **Rails 7+** · **Ruby 3.2+** · cloud runtime included.
 
 | Pillar | What it means |
 |--------|----------------|
-| **Zero AI knowledge** | You don't need LLMs, embeddings, or prompt engineering. If you can write Rails, you can ship agents. |
+| **Documentation-free** | Skip the docs and DSL tutorials. Kip already knows Rails Agent and implements agents in chat. |
+| **Zero AI knowledge** | You don't need LLMs, embeddings, or prompt engineering — describe the job in English. |
 | **Zero config** | No API keys, no vector DB, no Redis, no Vercel setup. Install the gem — we run the stack. |
-| **Vibe coding** | Describe what you want in the dashboard chat. Kip scaffolds the agent folder in your repo. |
+| **Chat is the IDE** | Kip builds `app/agents/` for you. Prefer the keyboard? Edit those files anytime. |
 | **Build → test → deploy → monitor** | One platform for the whole lifecycle. |
-| **Scalable agentic infra** | Hosted runtime, autoscaling, retries, tracing — included. |
 | **Unified debugging** | Every trace, log, error, and cost is searchable in `/agents`. |
 
 ---
 
 ## How it works
 
-1. **Install** the gem and open `/agents` (Sidekiq-style mount).
+1. **Install** the gem, restart the server, open `/agents`.
 2. **Sign up** once — credentials stay on disk.
-3. **Vibe-code** an agent in the embedded dashboard.
-4. **Pull** files into `app/agents/<name>/` automatically from the iframe.
+3. **Chat with Kip** to define your first agent.
+4. **Pull** files into `app/agents/<name>/` automatically.
 5. **Test** in the sandbox, then **deploy** channels (Slack, web chat, cron, …).
 
 ---

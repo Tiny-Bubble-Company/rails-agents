@@ -2,10 +2,11 @@ Rails Agents is mounted at /agents.
 
 Next steps:
 
-  1. Start your app:  bin/dev
-  2. Open:            http://localhost:3000/agents
+  1. Restart your Rails server:  bin/dev   (or bin/rails server)
+  2. Open the Agents UI:         http://localhost:3000/agents
   3. Sign up with GitHub or email (4-digit code)
-  4. Describe your agent in chat — files write to app/agents/
-  5. Hit Test, then Deploy when ready
+  4. Paste your sandbox API key to connect this app
+  5. Chat with Kip to build your first agent — files land in app/agents/
+     (edit those Ruby files anytime if you want)
 
-Docs: https://rails-agent.com/docs/getting-started
+Guide: https://rails-agent.com/start
