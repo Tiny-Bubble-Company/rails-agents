@@ -2,7 +2,7 @@
 
 module RailsAgents
   class Configuration
-    DEFAULT_ORIGIN = "https://meerkatagents.com"
+    DEFAULT_ORIGIN = "https://cloud.rails-agent.com"
 
     attr_accessor :api_key, :api_base, :dashboard_base, :project_id
 

@@ -25,11 +25,11 @@ module RailsAgents
         env_path = File.expand_path(".env", destination_root)
         placeholders = <<~ENV
 
-          # Rails Agent Cloud (https://meerkatagents.com)
+          # Rails Agent Cloud (https://cloud.rails-agent.com)
           RAILS_AGENTS_API_KEY=
           RAILS_AGENTS_PROJECT_ID=
-          RAILS_AGENTS_API_BASE=https://meerkatagents.com
-          RAILS_AGENTS_DASHBOARD_BASE=https://meerkatagents.com
+          RAILS_AGENTS_API_BASE=https://cloud.rails-agent.com
+          RAILS_AGENTS_DASHBOARD_BASE=https://cloud.rails-agent.com
         ENV
 
         if File.exist?(env_path)
@@ -78,7 +78,7 @@ module RailsAgents
         end
 
         say ""
-        say "Docs: https://meerkatagents.com/docs/getting-started"
+        say "Docs: https://rails-agent.com/docs/getting-started"
       end
 
       private

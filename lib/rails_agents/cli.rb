@@ -34,8 +34,8 @@ module RailsAgents
       exports = data["exports"] || {
         "RAILS_AGENTS_API_KEY" => data["api_key"],
         "RAILS_AGENTS_PROJECT_ID" => data["project_id"],
-        "RAILS_AGENTS_API_BASE" => "https://meerkatagents.com",
-        "RAILS_AGENTS_DASHBOARD_BASE" => "https://meerkatagents.com"
+        "RAILS_AGENTS_API_BASE" => "https://cloud.rails-agent.com",
+        "RAILS_AGENTS_DASHBOARD_BASE" => "https://cloud.rails-agent.com"
       }
 
       say ""

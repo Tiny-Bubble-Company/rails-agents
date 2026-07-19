@@ -27,7 +27,7 @@
       var CSRF = document.querySelector('meta[name="csrf-token"]');
       var statusEl = document.getElementById("rails-agents-sync-status");
       var ALLOWED = {
-        "https://meerkatagents.com": true,
+        "https://cloud.rails-agent.com": true,
         "http://localhost:3000": true,
         "http://127.0.0.1:3000": true,
         "http://localhost:8080": true,
@@ -99,7 +99,7 @@
 <% else %>
   <%
     cloud = RailsAgents.config.dashboard_base.to_s.chomp("/")
-    cloud = "https://meerkatagents.com" if cloud.blank?
+    cloud = "https://cloud.rails-agent.com" if cloud.blank?
     return_to = "#{cloud}/dashboard?onboarding=1"
   %>
   <div class="rails-agents-hero">
@@ -153,7 +153,7 @@
     <% end %>
 
     <p class="rails-agents-muted">
-      Docs: <a href="https://meerkatagents.com/docs/getting-started" target="_blank" rel="noopener">getting started</a>
+      Docs: <a href="https://cloud.rails-agent.com/docs/getting-started" target="_blank" rel="noopener">getting started</a>
     </p>
   </section>
 <% end %>

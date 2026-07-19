@@ -1,6 +1,15 @@
 {
   "folders": [
-    { "path": ".", "name": "rails-agents" },
-    { "path": "../rails-agents-cloud", "name": "rails-agents-cloud" }
+    {
+      "path": ".",
+      "name": "rails-agents"
+    },
+    {
+      "path": "../rails-agents-cloud",
+      "name": "rails-agents-cloud"
+    },
+    {
+      "path": "../rails-agents-boilerplate"
+    }
   ]
 }
