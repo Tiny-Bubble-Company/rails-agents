@@ -7,9 +7,18 @@ module RailsAgents
     before_action :redirect_if_configured!
 
     def new
-      @step = :email
       @github_url = github_oauth_url
-      @workspace = default_workspace
+      pending = session[:ra_auth]
+      if pending.is_a?(Hash) && pending["email"].present? && pending["purpose"] == "signup"
+        @step = :code
+        @email = pending["email"]
+        @name = pending["name"]
+        @workspace = pending["workspace"].presence || default_workspace
+        @dev_code = pending["dev_code"]
+      else
+        @step = :email
+        @workspace = default_workspace
+      end
     end
 
     def create
