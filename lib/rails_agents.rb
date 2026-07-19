@@ -3,6 +3,7 @@
 require "rails_agents/version"
 require "rails_agents/configuration"
 require "rails_agents/client"
+require "rails_agents/local_sync"
 require "rails_agents/base"
 require "rails_agents/cli"
 

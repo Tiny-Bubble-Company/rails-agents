@@ -104,6 +104,16 @@ module RailsAgents
       exit 1
     end
 
+    desc "pull AGENT_ID_OR_SLUG", "Pull agent files from the cloud into app/agents/<slug>/"
+    def pull(agent_id)
+      result = LocalSync.new.pull!(agent_id)
+      say "Pulled #{result["count"]} files into app/agents/#{result["slug"]}/"
+      Array(result["written"]).each { |path| say "  #{path}" }
+    rescue LocalSync::Error, Client::Error => e
+      say_error e.message
+      exit 1
+    end
+
     desc "logs [NAME]", "Fetch recent run logs from the cloud"
     method_option :limit, type: :numeric, default: 50
     def logs(name = nil)

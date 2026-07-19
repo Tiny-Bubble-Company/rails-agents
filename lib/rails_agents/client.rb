@@ -55,6 +55,10 @@ module RailsAgents
       })
     end
 
+    def get_agent(agent:)
+      get("/agents/#{agent}")
+    end
+
     def sync_files(agent:, files:)
       put("/agents/#{agent}/files", { files: files })
     end

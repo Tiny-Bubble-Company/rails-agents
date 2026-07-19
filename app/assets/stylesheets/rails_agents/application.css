@@ -214,6 +214,7 @@ code {
 .rails-agents-embed-bar {
   display: flex;
   align-items: center;
+  gap: 1rem;
   justify-content: space-between;
   padding: 0.65rem 1.25rem;
   border-bottom: 1px solid var(--border);
@@ -225,6 +226,19 @@ code {
 .rails-agents-embed-bar a {
   color: var(--ruby);
   text-decoration: none;
+  white-space: nowrap;
+}
+
+.rails-agents-sync-status {
+  flex: 1;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+
+.rails-agents-sync-status--error {
+  color: var(--ruby);
 }
 
 .rails-agents-embed {
