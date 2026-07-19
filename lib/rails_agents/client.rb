@@ -79,6 +79,24 @@ module RailsAgents
       post("/auth/connect/claim", { code: code }, auth: false)
     end
 
+    def email_start(email:, purpose:, name: nil, company: nil)
+      post("/auth/email/start", {
+        email: email,
+        purpose: purpose,
+        name: name,
+        company: company
+      }.compact, auth: false)
+    end
+
+    def email_verify(email:, code:, name: nil, company: nil)
+      post("/auth/email/verify", {
+        email: email,
+        code: code,
+        name: name,
+        company: company
+      }.compact, auth: false)
+    end
+
     def logs(agent: nil, limit: 50)
       get("/logs", query: { agent: agent, limit: limit, project_id: @config.project_id }.compact)
     end

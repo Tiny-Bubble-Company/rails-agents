@@ -1,171 +1,94 @@
-<% if configured? %>
-  <div class="rails-agents-embed-shell">
-    <div class="rails-agents-embed-bar">
-      <span class="rails-agents-embed-bar__brand">
-        <%= image_tag "rails_agents/kip-logo.png", alt: "", aria: { hidden: true } %>
-        Rails <em>Agent</em>
-        <span class="rails-agents-muted" style="font-family:Inter,sans-serif;font-weight:400;margin-left:0.35rem">· connected</span>
-      </span>
-      <span id="rails-agents-sync-status" class="rails-agents-sync-status" aria-live="polite"></span>
-      <%= link_to "Open in Cloud ↗", @dashboard_url, target: "_blank", rel: "noopener" %>
-    </div>
-    <iframe
-      id="rails-agents-dashboard-frame"
-      class="rails-agents-embed"
-      src="<%= @dashboard_url %>"
-      title="Rails Agent Cloud dashboard"
-      allow="clipboard-write"
-    ></iframe>
+<div class="rails-agents-embed-shell">
+  <div class="rails-agents-embed-bar">
+    <span class="rails-agents-embed-bar__brand">
+      <%= image_tag "rails_agents/kip-logo.png", alt: "", aria: { hidden: true } %>
+      Rails <em>Agent</em>
+      <span class="rails-agents-muted" style="font-family:Inter,sans-serif;font-weight:400;margin-left:0.35rem">· connected</span>
+    </span>
+    <span id="rails-agents-sync-status" class="rails-agents-sync-status" aria-live="polite"></span>
+    <%= link_to "Open in Cloud ↗", @dashboard_url, target: "_blank", rel: "noopener" %>
   </div>
+  <iframe
+    id="rails-agents-dashboard-frame"
+    class="rails-agents-embed"
+    src="<%= @dashboard_url %>"
+    title="Rails Agent dashboard"
+    allow="clipboard-write"
+  ></iframe>
+</div>
 
-  <script>
-    (function () {
-      var PULL_URL = <%= raw rails_agents.pull_path.to_json %>;
-      var CSRF = document.querySelector('meta[name="csrf-token"]');
-      var statusEl = document.getElementById("rails-agents-sync-status");
-      var ALLOWED = {
-        "https://cloud.rails-agent.com": true,
-        "http://localhost:3000": true,
-        "http://127.0.0.1:3000": true,
-        "http://localhost:8080": true,
-        "http://127.0.0.1:8080": true
+<script>
+  (function () {
+    var PULL_URL = <%= raw rails_agents.pull_path.to_json %>;
+    var CSRF = document.querySelector('meta[name="csrf-token"]');
+    var statusEl = document.getElementById("rails-agents-sync-status");
+    var ALLOWED = {
+      "https://cloud.rails-agent.com": true,
+      "http://localhost:3000": true,
+      "http://127.0.0.1:3000": true,
+      "http://localhost:8080": true,
+      "http://127.0.0.1:8080": true
+    };
+
+    function setStatus(text, isError) {
+      if (!statusEl) return;
+      statusEl.textContent = text || "";
+      statusEl.classList.toggle("rails-agents-sync-status--error", !!isError);
+    }
+
+    async function pullAgent(agentId) {
+      var headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
       };
+      if (CSRF) headers["X-CSRF-Token"] = CSRF.getAttribute("content");
 
-      function setStatus(text, isError) {
-        if (!statusEl) return;
-        statusEl.textContent = text || "";
-        statusEl.classList.toggle("rails-agents-sync-status--error", !!isError);
-      }
-
-      async function pullAgent(agentId) {
-        var headers = {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        };
-        if (CSRF) headers["X-CSRF-Token"] = CSRF.getAttribute("content");
-
-        var res = await fetch(PULL_URL, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: headers,
-          body: JSON.stringify({ agent_id: agentId })
-        });
-        var json = {};
-        try { json = await res.json(); } catch (e) { json = {}; }
-        if (!res.ok || json.ok === false) {
-          throw new Error(json.error || ("Pull failed (" + res.status + ")"));
-        }
-        return json;
-      }
-
-      window.addEventListener("message", function (event) {
-        if (!ALLOWED[event.origin]) return;
-        var data = event.data || {};
-        if (data.type !== "rails-agents:pull") return;
-        if (!data.agentId) return;
-
-        setStatus("Writing app/agents/...");
-        pullAgent(data.agentId)
-          .then(function (result) {
-            setStatus("Synced " + (result.count || 0) + " files → app/agents/" + result.slug + "/");
-            if (event.source && event.source.postMessage) {
-              event.source.postMessage({
-                type: "rails-agents:pull-result",
-                requestId: data.requestId,
-                ok: true,
-                count: result.count,
-                slug: result.slug,
-                written: result.written
-              }, event.origin);
-            }
-          })
-          .catch(function (err) {
-            setStatus(err.message || "Pull failed", true);
-            if (event.source && event.source.postMessage) {
-              event.source.postMessage({
-                type: "rails-agents:pull-result",
-                requestId: data.requestId,
-                ok: false,
-                error: err.message || "Pull failed"
-              }, event.origin);
-            }
-          });
+      var res = await fetch(PULL_URL, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: headers,
+        body: JSON.stringify({ agent_id: agentId })
       });
-    })();
-  </script>
-<% else %>
-  <%
-    cloud = RailsAgents.config.dashboard_base.to_s.chomp("/")
-    cloud = "https://cloud.rails-agent.com" if cloud.blank?
-    return_to = "/dashboard/keys?onboarding=1"
-    port = (request.port.presence || 3000).to_s
-    # Only loopback is accepted by cloud for local_return
-    local_host = %w[localhost 127.0.0.1].include?(request.host) ? "127.0.0.1" : nil
-    local_return = local_host ? "http://#{local_host}:#{port}#{rails_agents.connect_path}" : nil
-    qs = "from=agents&return_to=#{ERB::Util.url_encode(return_to)}"
-    qs = "#{qs}&local_return=#{ERB::Util.url_encode(local_return)}" if local_return
-    signup_url = "#{cloud}/signup?#{qs}"
-    signin_url = "#{cloud}/signin?#{qs}"
-    github_url = "#{cloud}/api/v1/auth/github?return_to=#{ERB::Util.url_encode(return_to)}"
-    github_url = "#{github_url}&local_return=#{ERB::Util.url_encode(local_return)}" if local_return
-  %>
-  <div class="rails-agents-connect">
-    <aside class="rails-agents-connect__brand">
-      <a class="rails-agents-logo-lockup" href="https://rails-agent.com" target="_blank" rel="noopener">
-        <span class="rails-agents-logo-mark">
-          <%= image_tag "rails_agents/kip-logo.png", alt: "Kip" %>
-        </span>
-        <span class="rails-agents-logo-word">Rails <em>Agent</em></span>
-      </a>
+      var json = {};
+      try { json = await res.json(); } catch (e) { json = {}; }
+      if (!res.ok || json.ok === false) {
+        throw new Error(json.error || ("Pull failed (" + res.status + ")"));
+      }
+      return json;
+    }
 
-      <div class="rails-agents-connect__copy">
-        <h1>Ship your first agent in <em>ten minutes</em>.</h1>
-        <p>
-          Create a workspace, open <code>/agents</code> in your Rails app,
-          and describe what the agent should do.
-        </p>
-        <div class="rails-agents-connect__kip">
-          <%= image_tag "rails_agents/kip-waving.png", alt: "Kip the Rails Agent meerkat waving hello" %>
-        </div>
-      </div>
+    window.addEventListener("message", function (event) {
+      if (!ALLOWED[event.origin]) return;
+      var data = event.data || {};
+      if (data.type !== "rails-agents:pull") return;
+      if (!data.agentId) return;
 
-      <p class="rails-agents-connect__meta">rails-agent.com</p>
-    </aside>
-
-    <section class="rails-agents-connect__form-pane">
-      <div class="rails-agents-connect__card">
-        <% if notice.present? %>
-          <div class="rails-agents-flash"><%= notice %></div>
-        <% end %>
-        <% if alert.present? %>
-          <div class="rails-agents-flash rails-agents-flash--alert"><%= alert %></div>
-        <% end %>
-
-        <h2>Create workspace</h2>
-        <p class="rails-agents-lede">
-          Links this Rails app to a free sandbox — keys, agents, and traces in one place.
-          We run the runtime; you keep the code in <code>app/agents/</code>.
-        </p>
-
-        <a class="rails-agents-btn rails-agents-btn--ghost rails-agents-btn--spaced"
-           href="<%= github_url %>">
-          <svg class="rails-agents-github-icon" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-          Continue with GitHub
-        </a>
-
-        <div class="rails-agents-divider">or email</div>
-
-        <a class="rails-agents-btn rails-agents-btn--primary" href="<%= signup_url %>">
-          Continue with email
-        </a>
-
-        <p class="rails-agents-connect__foot">
-          Already have an account?
-          <a href="<%= signin_url %>">Sign in</a>
-        </p>
-      </div>
-    </section>
-  </div>
-<% end %>
+      setStatus("Writing app/agents/...");
+      pullAgent(data.agentId)
+        .then(function (result) {
+          setStatus("Synced " + (result.count || 0) + " files → app/agents/" + result.slug + "/");
+          if (event.source && event.source.postMessage) {
+            event.source.postMessage({
+              type: "rails-agents:pull-result",
+              requestId: data.requestId,
+              ok: true,
+              count: result.count,
+              slug: result.slug,
+              written: result.written
+            }, event.origin);
+          }
+        })
+        .catch(function (err) {
+          setStatus(err.message || "Pull failed", true);
+          if (event.source && event.source.postMessage) {
+            event.source.postMessage({
+              type: "rails-agents:pull-result",
+              requestId: data.requestId,
+              ok: false,
+              error: err.message || "Pull failed"
+            }, event.origin);
+          }
+        });
+    });
+  })();
+</script>
