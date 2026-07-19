@@ -291,10 +291,7 @@ code {
   cursor: not-allowed;
 }
 
-.rails-agents-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+.rails-agents-btn--spaced {
   margin-top: 1.5rem;
 }
 
@@ -308,6 +305,42 @@ code {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.rails-agents-advanced {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.rails-agents-advanced summary {
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted);
+  list-style: none;
+}
+
+.rails-agents-advanced summary::-webkit-details-marker {
+  display: none;
+}
+
+.rails-agents-advanced summary::after {
+  content: " →";
+  color: var(--ruby);
+}
+
+.rails-agents-advanced[open] summary {
+  margin-bottom: 0.75rem;
+  color: var(--ink);
+}
+
+.rails-agents-advanced[open] summary::after {
+  content: "";
+}
+
+.rails-agents-advanced .rails-agents-muted {
+  margin: 0 0 0.85rem;
 }
 
 .rails-agents-divider::before,
