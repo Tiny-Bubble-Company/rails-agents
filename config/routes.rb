@@ -20,7 +20,7 @@ RailsAgents::Engine.routes.draw do
   # ActiveRecord schema for Knowledge agents / database connector in dashboard
   get "schema", to: "schema#show", as: :schema
 
-  # Production Eve runtime → Rails tool execution. The bearer token is
+  # Production runtime → Rails tool execution. The bearer token is
   # introspected against Rails Agent Cloud before any local code runs.
   post "bridge/:agent/tools/:tool", to: "tool_bridge#create", as: :tool_bridge
 
