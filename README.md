@@ -19,7 +19,20 @@
 
 ---
 
-## Gem
+## About
+
+Rails Agent is the fullstack framework for building production AI agents in
+Rails. Define agents, instructions, tools, skills, knowledge, and evals as Ruby
+files in your application, then use the mounted `/agents` dashboard to test,
+deploy, observe, and manage them.
+
+Your Rails application remains the source of truth. Rails Agent Cloud provides
+the model runtime, integrations, deployment infrastructure, traces, usage, and
+production operations around it.
+
+**Start here:** [rails-agent.com/docs/getting-started](https://rails-agent.com/docs/getting-started)
+
+## The gem
 
 `rails-agent-stack` — mountable engine at `/agents` (Sidekiq-style).
 
