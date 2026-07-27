@@ -190,7 +190,14 @@ module RailsAgents
 
       return parsed if response.is_a?(Net::HTTPSuccess)
 
-      message = parsed.is_a?(Hash) ? (parsed["error"] || parsed["message"] || "Request failed") : "Request failed"
+      message =
+        if parsed.is_a?(Hash)
+          error = parsed["error"]
+          error = error["message"] if error.is_a?(Hash)
+          error || parsed["message"] || "Request failed"
+        else
+          "Request failed"
+        end
       raise Error.new(message, status: response.code.to_i, body: parsed)
     rescue JSON::ParserError
       raise Error.new("Invalid JSON response", status: response.code.to_i, body: body) unless response.is_a?(Net::HTTPSuccess)

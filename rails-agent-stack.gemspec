@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Rails Agent Team"]
   spec.email         = ["hello@railsagents.dev"]
 
-  spec.summary       = "Fullstack AI agents for Rails — mount /agents, vibe-code, deploy."
-  spec.description   = "The fullstack agentic platform for Rails. One gem install, chat in the " \
-                         "dashboard, and we handle code, infra and deploys. Zero AI knowledge required."
+  spec.summary       = "Fullstack AI agents for Rails — build in code, deploy from /agents."
+  spec.description   = "Mount /agents, scaffold agent directories, BYOK model credentials, " \
+                         "and test/deploy/monitor on Rails Agent Cloud. Documentation-first onboarding."
   spec.homepage      = "https://rails-agent.com"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
       f == "Gemfile.lock" || f.start_with?("spec/fixtures/")
     end
   rescue StandardError
-    Dir["{app,config,exe,lib,docs}/**/*", "exe/*", "*.{md,gemspec,rake}", "MIT-LICENSE"]
+    Dir["{app,config,exe,lib,docs}/**/*", "exe/*", "*.{md,gemspec,rake}", "MIT-LICENSE", "AGENTS.md"]
   end
 
   spec.bindir        = "exe"

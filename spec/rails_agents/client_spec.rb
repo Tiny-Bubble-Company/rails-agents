@@ -25,6 +25,19 @@ RSpec.describe RailsAgents::Client do
       response = client.create_run(agent: "support", message: "Hello")
       expect(response["id"]).to eq("run_1")
     end
+
+    it "extracts nested API error messages" do
+      stub_request(:post, "https://cloud.rails-agent.com/api/v1/runs")
+        .to_return(
+          status: 401,
+          body: { error: { message: "Invalid API key" } }.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+
+      expect do
+        client.create_run(agent: "support", message: "Hello")
+      end.to raise_error(RailsAgents::Client::Error, "Invalid API key")
+    end
   end
 
   describe "#deploy" do

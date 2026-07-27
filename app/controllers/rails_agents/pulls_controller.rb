@@ -4,7 +4,8 @@ require "yaml"
 
 module RailsAgents
   class PullsController < ApplicationController
-    # JSON pull from the /agents parent page (postMessage bridge).
+    # Deprecated: JSON pull from embed bridge. Prefer local `app/agents/` + `rails-agents sync`.
+    # Kept for CLI `rails-agents pull` and backward compatibility until cloud authoring is removed.
     def create
       load_local_credentials!
 

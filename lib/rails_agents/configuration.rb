@@ -17,11 +17,13 @@ module RailsAgents
 
     # Kept for tests / rare overrides; production apps should not set these.
     def api_base=(value)
-      @api_base = value.to_s.strip.presence || DEFAULT_ORIGIN
+      stripped = value.to_s.strip
+      @api_base = stripped.empty? ? DEFAULT_ORIGIN : stripped
     end
 
     def dashboard_base=(value)
-      @dashboard_base = value.to_s.strip.presence || DEFAULT_ORIGIN
+      stripped = value.to_s.strip
+      @dashboard_base = stripped.empty? ? DEFAULT_ORIGIN : stripped
     end
 
     def configured?

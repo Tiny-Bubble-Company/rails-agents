@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 module RailsAgents
-  # Conversational request/response agents (controllers, chat UIs, helpdesks).
-  # Call with +YourAgent.run(message, session_id: ...)+ and read +result.output+.
-  class ChatAgent < Base
+  # @deprecated Use {KnowledgeAgent} for conversational / Q&A agents.
+  class ChatAgent < KnowledgeAgent
+    def self.inherited(subclass)
+      super
+      warn "[RailsAgents] ChatAgent is deprecated; use KnowledgeAgent instead.", uplevel: 1
+    end
+
     def self.agent_kind
-      :chat
+      :knowledge
     end
   end
 end

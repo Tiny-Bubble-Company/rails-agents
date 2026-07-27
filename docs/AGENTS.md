@@ -1,0 +1,121 @@
+# AGENTS.md — Rails Agent onboarding
+
+Guide for **external coding agents** (Cursor, Claude Code, Codex, etc.) and humans building on Rails Agent.
+
+## What this platform is
+
+Rails Agent is a **fullstack agent platform for Rails**: you write agents as Ruby directories under `app/agents/`, connect provider credentials (BYOK) in the cloud dashboard, then **test, deploy, and monitor** at `/agents`.
+
+Billing: **fixed company subscription** + **metered usage at provider/infrastructure cost** + **transparent 1% service fee**.
+
+## Agent taxonomy (pick one)
+
+| Type | Main purpose | Example |
+|------|--------------|---------|
+| **Knowledge** | Understand and answer | Order support from Rails data and policy docs |
+| **Workflow** | Execute predictable processes | Verify → approve → refund → notify |
+| **Operations** | Coordinate unpredictable real-world work | Incident or customer escalation coordination |
+| **Monitoring** | Observe changes and respond | Inventory, error, or SLA watcher |
+
+Use the matching base class: `RailsAgents::KnowledgeAgent`,
+`WorkflowAgent`, `OperationsAgent`, or `MonitoringAgent`.
+
+Legacy aliases (deprecated): `ChatAgent` → Knowledge, `BackgroundAgent` → Operations.
+
+## Progressive path
+
+### 1. Connect workspace
+
+```bash
+bundle add rails-agent-stack
+bin/rails generate rails_agents:install
+bin/dev   # open http://localhost:3000/agents
+```
+
+Sign up / connect at `/agents`. Platform API key is written to `config/rails_agents_credentials.yml` — **not** your OpenAI/Anthropic keys.
+
+### 2. First agent: database Knowledge (fastest win)
+
+```bash
+bin/rails generate rails_agents:agent store_assistant --type knowledge --database
+bin/rails db:seed   # if demo data exists
+```
+
+Edit `app/agents/store_assistant/agent.rb` — tools call your ActiveRecord models. Attach BYOK in cloud dashboard → **Settings → Providers** (reference name e.g. `:company_openai`).
+
+```ruby
+class StoreAssistant < RailsAgents::KnowledgeAgent
+  model :gpt_5_mini, provider: :openai, credential: :company_openai
+  memory :conversation
+
+  tool :lookup_order do |order_number:|
+    # wire to your models
+  end
+end
+```
+
+Test locally:
+
+```bash
+bundle exec rails-agents run store_assistant "Where is order ORD-DEMO-1001?"
+bundle exec rails-agents sync store_assistant
+```
+
+Dashboard uses `GET /agents/schema` to discover tables for database setup — keep that endpoint available.
+
+### 3. Tools
+
+Add Ruby tool blocks in `agent.rb` or files under `tools/`. Tools run in your Rails app context.
+Start with one read-only tool and test it before adding side effects.
+
+### 4. Pipedream plugins
+
+Add external SaaS integrations via Pipedream-connected actions in the cloud dashboard. Use a local Ruby tool for your own database; use a plugin for systems such as Notion, Sheets, or HubSpot.
+
+### 5. Skills
+
+Composable behaviors in `skills/` — reference with `skill :name, from: "skills/name.rb"`.
+
+### 6. Playbooks
+
+Clone a Playbook when you want a proven starting structure, then customize the generated files locally. Playbooks can combine instructions, tools, and skills.
+
+### 7. Channels
+
+Scaffold stubs live in `channels/`. Install connectors from `/agents` dashboard (Slack, web chat, API, cron, etc.).
+
+### 8. Evals
+
+Add cases under `evals/*.yml`. Run on deploy from dashboard or `bundle exec rails-agents evals NAME`.
+
+### 9. Deploy & monitor
+
+```bash
+bundle exec rails-agents deploy store_assistant
+bundle exec rails-agents logs store_assistant
+bundle exec rails-agents traces store_assistant
+```
+
+Use `/agents` for runs, cost, traces, and eval results.
+
+## Model DSL (BYOK)
+
+```ruby
+# Explicit provider + cloud credential reference (no secrets in repo)
+model :gpt_5_mini, provider: :openai, credential: :company_openai
+
+# Legacy cloud-routed (still supported, not default in new scaffolds)
+model :auto
+```
+
+Credential symbols map to encrypted records in Rails Agent Cloud — never commit API keys.
+
+## Do not use (deprecated)
+
+- **Chat authoring / cloud pull** — build locally; push with `rails-agents sync`. CLI `pull` remains for compatibility only.
+
+## References
+
+- Gem README: [README.md](README.md)
+- Product spec: [docs/PRD.md](docs/PRD.md)
+- Website: https://rails-agent.com/docs/getting-started

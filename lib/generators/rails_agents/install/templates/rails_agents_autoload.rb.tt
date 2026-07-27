@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+# Prevents Zeitwerk from treating app/agents/<name>/ as a module namespace.
+# Agents load via explicit require from app/agents/<name>/agent.rb (see rails-agents CLI).
+Rails.application.configure do
+  config.before_configuration do
+    Rails.autoloaders.main.ignore(Rails.root.join("app/agents"))
+  end
+end

@@ -1,33 +1,20 @@
-<p align="center">
-  <img src="docs/assets/hero-banner.png" alt="Rails Agent — Build AI agents in Rails like a walk in the park. Kip, the meerkat mascot, wearing a red Rails bandana." width="920" />
-</p>
-
 <h1 align="center">Rails Agent</h1>
 
 <p align="center">
-  <strong>Build AI agents in Rails like a walk in the park.</strong>
+  <strong>Fullstack AI agents for Rails — build in code, run in the cloud.</strong>
 </p>
 
 <p align="center">
-  The fullstack agentic platform for Rails. One gem install, chat in the dashboard,<br />
-  and we handle the code, infra and deploys — you focus on the business logic.
+  One gem install, agents as Ruby directories, BYOK model credentials,<br />
+  test / deploy / monitor at <code>/agents</code>.
 </p>
 
 <p align="center">
-  <a href="https://rails-agent.com/docs/getting-started"><strong>Get started</strong></a>
+  <a href="docs/AGENTS.md"><strong>AGENTS.md</strong></a>
   ·
-  <a href="https://rails-agent.com/#how-it-works">How it works</a>
-  ·
-  <a href="https://rails-agent.com">Website</a>
-  ·
-  <a href="https://rails-agent.com/docs/concepts">Concepts</a>
+  <a href="https://rails-agent.com/docs/getting-started">Getting started</a>
   ·
   <a href="https://cloud.rails-agent.com">Cloud</a>
-</p>
-
-<p align="center">
-  <code>Build</code> · <code>Test</code> · <code>Deploy</code> · <code>Monitor</code><br />
-  <sub>Works with Rails 7+ · Ruby 3.2+ · Cloud runtime included</sub>
 </p>
 
 ---
@@ -37,199 +24,146 @@
 `rails-agent-stack` — mountable engine at `/agents` (Sidekiq-style).
 
 ```ruby
-# Gemfile
 gem "rails-agent-stack", github: "Tiny-Bubble-Company/rails-agents"
 ```
 
 ---
 
-## Our mission
+## Positioning
 
-**Make AI agent development a zero-knowledge task for Rails developers.**
-
-You shouldn't have to become an AI engineer to add agentic features to your app. Rails Agent turns the Rails skills you already have into production-ready agents — one install, one chat, one deploy.
+Rails Agent is the **fullstack agentic platform for Rails**:
 
 | Pillar | What it means |
 |--------|----------------|
-| **Zero AI knowledge** | You don't need to understand LLMs, embeddings, or prompt engineering. If you can write Rails, you can ship agents. |
-| **Zero config** | No API keys, no vector database, no Redis, no Vercel setup. Install the gem and we run the entire stack. |
-| **Meet Kip** | Kip is the inbuilt coding agent that knows Rails Agent. Chat with Kip — it builds `app/agents/` for you. No new framework syntax to learn. Edit the code anytime if you want. |
-| **Build → test → deploy → monitor** | One platform covers the whole lifecycle: draft, test, ship, and watch — no separate tools to wire up. |
-| **Scalable agentic infra** | Hosted runtime, autoscaling, retries, and tracing are included. We handle the hard parts so you don't have to. |
-| **Unified monitoring & debugging** | Every trace, log, error, and cost is searchable in `/agents`. One place to understand every run. |
+| **Build in your repo** | Agents live in `app/agents/` — use your editor or an external coding agent. Read **AGENTS.md**. |
+| **BYOK models** | Attach provider credentials per agent in the cloud; reference them in Ruby — no secrets in git. |
+| **Test → deploy → monitor** | One `/agents` dashboard for runs, traces, evals, channels, and cost. |
+| **Four taxonomy types** | Knowledge, Workflow, Operations, Monitoring |
+| **Company billing** | Fixed subscription + usage at cost + transparent **1% service fee** |
 
 ---
 
-## Zero config — you write the agent, we run everything else
+## Quick start
 
-No OpenAI account. No Anthropic account. No vector database, no Redis to provision, no Vercel setup. Rails Agent Cloud is the only thing you sign up for — and the only bill you pay.
-
-| We handle | |
-|-----------|--|
-| **Models** | GPT, Claude, Gemini — routed and paid for by us. No BYOK. |
-| **Vector store** | Embed and retrieve knowledge. No pgvector, no Pinecone. |
-| **Queue & workers** | Long-running tools, streaming, retries — all handled. |
-| **Deploys & scaling** | Push once, we autoscale. Rollbacks in one click. |
-| **Traces & logs** | Every run, every tool call, every token — searchable. |
-| **Secrets & auth** | Store credentials once. Agents get them at runtime. |
-
----
-
-## Your agent is a directory
-
-No YAML soup. No hidden config. Every agent is one folder inside your existing Rails app — and you can read it top to bottom in a minute.
-
-```
-app/agents/support/
-├── agent.rb            # The brain — RailsAgents::Base subclass
-├── prompt.md           # How it talks (system prompt)
-├── tools/              # Things the agent can do
-├── skills/             # Composable multi-step behaviors
-├── memory.rb           # What it remembers
-├── knowledge/          # What it knows (RAG — we embed it)
-├── channels/           # Slack, web chat, cron, …
-└── evals/              # How you know it works
+```bash
+bundle add rails-agent-stack
+bin/rails generate rails_agents:install
+bin/dev   # → http://localhost:3000/agents
 ```
 
----
+Connect your company workspace at `/agents`, then scaffold your first **database Knowledge agent**:
 
-## How it works
+```bash
+bin/rails generate rails_agents:agent store_assistant --type knowledge --database
+```
 
-Same path as the [docs](https://rails-agent.com/docs/getting-started). Don't sign up on the website first — start in your Rails app.
+**Zeitwerk:** fresh installs add `config/initializers/rails_agents_autoload.rb` so `app/agents/` dirs are not treated as Ruby modules. Existing apps: add `Rails.autoloaders.main.ignore(Rails.root.join("app/agents"))` to `config/application.rb`.
 
-| Step | |
-|------|--|
-| **01 · Add the gem** | `gem "rails-agent-stack", github: "Tiny-Bubble-Company/rails-agents"` |
-| **02 · Install** | `bundle install` then `bin/rails generate rails_agents:install` |
-| **03 · Start → /agents** | `bin/dev` → open `http://localhost:3000/agents` |
-| **04 · Build with Kip** | Describe the agent in plain English. Kip writes `app/agents/<name>/`. Edit the Ruby anytime. |
-
-### What to expect
-
-1. The Agents UI loads at **`/agents`**.
-2. Sign up with **GitHub** or **email** (4-digit code). Connecting usually writes `RAILS_AGENTS_API_KEY` + `RAILS_AGENTS_PROJECT_ID` to `.env`. If not, copy them from [Dashboard → API keys](https://cloud.rails-agent.com/dashboard/keys) — and set the same vars on production later.
-3. After signup, **Kip** helps you build your first agent in chat.
-
-Full walkthrough: [rails-agent.com/docs/getting-started](https://rails-agent.com/docs/getting-started)
+Full path for external coding agents: **[docs/AGENTS.md](docs/AGENTS.md)**
 
 ---
 
-## Channels
+## Agent directory
 
-Ship the same agent to every channel — Slack, Discord, Web Chat, Google Chat, Microsoft Teams, WhatsApp, Twilio, Telegram, Linear, GitHub, Cron, and a REST API. One command from the CLI or one click in the dashboard. Everything lives in your agent's `channels/` folder.
-
-Browse: [rails-agent.com/channels](https://rails-agent.com/channels)
-
----
-
-## Production features
-
-| Feature | |
-|---------|--|
-| **Durable execution** | Workflows survive crashes and restarts. Agents park when waiting, resume on the next message. |
-| **Sandboxed compute** | Agents run code in isolated sandboxes. |
-| **Multi-channel delivery** | One agent codebase → web chat, Slack, API, cron, CLI. |
-| **Human-in-the-loop** | Tools that need confirmation trigger approval gates. |
-| **Subagents** | Delegate specialized work to child agents. |
-| **Evaluations** | Test suites with scoring rubrics on every deploy. |
+```
+app/agents/store_assistant/
+├── agent.rb            # RailsAgents::KnowledgeAgent subclass
+├── prompt.md           # System prompt
+├── tools/              # Optional extracted tools
+├── skills/             # Composable behaviors
+├── memory.rb           # Memory config
+├── knowledge/          # RAG files
+├── channels/           # Slack, web, API, …
+└── evals/              # Smoke / regression cases
+```
 
 ---
 
-## How we compare
+## Model DSL (BYOK)
 
-Other Rails AI gems give you a client. **We give you the whole platform.**
+```ruby
+class StoreAssistant < RailsAgents::KnowledgeAgent
+  model :gpt_5_mini, provider: :openai, credential: :company_openai
+  memory :conversation
+  knowledge_from "knowledge/**/*"
 
-RubyLLM and ActiveAgent are great libraries — but you still need AI knowledge, build the dashboard, and run the runtime yourself. Rails Agent ships the whole platform — no AI expertise required.
+  tool :lookup_order do |order_number:|
+    Order.find_by(number: order_number)&.as_json(only: %i[number status total_cents])
+  end
+end
+```
 
-| Feature | Rails Agent | RubyLLM | ActiveAgent | DIY (LangChain + glue) |
-|---------|:-----------:|:-------:|:-----------:|:----------------------:|
-| Setup | One gem, one CLI command | Wire clients manually | Wire mailer-style classes | Python + YAML + glue |
-| AI knowledge required | None — just Rails | You wire models & prompts | You wire models & prompts | Deep LLM & ops expertise |
-| Dashboard included | ✓ | — | — | — |
-| Build agents by chatting | ✓ | — | — | — |
-| Hosted runtime | Included, one-command deploy | Bring your own | Bring your own | You build & run it |
-| Traces, evals, monitoring | ✓ | — | — | Wire it yourself |
-| Memory & knowledge (RAG) | Built-in, no vector DB | Wire pgvector yourself | Wire it yourself | Wire it yourself |
-| Model neutral (OpenAI, Claude, Gemini) | ✓ | ✓ | ✓ | ✓ |
-| Human-in-the-loop approvals | ✓ | — | — | DIY |
-| Uses your Rails app as-is | ✓ | ✓ | ✓ | — |
-| Time to first agent in prod | An afternoon | A week | A week | A month+ |
-
-Full breakdowns: [vs RubyLLM](https://rails-agent.com/compare/rubyllm) · [vs ActiveAgent](https://rails-agent.com/compare/activeagent) · [vs LangChain](https://rails-agent.com/compare/langchain)
+`:company_openai` is a **cloud credential reference** — not a local env var. Legacy `model :auto` still works.
 
 ---
 
-## Pricing
+## Agent taxonomy
 
-| | Developer | Studio | Enterprise |
-|--|-----------|--------|------------|
-| **Price** | Free | $49 /dev · month | Custom |
-| | Cloud sandbox for building & testing | Production hosted runtime | Dedicated support & SLAs |
-| | Full dashboard, traces and evals | Unlimited workspaces | SSO / SAML, RBAC, audit logs |
-| | Not for production traffic | Traces, evals, human review | Region pinning, MSA |
+| Type | Main purpose | Example |
+|------|--------------|---------|
+| Knowledge | Understand and answer | Order support from Rails data |
+| Workflow | Execute predictable processes | Refund approval |
+| Operations | Coordinate unpredictable real-world work | Incident coordination |
+| Monitoring | Observe changes and respond | Inventory watcher |
 
-Details: [rails-agent.com/pricing](https://rails-agent.com/pricing)
+Deprecated: `ChatAgent` (→ Knowledge), `BackgroundAgent` (→ Operations).
+
+Generator: `--type knowledge|workflow|operations|monitoring` and `--database` for DB-connected Knowledge scaffolds.
+See the step-by-step guide and Ruby examples at
+[rails-agent.com/docs/agent-types](https://rails-agent.com/docs/agent-types).
+
+---
+
+## CLI
+
+```bash
+bundle exec rails-agents run store_assistant "Where is order 42?"
+bundle exec rails-agents sync store_assistant    # local → cloud (preferred)
+bundle exec rails-agents deploy store_assistant
+bundle exec rails-agents logs store_assistant
+```
+
+`pull` is **deprecated** (cloud authoring). Build locally; push with `sync`.
 
 ---
 
 ## Configuration
 
-The gem always talks to **https://cloud.rails-agent.com** — no base URL env vars.
-
 ```ruby
 # config/initializers/rails_agents.rb
 RailsAgents.configure do |config|
-  config.api_key = ENV["RAILS_AGENTS_API_KEY"]
+  config.api_key = ENV["RAILS_AGENTS_API_KEY"]       # platform key
   config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
 end
 ```
 
-```bash
-# .env (local) and your production host env
-RAILS_AGENTS_API_KEY=rak_sandbox_…
-RAILS_AGENTS_PROJECT_ID=prj_…
-```
-
-Connecting from `/agents` (or `rails-agents login`) writes these for you. If they are missing, copy them from [Dashboard → API keys](https://cloud.rails-agent.com/dashboard/keys). Also set the same vars on your production server before deploy.
+Provider keys: cloud dashboard → Model credentials (BYOK).
 
 ---
 
-## Engine
+## Pricing
 
-`/agents` is Sidekiq-simple: signup → API key on disk → iframe of the cloud dashboard.
+| | |
+|--|--|
+| **Subscription** | Fixed **company** plan (production workspaces) |
+| **Usage** | Provider + infrastructure at **pass-through cost** |
+| **Service fee** | **1%** on metered usage (transparent line item) |
 
-When you vibecode (or hit **Test** / **Deploy**) inside that iframe, the cloud messages the parent page. `POST /agents/pull` fetches files and writes them into `app/agents/<slug>/` on your machine.
-
-```bash
-bundle exec rails-agents run support "Where is order 42?"
-bundle exec rails-agents deploy support
-bundle exec rails-agents pull support
-bundle exec rails-agents logs support
-```
+Details: [rails-agent.com/pricing](https://rails-agent.com/pricing)
 
 ---
 
-## Development (this repo)
+## Development
 
 ```bash
 bundle install
 bundle exec rspec
 ```
 
-Local path testing (see `rails-agents-boilerplate` sibling app):
-
-```ruby
-gem "rails-agent-stack", path: "../rails-agents", require: "rails_agents"
-```
+Local path testing: see `rails-agents-boilerplate` sibling app.
 
 ---
 
-## License
-
-MIT — see [MIT-LICENSE](MIT-LICENSE).
-
----
-
-Built for Rails developers, by people who'd rather write Ruby than YAML prompts. Kip approves.
+MIT — [MIT-LICENSE](MIT-LICENSE)
 
 [rails-agent.com](https://rails-agent.com)

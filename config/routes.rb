@@ -14,11 +14,15 @@ RailsAgents::Engine.routes.draw do
   post "handshake", to: "handshake#create", as: :handshake
   get "connect", to: "connect#show", as: :connect
 
-  # Local disk sync — called by the embed bridge after vibecode / before Test
+  # Deprecated compatibility: cloud-to-local pull (prefer local scaffold + `rails-agents sync`)
   post "pull", to: "pulls#create", as: :pull
 
-  # ActiveRecord tables for Knowledge → Rails database connector
+  # ActiveRecord schema for Knowledge agents / database connector in dashboard
   get "schema", to: "schema#show", as: :schema
+
+  # Production Eve runtime → Rails tool execution. The bearer token is
+  # introspected against Rails Agent Cloud before any local code runs.
+  post "bridge/:agent/tools/:tool", to: "tool_bridge#create", as: :tool_bridge
 
   get "dashboard", to: "dashboard#show", as: :dashboard
   get "dashboard/*path", to: "dashboard#proxy", as: :dashboard_proxy

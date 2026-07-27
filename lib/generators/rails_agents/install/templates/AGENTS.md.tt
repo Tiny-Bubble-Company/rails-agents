@@ -1,0 +1,38 @@
+# AGENTS.md — <%= Rails.application.class.module_parent_name rescue "YourApp" %>
+
+Project guide for external coding agents. Platform docs: [rails-agents/docs/AGENTS.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/docs/AGENTS.md)
+
+## This app
+
+- Rails Agent mounted at `/agents`
+- Demo ecommerce models: `Collection`, `Product`, `Order`, `OrderItem`
+- Seed data: `bin/rails db:seed` (order numbers like `ORD-DEMO-1001`)
+
+## First agent (database Knowledge)
+
+Reference implementation: `app/agents/store_assistant/`
+
+```bash
+bin/rails generate rails_agents:agent store_assistant --type knowledge --database
+bundle exec rails-agents sync store_assistant
+bundle exec rails-agents run store_assistant "Status of ORD-DEMO-1001?"
+```
+
+## BYOK
+
+Store OpenAI/Anthropic/etc. keys in **cloud dashboard → Settings → Providers**. Reference in agent.rb:
+
+```ruby
+model :gpt_5_mini, provider: :openai, credential: :company_openai
+```
+
+Never commit provider API keys to this repository.
+
+## Taxonomy
+
+- **Knowledge** — understand and answer
+- **Workflow** — execute predictable processes
+- **Operations** — coordinate unpredictable real-world work
+- **Monitoring** — observe changes and respond
+
+See root gem `docs/AGENTS.md` for the full progressive path (tools → plugins → skills → channels → evals → deploy).

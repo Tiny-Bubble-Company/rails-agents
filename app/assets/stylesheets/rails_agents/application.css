@@ -110,7 +110,12 @@ code {
   justify-content: center;
   overflow: hidden;
   border-radius: 0.75rem;
-  background: rgba(28, 25, 23, 0.04);
+  background: var(--ruby);
+  color: #fff;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
   box-shadow: 0 0 0 1px rgba(28, 25, 23, 0.1);
 }
 
@@ -178,36 +183,6 @@ code {
   font-size: 1.05rem;
   color: var(--muted);
   max-width: 26rem;
-}
-
-.rails-agents-connect__kip {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
-}
-
-.rails-agents-connect__kip img {
-  width: auto;
-  height: 11rem;
-  object-fit: contain;
-  filter: drop-shadow(0 18px 36px rgba(28, 25, 23, 0.18));
-}
-
-@media (min-width: 640px) {
-  .rails-agents-connect__kip img {
-    height: 14rem;
-  }
-}
-
-@media (min-width: 960px) {
-  .rails-agents-connect__kip {
-    justify-content: flex-start;
-    margin-top: 2rem;
-  }
-
-  .rails-agents-connect__kip img {
-    height: 16rem;
-  }
 }
 
 .rails-agents-connect__meta {
