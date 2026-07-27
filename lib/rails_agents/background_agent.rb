@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 module RailsAgents
-  # Async / scheduled agents (digests, cron, Sidekiq / Solid Queue jobs).
-  # Trigger from a job or rake task with +YourAgent.run(message)+.
-  class BackgroundAgent < Base
+  # @deprecated Use {OperationsAgent} for async / scheduled agents.
+  class BackgroundAgent < OperationsAgent
+    def self.inherited(subclass)
+      super
+      warn "[RailsAgents] BackgroundAgent is deprecated; use OperationsAgent instead.", uplevel: 1
+    end
+
     def self.agent_kind
-      :background
+      :operations
     end
   end
 end

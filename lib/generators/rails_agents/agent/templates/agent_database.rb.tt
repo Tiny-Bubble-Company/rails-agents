@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+class <%= class_name %> < RailsAgents::KnowledgeAgent
+  model :gpt_5_mini, provider: :openai, credential: :company_openai
+  memory :conversation
+  knowledge_from "knowledge/**/*"
+
+  tool :lookup_order do |order_number:|
+    order = Order.find_by(number: order_number)
+    return { error: "Order not found", order_number: order_number } unless order
+
+    {
+      number: order.number,
+      status: order.status,
+      customer_name: order.customer_name,
+      customer_email: order.customer_email,
+      total_cents: order.total_cents,
+      currency: order.currency,
+      shipped_at: order.shipped_at&.iso8601
+    }
+  end
+
+  tool :search_products do |query:|
+    scope = Product.where(status: "active")
+    if query.present?
+      pattern = "%#{query}%"
+      scope = scope.where("name LIKE ? OR sku LIKE ?", pattern, pattern)
+    end
+
+    scope.limit(10).map do |product|
+      {
+        sku: product.sku,
+        name: product.name,
+        price_cents: product.price_cents,
+        stock: product.stock,
+        collection: product.collection&.name
+      }
+    end
+  end
+
+  channel :web
+end

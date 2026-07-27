@@ -102,8 +102,9 @@ module RailsAgents
       exit 1
     end
 
-    desc "pull AGENT_ID_OR_SLUG", "Pull agent files from the cloud into app/agents/<slug>/"
+    desc "pull AGENT_ID_OR_SLUG", "[deprecated] Pull agent files from cloud into app/agents/<slug>/"
     def pull(agent_id)
+      warn "[RailsAgents] `rails-agents pull` is deprecated; scaffold locally and use `rails-agents sync`."
       result = LocalSync.new.pull!(agent_id)
       say "Pulled #{result["count"]} files into app/agents/#{result["slug"]}/"
       Array(result["written"]).each { |path| say "  #{path}" }

@@ -11,18 +11,23 @@ module RailsAgents
 
       def create_initializer
         template "initializer.rb.tt", "config/initializers/rails_agents.rb"
+        template "rails_agents_autoload.rb.tt", "config/initializers/rails_agents_autoload.rb"
       end
 
       def mount_engine
         route "mount RailsAgents::Engine, at: \"/agents\""
       end
 
+      def create_agents_guide
+        template "AGENTS.md.tt", "AGENTS.md"
+      end
+
       def create_env_placeholders
         env_path = File.expand_path(".env", destination_root)
         placeholders = <<~ENV
 
-          # Rails Agent Cloud — get these at https://cloud.rails-agent.com/dashboard/keys
-          # (also written automatically when you connect from /agents)
+          # Rails Agent Cloud platform key — NOT your OpenAI/Anthropic keys (those are BYOK in dashboard)
+          # Written automatically when you connect from /agents
           RAILS_AGENTS_API_KEY=
           RAILS_AGENTS_PROJECT_ID=
         ENV
@@ -47,11 +52,10 @@ module RailsAgents
         say "  Rails Agents installed", :green
         say "============================================================", :green
         say ""
-        say "  Start your Rails server, then open the Agents UI:", :green
-        say "    bin/dev     (or: bin/rails server)", :green
-        say "    #{url}", :green
-        say ""
-        say "  Guide: https://rails-agent.com/docs/getting-started", :green
+        say "  1. Start server:  bin/dev  (or bin/rails server)", :green
+        say "  2. Connect:       #{url}", :green
+        say "  3. Read AGENTS.md — scaffold your first database Knowledge agent:", :green
+        say "     bin/rails generate rails_agents:agent my_agent --type knowledge --database", :green
         say "============================================================", :green
         say ""
       end

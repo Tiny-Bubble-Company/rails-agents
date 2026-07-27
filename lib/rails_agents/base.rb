@@ -4,11 +4,12 @@ require "pathname"
 require "active_support/core_ext/string/inflections"
 
 module RailsAgents
-  # Prefer typed subclasses for app integration:
-  # ChatAgent, WorkflowAgent, or BackgroundAgent.
+  # Prefer product-facing typed subclasses: KnowledgeAgent, WorkflowAgent,
+  # OperationsAgent, or MonitoringAgent.
   class Base
     class << self
-      attr_reader :agent_name, :model_setting, :memory_setting, :knowledge_glob,
+      attr_reader :agent_name, :model_setting, :model_provider, :model_credential,
+                  :memory_setting, :knowledge_glob,
                   :tool_definitions, :skill_definitions, :channel_definitions
 
       def agent_kind
@@ -22,8 +23,12 @@ module RailsAgents
         subclass.instance_variable_set(:@channel_definitions, [])
       end
 
-      def model(value)
+      # model :gpt_5_mini, provider: :openai, credential: :company_openai
+      # model :auto  # legacy cloud-routed default (still supported)
+      def model(value, provider: nil, credential: nil)
         @model_setting = value
+        @model_provider = provider
+        @model_credential = credential
       end
 
       def memory(value)
@@ -99,12 +104,29 @@ module RailsAgents
 
     def agent_metadata
       {
-        model: self.class.model_setting,
+        kind: self.class.agent_kind,
+        model: model_metadata,
         memory: self.class.memory_setting,
         tools: self.class.tool_definitions&.keys || [],
         skills: self.class.skill_definitions || {},
         channels: self.class.channel_definitions || []
       }
+    end
+
+    def model_metadata
+      setting = self.class.model_setting
+      provider = self.class.model_provider
+      credential = self.class.model_credential
+
+      if provider.nil? && credential.nil?
+        setting
+      else
+        {
+          name: setting,
+          provider: provider,
+          credential: credential
+        }.compact
+      end
     end
 
     def agent_identifier

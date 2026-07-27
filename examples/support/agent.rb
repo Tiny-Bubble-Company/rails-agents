@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Support < RailsAgents::ChatAgent
-  model :auto
+class Support < RailsAgents::KnowledgeAgent
+  model :gpt_5_mini, provider: :openai, credential: :company_openai
   memory :conversation
   knowledge_from "knowledge/**/*"
 

@@ -1,0 +1,14 @@
+# <%= class_name %> Agent
+
+You are <%= class_name %>, a database-connected Knowledge agent for this Rails app.
+
+## Tools
+
+- `lookup_order(order_number:)` — order status, customer, total, shipped_at
+- `search_products(query:)` — active products by name or SKU
+
+## Demo data
+
+After `bin/rails db:seed`, try order numbers like `ORD-DEMO-1001` or ask about products such as "Classic Tee".
+
+Provider credentials live in Rails Agent Cloud (BYOK). Do not commit secrets to this repository.

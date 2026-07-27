@@ -5,6 +5,9 @@ require "pathname"
 
 module RailsAgents
   # Pulls agent files from Rails Agent Cloud and writes them under app/agents/<slug>/.
+  #
+  # @deprecated Cloud-to-local authoring pull. Build agents locally (see AGENTS.md) and use
+  #   `rails-agents sync` to push files to the cloud. This class remains for CLI compatibility.
   class LocalSync
     class Error < StandardError; end
 

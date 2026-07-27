@@ -14,7 +14,7 @@ RSpec.describe RailsAgents::Base do
 
   let(:support_agent) do
     Class.new(described_class) do
-      model :auto
+      model :gpt_5_mini, provider: :openai, credential: :company_openai
       memory :conversation
       knowledge_from "knowledge/**/*"
 
@@ -37,12 +37,26 @@ RSpec.describe RailsAgents::Base do
   end
 
   it "stores DSL configuration on the class" do
-    expect(support_agent.model_setting).to eq(:auto)
+    expect(support_agent.model_setting).to eq(:gpt_5_mini)
+    expect(support_agent.model_provider).to eq(:openai)
+    expect(support_agent.model_credential).to eq(:company_openai)
     expect(support_agent.memory_setting).to eq(:conversation)
     expect(support_agent.knowledge_glob).to eq("knowledge/**/*")
     expect(support_agent.tool_definitions.keys).to include(:lookup_order)
     expect(support_agent.skill_definitions[:triage]).to eq("skills/triage.rb")
     expect(support_agent.channel_definitions).to include(:slack)
+  end
+
+  it "supports legacy model :auto without provider metadata" do
+    legacy = Class.new(described_class) { model :auto }
+    instance = legacy.new(client: client)
+    allow(client).to receive(:create_run).and_return({ "id" => "run_1" })
+
+    legacy.new(client: client).run("Hi")
+
+    expect(client).to have_received(:create_run).with(
+      hash_including(metadata: hash_including(model: :auto, kind: :base))
+    )
   end
 
   it "executes tool blocks" do
@@ -55,18 +69,33 @@ RSpec.describe RailsAgents::Base do
     expect(agent.knowledge_paths).to eq(["knowledge/faq.md"])
   end
 
-  it "creates a run via the cloud client" do
+  it "includes kind and structured model in run metadata" do
     allow(client).to receive(:create_run).and_return({ "id" => "run_abc" })
 
-    result = support_agent.new(client: client).run("Hello", session_id: "sess_1")
+    support_agent.new(client: client).run("Hello", session_id: "sess_1")
 
     expect(client).to have_received(:create_run).with(
       hash_including(
         agent: agent_dir.basename.to_s,
         message: "Hello",
-        session_id: "sess_1"
+        session_id: "sess_1",
+        metadata: hash_including(
+          kind: :base,
+          model: {
+            name: :gpt_5_mini,
+            provider: :openai,
+            credential: :company_openai
+          }
+        )
       )
     )
+  end
+
+  it "creates a run via the cloud client" do
+    allow(client).to receive(:create_run).and_return({ "id" => "run_abc" })
+
+    result = support_agent.new(client: client).run("Hello", session_id: "sess_1")
+
     expect(result.run_id).to eq("run_abc")
   end
 

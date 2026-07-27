@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 RailsAgents.configure do |config|
-  # Cloud host is fixed (https://cloud.rails-agent.com). Set these after signup:
-  # Dashboard → API keys (https://cloud.rails-agent.com/dashboard/keys)
-  # Connecting from /agents or `rails-agents login` also writes them for you.
+  # Platform API key (https://cloud.rails-agent.com/dashboard/keys).
+  # Provider/model keys (BYOK) are stored in the cloud — reference them in agent.rb via credential:.
   config.api_key = ENV["RAILS_AGENTS_API_KEY"]
   config.project_id = ENV["RAILS_AGENTS_PROJECT_ID"]
 end

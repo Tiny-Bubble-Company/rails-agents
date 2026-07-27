@@ -11,7 +11,6 @@
 
 <script>
   (function () {
-    var PULL_URL = <%= raw rails_agents.pull_path.to_json %>;
     var SCHEMA_URL = <%= raw rails_agents.schema_path.to_json %>;
     var CSRF = document.querySelector('meta[name="csrf-token"]');
     var statusEl = document.getElementById("rails-agents-sync-status");
@@ -39,21 +38,6 @@
       };
       if (CSRF) h["X-CSRF-Token"] = CSRF.getAttribute("content");
       return h;
-    }
-
-    async function pullAgent(agentId) {
-      var res = await fetch(PULL_URL, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: headers(),
-        body: JSON.stringify({ agent_id: agentId })
-      });
-      var json = {};
-      try { json = await res.json(); } catch (e) { json = {}; }
-      if (!res.ok || json.ok === false) {
-        throw new Error(json.error || ("Pull failed (" + res.status + ")"));
-      }
-      return json;
     }
 
     async function fetchSchema() {
@@ -101,35 +85,19 @@
         return;
       }
 
-      if (data.type !== "rails-agents:pull") return;
-      if (!data.agentId) return;
-
-      setStatus("Writing app/agents/...");
-      pullAgent(data.agentId)
-        .then(function (result) {
-          setStatus("Synced " + (result.count || 0) + " files → app/agents/" + result.slug + "/");
-          if (event.source && event.source.postMessage) {
-            event.source.postMessage({
-              type: "rails-agents:pull-result",
-              requestId: data.requestId,
-              ok: true,
-              count: result.count,
-              slug: result.slug,
-              written: result.written
-            }, event.origin);
-          }
-        })
-        .catch(function (err) {
-          setStatus(err.message || "Pull failed", true);
-          if (event.source && event.source.postMessage) {
-            event.source.postMessage({
-              type: "rails-agents:pull-result",
-              requestId: data.requestId,
-              ok: false,
-              error: err.message || "Pull failed"
-            }, event.origin);
-          }
-        });
+      // Deprecated: cloud-to-local authoring pull. Use `rails-agents sync` (local → cloud)
+      // or scaffold agents with `rails generate rails_agents:agent`. See AGENTS.md.
+      if (data.type === "rails-agents:pull") {
+        if (event.source && event.source.postMessage) {
+          event.source.postMessage({
+            type: "rails-agents:pull-result",
+            requestId: data.requestId,
+            ok: false,
+            error: "Cloud pull is deprecated. Build agents locally (see AGENTS.md) and run rails-agents sync."
+          }, event.origin);
+        }
+        setStatus("Cloud pull deprecated — edit app/agents/ locally", true);
+      }
     });
   })();
 </script>
