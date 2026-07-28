@@ -142,7 +142,10 @@ module RailsAgents
       return [] unless glob
 
       dir = self.class.agent_directory
-      Dir.glob(dir.join(glob).to_s).map { |path| Pathname.new(path).relative_path_from(dir).to_s }
+      local = Dir.glob(dir.join(glob).to_s).map do |path|
+        Pathname.new(path).relative_path_from(dir).to_s
+      end
+      (local + LibraryImports.new(dir).knowledge_paths).uniq
     end
 
     class RunResult

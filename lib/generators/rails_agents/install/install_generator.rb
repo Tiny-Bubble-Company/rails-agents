@@ -22,6 +22,14 @@ module RailsAgents
         template "AGENTS.md.tt", "AGENTS.md"
       end
 
+      def create_workspace_library
+        %w[tools skills plugins knowledge knowledge/sources].each do |folder|
+          empty_directory File.join("app/agents_library", folder)
+        end
+        template "library_manifest.yml.tt", "app/agents_library/manifest.yml"
+        template "library_README.md.tt", "app/agents_library/README.md"
+      end
+
       def create_env_placeholders
         env_path = File.expand_path(".env", destination_root)
         placeholders = <<~ENV

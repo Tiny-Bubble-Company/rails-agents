@@ -68,6 +68,41 @@ Dashboard uses `GET /agents/schema` to discover tables for database setup — ke
 Add Ruby tool blocks in `agent.rb` or files under `tools/`. Tools run in your Rails app context.
 Start with one read-only tool and test it before adding side effects.
 
+### Workspace Library (share only when reuse is real)
+
+Agent-specific capabilities stay under `app/agents/<slug>/`. Capabilities used
+by multiple agents have one canonical source under:
+
+```text
+app/agents_library/
+├── tools/
+├── skills/
+├── knowledge/
+└── plugins/
+```
+
+Attach shared sources through `app/agents/<slug>/imports.yml`:
+
+```yaml
+version: 1
+imports:
+  - kind: skill
+    slug: triage
+    from: library/skills/triage.rb
+  - kind: knowledge
+    slug: shipping_policy
+    from: library/knowledge/shipping_policy.md
+```
+
+`bundle exec rails-agents sync NAME` safely resolves these paths and includes
+them in the agent bundle. It fails on path traversal, missing sources, or a
+conflict with an agent-local file. This keeps the Library canonical without
+duplicating generated copies in Git.
+
+Shared Ruby tool files are organization boundaries, not a new DSL. Register the
+tool in `agent.rb` using the normal `tool` block and call the shared module or
+service from that block.
+
 ### 4. Pipedream plugins
 
 Add external SaaS integrations via Pipedream-connected actions in the cloud dashboard. Use a local Ruby tool for your own database; use a plugin for systems such as Notion, Sheets, or HubSpot.

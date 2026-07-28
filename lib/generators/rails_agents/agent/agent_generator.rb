@@ -25,6 +25,7 @@ module RailsAgents
         empty_directory File.join(agent_path, "tools")
         empty_directory File.join(agent_path, "skills")
         empty_directory File.join(agent_path, "knowledge")
+        empty_directory File.join(agent_path, "plugins")
         empty_directory File.join(agent_path, "channels")
         empty_directory File.join(agent_path, "evals")
       end
@@ -38,6 +39,7 @@ module RailsAgents
           template "prompt.md.tt", File.join(agent_path, "prompt.md")
         end
         template "memory.rb.tt", File.join(agent_path, "memory.rb")
+        template "imports.yml.tt", File.join(agent_path, "imports.yml")
         template "channels/slack.rb.tt", File.join(agent_path, "channels/slack.rb")
         template "evals/smoke.yml.tt", File.join(agent_path, "evals/smoke.yml")
       end
