@@ -15,7 +15,7 @@ RSpec.describe RailsAgents::Base do
   let(:support_agent) do
     Class.new(described_class) do
       model :gpt_5_mini, provider: :openai, credential: :company_openai
-      memory :conversation
+      memory :conversation, provider: :mem0, recall: 5
       knowledge_from "knowledge/**/*"
 
       tool :lookup_order do |order_id:|
@@ -41,6 +41,8 @@ RSpec.describe RailsAgents::Base do
     expect(support_agent.model_provider).to eq(:openai)
     expect(support_agent.model_credential).to eq(:company_openai)
     expect(support_agent.memory_setting).to eq(:conversation)
+    expect(support_agent.memory_provider).to eq(:mem0)
+    expect(support_agent.memory_recall).to eq(5)
     expect(support_agent.knowledge_glob).to eq("knowledge/**/*")
     expect(support_agent.tool_definitions.keys).to include(:lookup_order)
     expect(support_agent.skill_definitions[:triage]).to eq("skills/triage.rb")
@@ -85,6 +87,11 @@ RSpec.describe RailsAgents::Base do
             name: :gpt_5_mini,
             provider: :openai,
             credential: :company_openai
+          },
+          memory: {
+            type: :conversation,
+            provider: :mem0,
+            recall: 5
           }
         )
       )
