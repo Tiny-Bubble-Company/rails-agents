@@ -1,0 +1,5 @@
+version: 1
+
+# Workspace capabilities that may be reused by multiple agents.
+# Agents opt in through app/agents/<slug>/imports.yml.
+resources: []

@@ -26,4 +26,11 @@ RSpec.describe "Agent generator templates" do
     expect(content).to include("ORD-DEMO-1001")
     expect(content).to include("BYOK")
   end
+
+  it "scaffolds an explicit workspace Library imports manifest" do
+    content = File.read(File.join(templates_root, "imports.yml.tt"))
+
+    expect(content).to include("imports: []")
+    expect(content).to include("library/skills/triage.rb")
+  end
 end

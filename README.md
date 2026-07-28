@@ -70,7 +70,9 @@ Connect your company workspace at `/agents`, then scaffold your first **database
 bin/rails generate rails_agents:agent store_assistant --type knowledge --database
 ```
 
-**Zeitwerk:** fresh installs add `config/initializers/rails_agents_autoload.rb` so `app/agents/` dirs are not treated as Ruby modules. Existing apps: add `Rails.autoloaders.main.ignore(Rails.root.join("app/agents"))` to `config/application.rb`.
+**Zeitwerk:** fresh installs add `config/initializers/rails_agents_autoload.rb`
+so `app/agents/` and `app/agents_library/` are treated as agent assets rather
+than application namespaces.
 
 Full path for external coding agents: **[docs/AGENTS.md](docs/AGENTS.md)**
 
@@ -82,13 +84,27 @@ Full path for external coding agents: **[docs/AGENTS.md](docs/AGENTS.md)**
 app/agents/store_assistant/
 ├── agent.rb            # RailsAgents::KnowledgeAgent subclass
 ├── prompt.md           # System prompt
+├── imports.yml         # Optional workspace Library attachments
 ├── tools/              # Optional extracted tools
 ├── skills/             # Composable behaviors
 ├── memory.rb           # Memory config
 ├── knowledge/          # RAG files
+├── plugins/            # External connection manifests
 ├── channels/           # Slack, web, API, …
 └── evals/              # Smoke / regression cases
+
+app/agents_library/
+├── tools/              # Ruby actions reused by multiple agents
+├── skills/             # Shared multi-step behavior
+├── knowledge/          # Shared documents and source definitions
+└── plugins/            # Shared connection manifests
 ```
+
+Keep one-off capabilities inside the agent. Move stable capabilities to
+`app/agents_library/` when another agent should reuse the same implementation,
+then reference them from that agent's `imports.yml`. `rails-agents sync`
+includes imported Library files in the agent runtime bundle without duplicating
+the shared source in Git.
 
 ---
 

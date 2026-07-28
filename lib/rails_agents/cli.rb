@@ -94,9 +94,25 @@ module RailsAgents
         rel = rel.sub(%r{\A.*?app/agents/}, "app/agents/") if rel.include?("app/agents/")
         { "path" => rel, "content" => File.read(path) }
       end
+      imported = LibraryImports.new(dir).virtual_files
+      local_paths = files.to_h { |file| [file["path"], true] }
+      conflicts = imported.filter_map do |file|
+        file["path"] if local_paths[file["path"]]
+      end
+      unless conflicts.empty?
+        raise LibraryImports::Error,
+          "Library imports conflict with agent-local files: #{conflicts.join(", ")}"
+      end
+      files.concat(
+        imported.map { |file| { "path" => file["path"], "content" => file["content"] } }
+      )
 
       Client.new.sync_files(agent: name, files: files)
-      say "Synced #{files.size} files for #{name}"
+      suffix = imported.empty? ? "" : " (#{imported.size} from app/agents_library)"
+      say "Synced #{files.size} files for #{name}#{suffix}"
+    rescue LibraryImports::Error => e
+      say_error e.message
+      exit 1
     rescue Client::Error => e
       say_error e.message
       exit 1

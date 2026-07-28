@@ -1,0 +1,24 @@
+# Agent Library
+
+Reusable capabilities shared by agents in this Rails application.
+
+- `tools/` — Ruby actions and service wrappers
+- `skills/` — reusable multi-step behavior
+- `knowledge/` — documents and data-source definitions
+- `plugins/` — external connection manifests
+
+Keep one-off capabilities inside `app/agents/<slug>/`. Move a capability here
+only when multiple agents should reuse the same implementation.
+
+Attach shared files in an agent's `imports.yml`:
+
+```yaml
+version: 1
+imports:
+  - kind: skill
+    slug: triage
+    from: library/skills/triage.rb
+```
+
+`rails-agents sync <agent>` uploads imported files into that agent's runtime
+bundle without duplicating the shared source in the repository.
