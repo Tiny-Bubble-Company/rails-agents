@@ -46,7 +46,7 @@ Edit `app/agents/store_assistant/agent.rb` — tools call your ActiveRecord mode
 ```ruby
 class StoreAssistant < RailsAgents::KnowledgeAgent
   model :gpt_5_mini, provider: :openai, credential: :company_openai
-  memory :conversation
+  memory :conversation, provider: :mem0, recall: 5
 
   tool :lookup_order do |order_number:|
     # wire to your models

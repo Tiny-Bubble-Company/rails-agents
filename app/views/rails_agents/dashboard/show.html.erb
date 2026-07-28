@@ -67,7 +67,9 @@
                 requestId: data.requestId,
                 ok: true,
                 tables: result.tables || [],
-                adapter: result.adapter
+                adapter: result.adapter,
+                databases: result.databases || [],
+                configFiles: result.config_files || []
               }, event.origin);
             }
           })

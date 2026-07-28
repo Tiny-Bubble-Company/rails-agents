@@ -108,12 +108,12 @@ the shared source in Git.
 
 ---
 
-## Model DSL (BYOK)
+## Model and memory DSL
 
 ```ruby
 class StoreAssistant < RailsAgents::KnowledgeAgent
   model :gpt_5_mini, provider: :openai, credential: :company_openai
-  memory :conversation
+  memory :conversation, provider: :mem0, recall: 5
   knowledge_from "knowledge/**/*"
 
   tool :lookup_order do |order_number:|
@@ -123,6 +123,10 @@ end
 ```
 
 `:company_openai` is a **cloud credential reference** — not a local env var. Legacy `model :auto` still works.
+
+Enable managed memory from the agent's **Build → Memory** tab. Pass a stable
+`session_id` to `.run` for each product user; Rails Agent scopes memory by
+workspace, agent, and the hashed session identity.
 
 ---
 

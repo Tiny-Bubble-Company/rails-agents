@@ -9,7 +9,7 @@ module RailsAgents
   class Base
     class << self
       attr_reader :agent_name, :model_setting, :model_provider, :model_credential,
-                  :memory_setting, :knowledge_glob,
+                  :memory_setting, :memory_provider, :memory_recall, :knowledge_glob,
                   :tool_definitions, :skill_definitions, :channel_definitions
 
       def agent_kind
@@ -31,8 +31,11 @@ module RailsAgents
         @model_credential = credential
       end
 
-      def memory(value)
+      # memory :conversation, provider: :mem0, recall: 5
+      def memory(value, provider: nil, recall: nil)
         @memory_setting = value
+        @memory_provider = provider
+        @memory_recall = recall
       end
 
       def knowledge_from(glob)
@@ -106,7 +109,7 @@ module RailsAgents
       {
         kind: self.class.agent_kind,
         model: model_metadata,
-        memory: self.class.memory_setting,
+        memory: memory_metadata,
         tools: self.class.tool_definitions&.keys || [],
         skills: self.class.skill_definitions || {},
         channels: self.class.channel_definitions || []
@@ -125,6 +128,22 @@ module RailsAgents
           name: setting,
           provider: provider,
           credential: credential
+        }.compact
+      end
+    end
+
+    def memory_metadata
+      setting = self.class.memory_setting
+      provider = self.class.memory_provider
+      recall = self.class.memory_recall
+
+      if provider.nil? && recall.nil?
+        setting
+      else
+        {
+          type: setting,
+          provider: provider,
+          recall: recall
         }.compact
       end
     end
