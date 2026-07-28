@@ -12,7 +12,7 @@ module RailsAgents
       end
 
       @embed_token = take_embed_token!
-      @dashboard_url = build_embed_url("/dashboard")
+      @dashboard_url = build_embed_url("/dashboard", dashboard_query)
     end
 
     def proxy
@@ -24,7 +24,7 @@ module RailsAgents
 
       @embed_token = take_embed_token!
       path = "/dashboard/#{params[:path]}"
-      @dashboard_url = build_embed_url(path)
+      @dashboard_url = build_embed_url(path, dashboard_query)
       render :show
     end
 
@@ -49,17 +49,22 @@ module RailsAgents
       nil
     end
 
-    def build_embed_url(path)
+    def dashboard_query
+      request.query_parameters.except("embed_token", "token")
+    end
+
+    def build_embed_url(path, query = {})
       base = RailsAgents.config.dashboard_base.to_s.chomp("/")
+      embed_query = query.merge("embed" => "1")
+      dashboard_path = "#{path}?#{embed_query.to_query}"
       # Bootstrap sets the cloud session cookie, then redirects to a clean dashboard URL.
       if @embed_token.present?
-        next_path = "#{path}?embed=1"
         return "#{base}/api/v1/auth/embed?#{
-          { token: @embed_token, next: next_path }.to_query
+          { token: @embed_token, next: dashboard_path }.to_query
         }"
       end
 
-      "#{base}#{path}?embed=1"
+      "#{base}#{dashboard_path}"
     end
   end
 end

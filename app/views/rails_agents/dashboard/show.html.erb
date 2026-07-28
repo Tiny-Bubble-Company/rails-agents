@@ -12,6 +12,9 @@
 <script>
   (function () {
     var SCHEMA_URL = <%= raw rails_agents.schema_path.to_json %>;
+    var DASHBOARD_PATH = <%= raw rails_agents.dashboard_path.to_json %>;
+    var frame = document.getElementById("rails-agents-dashboard-frame");
+    var cloudOrigin = frame ? new URL(frame.src).origin : null;
     var CSRF = document.querySelector('meta[name="csrf-token"]');
     var statusEl = document.getElementById("rails-agents-sync-status");
     var ALLOWED = {
@@ -54,9 +57,40 @@
       return json;
     }
 
+    function syncBrowserUrl(data) {
+      if (!data.path || data.path.indexOf("/dashboard") !== 0) return;
+      var suffix = data.path.slice("/dashboard".length);
+      var next = DASHBOARD_PATH + suffix;
+      if (data.search) next += "?" + data.search;
+      if (data.hash) next += data.hash;
+      var current = window.location.pathname + window.location.search + window.location.hash;
+      if (next !== current) {
+        window.history.replaceState({ railsAgentsDashboard: true }, "", next);
+      }
+    }
+
+    function syncFrameFromBrowser() {
+      if (!frame || !frame.contentWindow || !cloudOrigin) return;
+      if (window.location.pathname.indexOf(DASHBOARD_PATH) !== 0) return;
+      var suffix = window.location.pathname.slice(DASHBOARD_PATH.length);
+      frame.contentWindow.postMessage({
+        type: "rails-agents:navigate-to",
+        path: "/dashboard" + suffix,
+        search: window.location.search.replace(/^\?/, ""),
+        hash: window.location.hash
+      }, cloudOrigin);
+    }
+
+    window.addEventListener("popstate", syncFrameFromBrowser);
+
     window.addEventListener("message", function (event) {
       if (!ALLOWED[event.origin]) return;
       var data = event.data || {};
+
+      if (data.type === "rails-agents:navigate") {
+        syncBrowserUrl(data);
+        return;
+      }
 
       if (data.type === "rails-agents:schema") {
         fetchSchema()
