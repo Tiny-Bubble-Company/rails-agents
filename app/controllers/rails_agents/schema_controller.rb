@@ -60,10 +60,32 @@ module RailsAgents
             rescue StandardError
               []
             end
-          { name: name, columns: columns.first(40), kind: "table" }
+          {
+            name: name,
+            columns: columns.first(40),
+            kind: "table",
+            samples: sample_rows(name, columns)
+          }
         end
     rescue StandardError
       []
+    end
+
+    def sample_rows(_table, columns)
+      return [] if columns.blank?
+
+      quoted = ActiveRecord::Base.connection.quote_table_name(_table)
+      rows = ActiveRecord::Base.connection.exec_query("SELECT * FROM #{quoted} LIMIT 8").to_a
+      rows.map do |row|
+        row.transform_values { |value| truncate_sample(value) }
+      end
+    rescue StandardError
+      []
+    end
+
+    def truncate_sample(value)
+      text = value.is_a?(String) ? value : value.inspect
+      text.length > 120 ? "#{text[0, 117]}..." : text
     end
 
     def mongoid_collections
@@ -72,7 +94,7 @@ module RailsAgents
       Mongoid.default_client.database.collection_names
         .reject { |name| name.start_with?("system.") }
         .sort
-        .map { |name| { name: name, columns: [], kind: "collection" } }
+        .map { |name| { name: name, columns: [], kind: "collection", samples: [] } }
     rescue StandardError
       []
     end
