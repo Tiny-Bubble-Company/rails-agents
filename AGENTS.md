@@ -14,3 +14,5 @@ Quick start:
 Four taxonomy types: **Knowledge**, **Workflow**, **Operations**, **Monitoring**.
 
 Capabilities: **Tools**, **Skills**, **Packages** (Skills.sh / APM / Smithery), **Connectors**, **Knowledge**, plus workspace **Library** reuse.
+
+Run responses: prefer `result.output_text` (Markdown) and optional `result.output_data` — see [docs/AGENTS.md](docs/AGENTS.md#run-response-schema-integrate-into-product) and https://rails-agent.com/docs/run-response.

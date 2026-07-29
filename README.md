@@ -52,6 +52,7 @@ Rails Agent is the **fullstack agentic platform for Rails**:
 | **BYOK models** | Attach provider credentials per agent in the cloud; reference them in Ruby — no secrets in git. |
 | **Test → deploy → monitor** | One `/agents` dashboard for runs, traces, evals, channels, and cost. |
 | **Four taxonomy types** | Knowledge, Workflow, Operations, Monitoring |
+| **One run response** | `output_text` / `items` / `output_data` — [schema](https://rails-agent.com/docs/run-response) |
 | **Company billing** | Fixed subscription + usage at cost + transparent **1% service fee** |
 
 ---
@@ -144,6 +145,9 @@ Deprecated: `ChatAgent` (→ Knowledge), `BackgroundAgent` (→ Operations).
 Generator: `--type knowledge|workflow|operations|monitoring` and `--database` for DB-connected Knowledge scaffolds.
 See the step-by-step guide and Ruby examples at
 [rails-agent.com/docs/agent-types](https://rails-agent.com/docs/agent-types).
+
+**Integrate responses:** every run returns `output_text` (Markdown), optional `output_data`, and typed `items` — same shape for every LLM.
+Guide: [rails-agent.com/docs/run-response](https://rails-agent.com/docs/run-response).
 
 ---
 

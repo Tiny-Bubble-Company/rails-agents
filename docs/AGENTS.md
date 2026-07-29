@@ -22,6 +22,35 @@ Use the matching base class: `RailsAgents::KnowledgeAgent`,
 
 Legacy aliases (deprecated): `ChatAgent` → Knowledge, `BackgroundAgent` → Operations.
 
+## Run response schema (integrate into product)
+
+Every provider (OpenAI, Anthropic, Gateway, OSS) normalizes to one shape.
+Your app should not branch on provider-specific payloads.
+
+| Field | Use |
+|-------|-----|
+| `result.output_text` | Final Markdown answer for chat / email / Slack |
+| `result.output` | Legacy alias for `output_text` |
+| `result.output_data` | Optional structured Hash for Rails branching (`nil` if text-only) |
+| `result.items` | Typed turn: `message` (+ `result` when `output_data` present) |
+| `result.format` | Always `"markdown"` for message content |
+| `result.trace` | Tools / debug — Monitor, not the product answer |
+
+```ruby
+result = StoreAssistant.run("Where is ORD-1001?", session_id: "user-1")
+puts result.output_text
+payload = result.output_data  # Hash or nil
+```
+
+Consumption by taxonomy:
+
+- **Knowledge** — render Markdown (`output_text`); tables for catalogs
+- **Workflow** — show `output_text`; branch on `output_data` (status, ids)
+- **Operations** — post `output_text`; handoff via `output_data`
+- **Monitoring** — alert with `output_text`; automate from `output_data`
+
+Public docs: https://rails-agent.com/docs/run-response
+
 ## Progressive path
 
 ### 1. Connect workspace
