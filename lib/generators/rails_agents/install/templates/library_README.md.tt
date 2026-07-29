@@ -4,8 +4,9 @@ Reusable capabilities shared by agents in this Rails application.
 
 - `tools/` — Ruby actions and service wrappers
 - `skills/` — reusable multi-step behavior
+- `packages/` — installable capabilities from Skills.sh, Microsoft APM, and Smithery
 - `knowledge/` — documents and data-source definitions
-- `plugins/` — external connection manifests
+- `connectors/` — external connection manifests
 
 Keep one-off capabilities inside `app/agents/<slug>/`. Move a capability here
 only when multiple agents should reuse the same implementation.
@@ -18,6 +19,9 @@ imports:
   - kind: skill
     slug: triage
     from: library/skills/triage.rb
+  - kind: package
+    slug: frontend_design
+    from: library/packages/frontend_design
 ```
 
 `rails-agents sync <agent>` uploads imported files into that agent's runtime

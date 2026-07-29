@@ -109,6 +109,14 @@ module RailsAgents
       get("/evals", query: { agent: agent, project_id: @config.project_id }.compact)
     end
 
+    def search_packages(query:, registry: "all", limit: 18)
+      get("/packages", query: { q: query, registry: registry, limit: limit }.compact)
+    end
+
+    def install_package(payload)
+      post("/packages", payload)
+    end
+
     private
 
     def get(path, query: {})

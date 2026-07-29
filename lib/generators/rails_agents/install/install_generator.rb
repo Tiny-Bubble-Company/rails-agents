@@ -23,7 +23,7 @@ module RailsAgents
       end
 
       def create_workspace_library
-        %w[tools skills plugins knowledge knowledge/sources].each do |folder|
+        %w[tools skills connectors plugins knowledge knowledge/sources packages].each do |folder|
           empty_directory File.join("app/agents_library", folder)
         end
         template "library_manifest.yml.tt", "app/agents_library/manifest.yml"
