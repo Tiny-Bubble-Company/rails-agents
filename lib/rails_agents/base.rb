@@ -194,16 +194,56 @@ module RailsAgents
       end
 
       # Prefer the sync create_run body; otherwise drain the SSE stream.
+      # Legacy alias for output_text (Markdown final answer).
       def output
-        sync = response["output"] || dig_data("output")
-        return sync if sync.is_a?(String) && !sync.empty?
+        text = output_text
+        return text if text.is_a?(String) && !text.empty?
 
+        final = nil
         chunks = []
         stream do |event|
-          piece = event["content"] || event["text"]
-          chunks << piece if piece.is_a?(String) && !piece.empty?
+          # Prefer terminal / normalized payloads (done / output events).
+          if event["output_text"].is_a?(String) && !event["output_text"].empty?
+            final = event["output_text"]
+          elsif event["output"].is_a?(String) && !event["output"].empty? &&
+                (event.key?("items") || event.key?("format") || event.key?("status"))
+            final = event["output"]
+          else
+            piece = event["content"] || event["text"]
+            chunks << piece if piece.is_a?(String) && !piece.empty?
+          end
         end
-        chunks.join
+        final || chunks.join
+      end
+
+      # Eve-aligned: final assistant Markdown (provider-agnostic).
+      def output_text
+        response["output_text"] ||
+          dig_data("output_text") ||
+          response["output"] ||
+          dig_data("output")
+      end
+
+      # Optional structured final payload (when a schema/result was requested).
+      def output_data
+        response["output_data"] || dig_data("output_data")
+      end
+
+      # Typed turn items: message (+ optional result). Tool trail lives on #trace.
+      def items
+        response["items"] || dig_data("items") || []
+      end
+
+      def format
+        response["format"] || dig_data("format") || "markdown"
+      end
+
+      def status
+        response["status"] || dig_data("status")
+      end
+
+      def trace
+        response["trace"] || dig_data("trace")
       end
 
       private

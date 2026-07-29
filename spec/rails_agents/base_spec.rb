@@ -136,4 +136,51 @@ RSpec.describe RailsAgents::Base do
     result = support_agent.run("Hello", client: client)
     expect(result.output).to eq("Hi there")
   end
+
+  it "prefers done output_text over token chunks when draining stream" do
+    allow(client).to receive(:create_run).and_return({ "id" => "run_3" })
+    allow(client).to receive(:stream_run)
+      .and_yield({ "content" => "partial" })
+      .and_yield({
+        "output_text" => "Final markdown",
+        "output" => "Final markdown",
+        "format" => "markdown",
+        "items" => [],
+        "status" => "succeeded"
+      })
+
+    result = support_agent.run("Hello", client: client)
+    expect(result.output).to eq("Final markdown")
+  end
+
+  it "exposes Eve-aligned output_text / items from sync create_run" do
+    allow(client).to receive(:create_run).and_return({
+      "object" => "run",
+      "data" => {
+        "id" => "run_2",
+        "output" => "| Name | Qty |\n| --- | --- |\n| Tee | 2 |",
+        "output_text" => "| Name | Qty |\n| --- | --- |\n| Tee | 2 |",
+        "output_data" => nil,
+        "items" => [
+          {
+            "type" => "message",
+            "role" => "assistant",
+            "content" => "| Name | Qty |\n| --- | --- |\n| Tee | 2 |",
+            "format" => "markdown"
+          }
+        ],
+        "format" => "markdown",
+        "status" => "succeeded"
+      }
+    })
+
+    result = support_agent.run("List products", client: client)
+    expect(result.run_id).to eq("run_2")
+    expect(result.output_text).to include("Tee")
+    expect(result.output).to eq(result.output_text)
+    expect(result.format).to eq("markdown")
+    expect(result.items.first["type"]).to eq("message")
+    expect(result.output_data).to be_nil
+    expect(result.status).to eq("succeeded")
+  end
 end
