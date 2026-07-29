@@ -25,6 +25,7 @@ module RailsAgents
         empty_directory File.join(agent_path, "tools")
         empty_directory File.join(agent_path, "skills")
         empty_directory File.join(agent_path, "knowledge")
+        empty_directory File.join(agent_path, "connectors")
         empty_directory File.join(agent_path, "plugins")
         empty_directory File.join(agent_path, "channels")
         empty_directory File.join(agent_path, "evals")

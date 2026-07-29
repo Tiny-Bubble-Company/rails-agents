@@ -12,3 +12,5 @@ Quick start:
 4. `bundle exec rails-agents sync my_agent` → test/deploy/monitor in `/agents`
 
 Four taxonomy types: **Knowledge**, **Workflow**, **Operations**, **Monitoring**.
+
+Capabilities: **Tools**, **Skills**, **Packages** (Skills.sh / APM / Smithery), **Connectors**, **Knowledge**, plus workspace **Library** reuse.

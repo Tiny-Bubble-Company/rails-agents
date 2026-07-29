@@ -89,7 +89,7 @@ app/agents/store_assistant/
 ├── skills/             # Composable behaviors
 ├── memory.rb           # Memory config
 ├── knowledge/          # RAG files
-├── plugins/            # External connection manifests
+├── connectors/            # External connection manifests
 ├── channels/           # Slack, web, API, …
 └── evals/              # Smoke / regression cases
 
@@ -97,7 +97,7 @@ app/agents_library/
 ├── tools/              # Ruby actions reused by multiple agents
 ├── skills/             # Shared multi-step behavior
 ├── knowledge/          # Shared documents and source definitions
-└── plugins/            # Shared connection manifests
+└── connectors/            # Shared connection manifests
 ```
 
 Keep one-off capabilities inside the agent. Move stable capabilities to

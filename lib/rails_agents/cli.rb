@@ -129,6 +129,61 @@ module RailsAgents
       exit 1
     end
 
+    desc "packages QUERY", "Search Skills.sh / APM / Smithery packages"
+    method_option :registry, type: :string, default: "all",
+      desc: "all | skills_sh | apm | smithery"
+    method_option :limit, type: :numeric, default: 12
+    def packages(query)
+      response = Client.new.search_packages(
+        query: query,
+        registry: options[:registry],
+        limit: options[:limit]
+      )
+      rows = response["data"] || []
+      if rows.empty?
+        say "No packages found for #{query.inspect}"
+        return
+      end
+      rows.each do |row|
+        installs = row["installs"] ? " (#{row["installs"]} installs)" : ""
+        say "#{row["registry"]}  #{row["name"]}#{installs}"
+        say "  #{row["id"]}"
+        say "  #{row["description"]}"
+        say ""
+      end
+    rescue Client::Error => e
+      say_error e.message
+      exit 1
+    end
+
+    desc "add-package ID", "Install a registry package onto an agent (and Library)"
+    method_option :agent, type: :string, required: true, aliases: "-a"
+    method_option :registry, type: :string, required: true,
+      desc: "skills_sh | apm | smithery"
+    method_option :name, type: :string
+    method_option :source, type: :string
+    method_option :description, type: :string
+    def add_package(id)
+      payload = {
+        registry: options[:registry],
+        id: id,
+        name: options[:name] || id.split("/").last,
+        source: options[:source] || id.sub(/\A(skills_sh|apm|smithery):/, ""),
+        description: options[:description],
+        agent_id: options[:agent],
+        save_to_library: true
+      }.compact
+      response = Client.new.install_package(payload)
+      data = response["data"] || {}
+      pkg = data["package"] || {}
+      say "Installed #{pkg["name"] || id}"
+      Array(data["paths"]).each { |path| say "  #{path}" }
+      say "Then run: bundle exec rails-agents sync #{options[:agent]}"
+    rescue Client::Error => e
+      say_error e.message
+      exit 1
+    end
+
     desc "logs [NAME]", "Fetch recent run logs from the cloud"
     method_option :limit, type: :numeric, default: 50
     def logs(name = nil)

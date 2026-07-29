@@ -77,8 +77,9 @@ by multiple agents have one canonical source under:
 app/agents_library/
 ├── tools/
 ├── skills/
+├── packages/
 ├── knowledge/
-└── plugins/
+└── connectors/
 ```
 
 Attach shared sources through `app/agents/<slug>/imports.yml`:
@@ -92,6 +93,9 @@ imports:
   - kind: knowledge
     slug: shipping_policy
     from: library/knowledge/shipping_policy.md
+  - kind: package
+    slug: frontend_design
+    from: library/packages/frontend_design
 ```
 
 `bundle exec rails-agents sync NAME` safely resolves these paths and includes
@@ -103,13 +107,44 @@ Shared Ruby tool files are organization boundaries, not a new DSL. Register the
 tool in `agent.rb` using the normal `tool` block and call the shared module or
 service from that block.
 
-### 4. Pipedream plugins
+### 4. Pipedream connectors
 
-Add external SaaS integrations via Pipedream-connected actions in the cloud dashboard. Use a local Ruby tool for your own database; use a plugin for systems such as Notion, Sheets, or HubSpot.
+Add external SaaS integrations via Pipedream-connected actions in the cloud dashboard. Use a local Ruby tool for your own database; use a connector for systems such as Notion, Sheets, or HubSpot.
 
 ### 5. Skills
 
 Composable behaviors in `skills/` — reference with `skill :name, from: "skills/name.rb"`.
+
+### 5b. Packages (agentic package manager)
+
+**Package** is the installable primitive. Search Skills.sh, Microsoft APM, and
+Smithery from the dashboard (**Library → Packages** or agent **Build → Packages**),
+or via CLI:
+
+```bash
+bundle exec rails-agents packages "refund"
+bundle exec rails-agents add-package skills_sh:owner/repo/skill \
+  --registry skills_sh --agent store_assistant --source owner/repo
+```
+
+Rails Agent downloads the upstream package, converts it into:
+
+```text
+app/agents/<slug>/packages/<name>/package.yml
+app/agents/<slug>/packages/<name>/SKILL.md
+app/agents/<slug>/skills/<name>.rb      # capability ready immediately
+```
+
+and can save it to the workspace Library like tools/skills/plugins.
+
+| Primitive | Meaning |
+|-----------|---------|
+| **Tool** | One deterministic Ruby action |
+| **Skill** | Multi-step playbook (how to do work) |
+| **Package** | Installable capability from external registries |
+| **Connector** | External SaaS (Pipedream) |
+| **Knowledge** | Docs / DB sources for grounding |
+| **Library** | Workspace reuse of any of the above |
 
 ### 6. Playbooks
 
