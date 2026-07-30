@@ -61,6 +61,22 @@ RSpec.describe RailsAgents::Base do
     )
   end
 
+  it "supports keyword trigger inputs like order_id:" do
+    allow(client).to receive(:create_run).and_return({ "id" => "run_kw" })
+
+    support_agent.run(order_id: 1, client: client)
+
+    expect(client).to have_received(:create_run).with(
+      hash_including(message: "order_id: 1")
+    )
+  end
+
+  it "rejects mixing a message string with keyword inputs" do
+    expect {
+      support_agent.run("hello", order_id: 1, client: client)
+    }.to raise_error(ArgumentError, /either a message string or keyword/)
+  end
+
   it "executes tool blocks" do
     result = support_agent.tool_definitions[:lookup_order].call(order_id: 42)
     expect(result[:status]).to eq("shipped")
