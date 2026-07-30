@@ -69,8 +69,9 @@ module RailsAgents
         @agent_directory ||= resolve_agent_directory
       end
 
-      def run(message, session_id: nil, client: nil)
-        new(client: client).run(message, session_id: session_id)
+      def run(message = nil, session_id: nil, client: nil, **inputs)
+        text = coerce_run_message(message, inputs)
+        new(client: client).run(text, session_id: session_id)
       end
 
       def deploy(client: nil)
@@ -81,22 +82,37 @@ module RailsAgents
         new(client: client).sync_knowledge
       end
 
-      private
+      def coerce_run_message(message, inputs)
+        if inputs.any?
+          if !message.nil?
+            raise ArgumentError, "pass either a message string or keyword inputs, not both"
+          end
+
+          inputs.map { |key, value| "#{key}: #{value}" }.join("\n")
+        elsif message.nil?
+          raise ArgumentError, "message is required (or pass keyword inputs like order_id:)"
+        else
+          message.to_s
+        end
+      end
+      private :coerce_run_message
 
       def resolve_agent_directory
         caller_path = Pathname.new(caller_locations(1, 1).first.absolute_path)
         caller_path.dirname
       end
+      private :resolve_agent_directory
     end
 
     def initialize(client: nil)
       @client = client || Client.new
     end
 
-    def run(message, session_id: nil)
+    def run(message = nil, session_id: nil, **inputs)
+      text = self.class.send(:coerce_run_message, message, inputs)
       response = @client.create_run(
         agent: agent_identifier,
-        message: message,
+        message: text,
         session_id: session_id,
         metadata: agent_metadata
       )
