@@ -24,6 +24,11 @@ RailsAgents::Engine.routes.draw do
   # introspected against Rails Agent Cloud before any local code runs.
   post "bridge/:agent/tools/:tool", to: "tool_bridge#create", as: :tool_bridge
 
+  # Open-Wire reverse path (channel → agent). No separate OpenWire::Engine mount.
+  # Gateway POSTs message.inbound here; gem open-wire verifies + parses.
+  post "open_wire/inbound", to: "open_wire_inbound#create", as: :open_wire_inbound
+  post "open_wire/inbound/:agent", to: "open_wire_inbound#create", as: :open_wire_inbound_agent
+
   get "dashboard", to: "dashboard#show", as: :dashboard
   get "dashboard/*path", to: "dashboard#proxy", as: :dashboard_proxy
 end

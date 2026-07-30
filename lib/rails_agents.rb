@@ -17,6 +17,13 @@ require "rails_agents/chat_agent"
 require "rails_agents/background_agent"
 require "rails_agents/cli"
 
+begin
+  require "open_wire"
+  require "rails_agents/open_wire_adapter"
+rescue LoadError
+  # open-wire gem optional until path/RubyGems dependency is installed
+end
+
 if defined?(Rails::Engine)
   require "rails_agents/engine"
 end
