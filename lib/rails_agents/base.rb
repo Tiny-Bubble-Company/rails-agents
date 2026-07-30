@@ -21,6 +21,8 @@ module RailsAgents
         subclass.instance_variable_set(:@tool_definitions, {})
         subclass.instance_variable_set(:@skill_definitions, {})
         subclass.instance_variable_set(:@channel_definitions, [])
+        subclass.instance_variable_set(:@channel_via, {})
+        subclass.instance_variable_set(:@channel_message_handler, nil)
       end
 
       # model :gpt_5_mini, provider: :openai, credential: :company_openai
@@ -60,9 +62,25 @@ module RailsAgents
       end
       alias_method :plugin, :connector
 
-      def channel(kind)
+      def channel(kind, via: nil)
         @channel_definitions ||= []
         @channel_definitions << kind.to_sym
+        @channel_via ||= {}
+        @channel_via[kind.to_sym] = via.to_sym if via
+      end
+
+      def channel_via(kind)
+        (@channel_via || {})[kind.to_sym]
+      end
+
+      # Callback for Open-Wire (and future channel) inbound messages.
+      #   on_channel_message { |msg| … }
+      def on_channel_message(&block)
+        @channel_message_handler = block
+      end
+
+      def channel_message_handler
+        @channel_message_handler
       end
 
       def agent_directory

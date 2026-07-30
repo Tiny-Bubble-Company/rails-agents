@@ -35,6 +35,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "railties", ">= 7.0"
   spec.add_dependency "thor", "~> 1.3"
+  # Channel transport adapter (path on Hetzner until published on RubyGems):
+  #   gem "open-wire", path: "/opt/meerkat-apps/open-wire/ruby"
+  spec.add_dependency "open-wire", "~> 0.1"
 
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.13"
