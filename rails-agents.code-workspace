@@ -16,6 +16,10 @@
     },
     {
       "path": "../rails-agents-design"
+    },
+    {
+      "path": "../open-wire",
+      "name": "open-wire"
     }
   ]
 }
