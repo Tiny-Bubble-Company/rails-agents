@@ -54,7 +54,7 @@ module RailsAgents
         @skill_definitions[name.to_sym] = from
       end
 
-      # Declares a Pipedream SaaS connector (manifest lives under connectors/).
+      # Declares a SaaS connector (manifest lives under connectors/).
       # `plugin` remains as a deprecated alias.
       def connector(name, **opts)
         @connector_definitions ||= {}

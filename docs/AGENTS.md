@@ -136,9 +136,9 @@ Shared Ruby tool files are organization boundaries, not a new DSL. Register the
 tool in `agent.rb` using the normal `tool` block and call the shared module or
 service from that block.
 
-### 4. Pipedream connectors
+### 4. Connectors
 
-Add external SaaS integrations via Pipedream-connected actions in the cloud dashboard. Use a local Ruby tool for your own database; use a connector for systems such as Notion, Sheets, or HubSpot.
+Add external SaaS integrations via Connect in the cloud dashboard (OAuth-managed actions). Use a local Ruby tool for your own database; use a connector for systems such as Notion, Sheets, or HubSpot.
 
 ### 5. Skills
 
@@ -171,7 +171,7 @@ and can save it to the workspace Library like tools/skills/plugins.
 | **Tool** | One deterministic Ruby action |
 | **Skill** | Multi-step playbook (how to do work) |
 | **Package** | Installable capability from external registries |
-| **Connector** | External SaaS (Pipedream) |
+| **Connector** | External SaaS (OAuth Connect) |
 | **Knowledge** | Docs / DB sources for grounding |
 | **Library** | Workspace reuse of any of the above |
 
