@@ -4,12 +4,11 @@ source "https://rubygems.org"
 
 gemspec
 
-# Until open-wire is on RubyGems, source from the sibling Open-Wire repo
-# (Hetzner: /opt/meerkat-apps/open-wire/ruby).
-open_wire_path = ENV.fetch("OPEN_WIRE_GEM_PATH") do
-  File.expand_path("../open-wire/ruby", __dir__)
+# open-wire comes from RubyGems via the gemspec (`~> 0.1`).
+# Override locally with: OPEN_WIRE_GEM_PATH=/path/to/open-wire/ruby bundle install
+if (path = ENV["OPEN_WIRE_GEM_PATH"]) && !path.empty? && File.directory?(path)
+  gem "open-wire", path: path
 end
-gem "open-wire", path: open_wire_path
 
 gem "rake", "~> 13.0"
 gem "rspec", "~> 3.13"
