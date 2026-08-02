@@ -6,3 +6,15 @@
 /.rspec_status
 *.gem
 .DS_Store
+
+# Secrets & local credentials (never commit)
+.env
+.env.*
+!.env.example
+config/master.key
+config/credentials.yml
+config/credentials/*.key
+config/rails_agents_credentials.yml
+*.pem
+id_rsa*
+secrets.json
