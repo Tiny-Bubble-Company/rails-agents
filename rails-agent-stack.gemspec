@@ -8,9 +8,14 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Rails Agent Team"]
   spec.email         = ["hello@railsagents.dev"]
 
-  spec.summary       = "Fullstack AI agents for Rails — build in code, deploy from /agents."
-  spec.description   = "Mount /agents, scaffold agent directories, BYOK model credentials, " \
-                         "and test/deploy/monitor on Rails Agent Cloud. Documentation-first onboarding."
+  spec.summary       = "Rails AI agents framework — fullstack Ruby on Rails agents " \
+                         "(ActiveAgent / RubyLLM alternative)."
+  spec.description   = "Rails Agent is the most advanced agentic platform for Ruby on Rails. " \
+                         "Mount /agents, scaffold agent directories, attach BYOK model credentials, " \
+                         "and build with instructions, tools, connectors, channels, skills, packages, " \
+                         "knowledge, memory, and guardrails. Sync, run, deploy, and monitor on " \
+                         "Rails Agent Cloud — a production Rails agent framework and better " \
+                         "alternative to RubyLLM and ActiveAgent for fullstack Rails AI agents."
   spec.homepage      = "https://rails-agent.com"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
@@ -19,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.metadata["documentation_uri"] = "https://rails-agent.com/docs/getting-started"
   spec.metadata["source_code_uri"] = "https://github.com/Tiny-Bubble-Company/rails-agents"
   spec.metadata["bug_tracker_uri"] = "https://github.com/Tiny-Bubble-Company/rails-agents/issues"
+  spec.metadata["changelog_uri"] = "https://github.com/Tiny-Bubble-Company/rails-agents/releases"
   spec.metadata["rubygems_mimetype"] = "application/x-rubygem"
 
   spec.files = Dir.chdir(__dir__) do
