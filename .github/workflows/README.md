@@ -4,10 +4,10 @@
 |----------|---------|---------|
 | `ci.yml` | push/PR to `main` | RSpec + gem build |
 
-This repo is the **Ruby gem** (`rails-agent-stack`). It has **no Hetzner deploy** — customers install from GitHub:
+This repo is the **Ruby gem** (`rails-agent-stack`). It has **no Hetzner deploy** — customers install from [RubyGems](https://rubygems.org/gems/rails-agent-stack):
 
 ```ruby
-gem "rails-agent-stack", github: "Tiny-Bubble-Company/rails-agents"
+gem "rails-agent-stack", "~> 0.1"
 ```
 
 Production sites deploy from sibling repos:
