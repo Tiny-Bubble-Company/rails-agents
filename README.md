@@ -95,7 +95,7 @@ Positioning in one line: **most advanced agentic platform for Ruby on Rails** â€
 
 ```ruby
 # Gemfile
-gem "rails-agent-stack", github: "Tiny-Bubble-Company/rails-agents"
+gem "rails-agent-stack", "~> 0.1"
 ```
 
 ```bash
