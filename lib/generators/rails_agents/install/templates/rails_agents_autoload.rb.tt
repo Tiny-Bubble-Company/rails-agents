@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-# Prevents Zeitwerk from treating agent definitions and shared assets as normal
+# Prevent Zeitwerk from treating agent definitions and shared assets as normal
 # application namespaces. Agents load through the Rails Agent runtime.
+# Rails 6.0+ / Zeitwerk only — skipped safely on classic autoloaders.
 Rails.application.configure do
   config.before_configuration do
-    Rails.autoloaders.main.ignore(Rails.root.join("app/agents"))
-    Rails.autoloaders.main.ignore(Rails.root.join("app/agents_library"))
+    if defined?(Rails.autoloaders) && Rails.autoloaders.respond_to?(:main) && Rails.autoloaders.main
+      Rails.autoloaders.main.ignore(Rails.root.join("app/agents"))
+      Rails.autoloaders.main.ignore(Rails.root.join("app/agents_library"))
+    end
   end
 end

@@ -16,7 +16,7 @@ module RailsAgents
 
       email = params.require(:email).to_s.strip
       password = params.require(:password).to_s
-      workspace = params[:workspace].presence || (defined?(Rails) ? Rails.application.class.module_parent_name : "App")
+      workspace = params[:workspace].presence || (defined?(Rails) ? RailsAgents::Compat.application_name : "App")
 
       response = Client.new.handshake(
         email: email,

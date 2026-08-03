@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_agents/version"
+require "rails_agents/compat"
 require "rails_agents/configuration"
 require "rails_agents/client"
 require "rails_agents/credentials_writer"

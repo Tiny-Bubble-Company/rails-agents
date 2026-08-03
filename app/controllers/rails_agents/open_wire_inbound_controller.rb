@@ -12,7 +12,7 @@ module RailsAgents
   # Resolves agent via:
   #   ?agent=order_notification  OR  JSON meta / installation mapping in channels/*.yml
   class OpenWireInboundController < ApplicationController
-    skip_forgery_protection
+    RailsAgents::Compat.skip_csrf!(self)
 
     def create
       slug = resolve_agent_slug

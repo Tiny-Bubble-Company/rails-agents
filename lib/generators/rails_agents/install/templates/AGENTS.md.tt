@@ -1,4 +1,4 @@
-# AGENTS.md — <%= Rails.application.class.module_parent_name rescue "YourApp" %>
+# AGENTS.md — <%= (RailsAgents::Compat.application_name rescue "YourApp") %>
 
 Project guide for external coding agents. Platform docs: [rails-agents/docs/AGENTS.md](https://github.com/Tiny-Bubble-Company/rails-agents/blob/main/docs/AGENTS.md)
 

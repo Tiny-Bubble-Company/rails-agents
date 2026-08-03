@@ -25,14 +25,7 @@ module RailsAgents
     def configured_databases
       configs = []
       if defined?(ActiveRecord::Base)
-        ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).each do |db|
-          configs << {
-            name: db.name.to_s,
-            adapter: normalize_adapter(db.adapter),
-            raw_adapter: db.adapter.to_s,
-            source: "config/database.yml"
-          }
-        end
+        configs.concat(active_record_database_configs)
       end
       if Rails.root.join("config/mongoid.yml").exist?
         configs << {
@@ -43,6 +36,33 @@ module RailsAgents
         }
       end
       configs.uniq { |db| [db[:name], db[:adapter], db[:source]] }
+    rescue StandardError
+      []
+    end
+
+    def active_record_database_configs
+      configurations = ActiveRecord::Base.configurations
+      if configurations.respond_to?(:configs_for)
+        configurations.configs_for(env_name: Rails.env).map do |db|
+          {
+            name: (db.respond_to?(:name) ? db.name : "primary").to_s,
+            adapter: normalize_adapter(db.adapter),
+            raw_adapter: db.adapter.to_s,
+            source: "config/database.yml"
+          }
+        end
+      else
+        # Rails < 6.0 Hash-style configurations fallback
+        entry = configurations[Rails.env]
+        entry = entry["primary"] || entry.values.first if entry.is_a?(Hash) && entry.values.first.is_a?(Hash)
+        adapter = entry.is_a?(Hash) ? (entry["adapter"] || entry[:adapter]) : nil
+        [{
+          name: "primary",
+          adapter: normalize_adapter(adapter),
+          raw_adapter: adapter.to_s,
+          source: "config/database.yml"
+        }]
+      end
     rescue StandardError
       []
     end

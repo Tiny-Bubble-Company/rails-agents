@@ -7,7 +7,7 @@ require "uri"
 
 module RailsAgents
   class ToolBridgeController < ApplicationController
-    skip_forgery_protection
+    RailsAgents::Compat.skip_csrf!(self)
 
     def create
       return render json: { error: "Unauthorized" }, status: :unauthorized unless authorized_runtime?

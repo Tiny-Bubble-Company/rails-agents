@@ -1,6 +1,6 @@
 <%
   @step ||= :email
-  @workspace ||= (Rails.application.class.module_parent_name rescue "MyApp")
+  @workspace ||= RailsAgents::Compat.application_name
   @github_url ||= "#"
 %>
 <div class="rails-agents-connect">

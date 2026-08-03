@@ -19,7 +19,7 @@ module RailsAgents
     end
 
     def cloud_redirect(path)
-      redirect_to dashboard_url(path), allow_other_host: true
+      redirect_to dashboard_url(path), **RailsAgents::Compat.redirect_options
     end
   end
 end

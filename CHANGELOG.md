@@ -2,7 +2,7 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-08-03
 
 ### Changed
 
@@ -12,11 +12,16 @@ All notable changes to `rails-agent-stack` will be documented in this file.
 - Generator `--type` and `--database` for database-connected Knowledge agents.
 - Company subscription + pass-through usage + 1% service fee pricing model.
 - Deprecated cloud pull bridge in embed UI; `rails-agents pull` retained for compatibility.
+- **Rails support widened to 6.1+** (was 7.0+). Compatibility shims for redirects, CSRF,
+  Zeitwerk ignore, `module_parent_name`, and database configs.
+- Gem authors attributed to Tiny Bubble Company (`hello@rails-agent.com`).
 
 ### Added
 
 - `KnowledgeAgent`, `OperationsAgent`, and `MonitoringAgent` classes; the legacy output-focused class remains loadable for compatibility.
 - `docs/AGENTS.md` canonical guide for external coding agents.
+- `docs/RAILS_SUPPORT.md` — supported versions and upgrade/sidecar guidance for Rails 3–5 apps.
+- `RailsAgents::Compat` helpers for cross-version engine behavior.
 
 ## [0.1.1] - 2026-08-02
 

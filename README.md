@@ -15,7 +15,7 @@
   <a href="https://rails-agent.com"><img src="https://img.shields.io/badge/rails--agent.com-docs-C2410C?style=flat-square" alt="Docs" /></a>
   <a href="https://github.com/Tiny-Bubble-Company/rails-agents"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT" /></a>
   <a href="https://rails-agent.com/docs/getting-started"><img src="https://img.shields.io/badge/Ruby-3.2%2B-CC342D?style=flat-square&logo=ruby&logoColor=white" alt="Ruby 3.2+" /></a>
-  <a href="https://rails-agent.com/docs/getting-started"><img src="https://img.shields.io/badge/Rails-7%2B-D30001?style=flat-square&logo=rubyonrails&logoColor=white" alt="Rails 7+" /></a>
+  <a href="docs/RAILS_SUPPORT.md"><img src="https://img.shields.io/badge/Rails-6.1%2B-D30001?style=flat-square&logo=rubyonrails&logoColor=white" alt="Rails 6.1+" /></a>
 </p>
 
 <p align="center">
@@ -95,7 +95,7 @@ Positioning in one line: **most advanced agentic platform for Ruby on Rails** â€
 
 ```ruby
 # Gemfile
-gem "rails-agent-stack", "~> 0.1"
+gem "rails-agent-stack", "~> 0.2"
 ```
 
 ```bash

@@ -90,7 +90,9 @@ module RailsAgents
     private
 
     def default_workspace
-      (Rails.application.class.module_parent_name rescue "MyApp")
+      RailsAgents::Compat.application_name
+    rescue StandardError
+      "MyApp"
     end
   end
 end

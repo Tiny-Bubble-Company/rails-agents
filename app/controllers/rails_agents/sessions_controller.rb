@@ -70,7 +70,7 @@ module RailsAgents
     def destroy
       cloud = RailsAgents.config.dashboard_base.to_s.chomp("/")
       cloud = "https://cloud.rails-agent.com" if cloud.blank?
-      redirect_to "#{cloud}/signin", allow_other_host: true
+      redirect_to "#{cloud}/signin", **RailsAgents::Compat.redirect_options
     end
   end
 end

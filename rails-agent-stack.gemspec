@@ -5,8 +5,8 @@ require_relative "lib/rails_agents/version"
 Gem::Specification.new do |spec|
   spec.name          = "rails-agent-stack"
   spec.version       = RailsAgents::VERSION
-  spec.authors       = ["Rails Agent Team"]
-  spec.email         = ["hello@railsagents.dev"]
+  spec.authors       = ["Tiny Bubble Company"]
+  spec.email         = ["hello@rails-agent.com"]
 
   spec.summary       = "Rails AI agents framework — fullstack Ruby on Rails agents " \
                          "(ActiveAgent / RubyLLM alternative)."
@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
   spec.executables   = ["rails-agents"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "railties", ">= 7.0"
+  spec.add_dependency "railties", ">= 6.1"
   spec.add_dependency "thor", "~> 1.3"
   spec.add_dependency "open-wire", "~> 0.1"
 
