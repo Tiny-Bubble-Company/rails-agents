@@ -52,4 +52,4 @@ runtime stays modern.
 bin/rails runner 'puts "Rails #{Rails.version} / Ruby #{RUBY_VERSION}"'
 ```
 
-Need help choosing a path? Email [kannan@rails-agent.com](mailto:kannan@rails-agent.com).
+Need help choosing a path? Email [support@rails-agent.com](mailto:support@rails-agent.com).

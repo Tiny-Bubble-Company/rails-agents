@@ -14,7 +14,7 @@ All notable changes to `rails-agent-stack` will be documented in this file.
 - Deprecated cloud pull bridge in embed UI; `rails-agents pull` retained for compatibility.
 - **Rails support widened to 6.1+** (was 7.0+). Compatibility shims for redirects, CSRF,
   Zeitwerk ignore, `module_parent_name`, and database configs.
-- Gem authors attributed to Tiny Bubble Company (`hello@rails-agent.com`).
+- Gem authors attributed to Tiny Bubble Company (`support@rails-agent.com`).
 
 ### Added
 

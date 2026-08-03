@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = "rails-agent-stack"
   spec.version       = RailsAgents::VERSION
   spec.authors       = ["Tiny Bubble Company"]
-  spec.email         = ["hello@rails-agent.com"]
+  spec.email         = ["support@rails-agent.com"]
 
   spec.summary       = "Rails AI agents framework — fullstack Ruby on Rails agents " \
                          "(ActiveAgent / RubyLLM alternative)."
