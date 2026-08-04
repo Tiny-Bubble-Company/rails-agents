@@ -10,32 +10,21 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Full-stack agentic platform for Ruby on Rails — build, test, deploy, " \
                          "and monitor production AI agents (RubyLLM / ActiveAgent alternative)."
-  spec.description   = <<~DESC.gsub(/\s+/, " ").strip
-    Rails Agent is a single, beautiful full-stack agentic platform for Ruby on Rails.
-    Build chatbots, knowledge (RAG-style) agents, workflow agents, operations jobs,
-    monitoring agents, and every agentic workflow you can think of — as files in
-    app/agents/, with a mounted /agents dashboard and hosted cloud runtime.
+  # Blank lines between paragraphs are intentional — RubyGems renders them on the gem page.
+  spec.description   = <<~DESC
+    Rails Agent is a single, beautiful full-stack agentic platform for Ruby on Rails. Build chatbots, knowledge (RAG-style) agents, workflow agents, operations jobs, monitoring agents, and every agentic workflow you can think of — as files in app/agents/, with a mounted /agents dashboard and hosted cloud runtime.
 
-    Build: instructions (prompt.md), tools (function calling over ActiveRecord),
-    connectors (OAuth SaaS), channels (Slack, Teams via Open-Wire, web, cron, HTTP API),
-    skills, packages (Skills.sh / APM / Smithery), knowledge, memory (Mem0),
-    guardrails, playbooks, and a shared agents library.
+    Build: instructions (prompt.md), tools (function calling over ActiveRecord), connectors (OAuth SaaS), channels (Slack, Teams via Open-Wire, web, cron, HTTP API), skills, packages (Skills.sh / APM / Smithery), knowledge, memory (Mem0), guardrails, playbooks, and a shared agents library.
 
-    Test: cloud sandbox runs, streaming, evals (golden cases), traces, and cost
-    before you ship.
+    Test: cloud sandbox runs, streaming, evals (golden cases), traces, and cost before you ship.
 
-    Deploy: rails-agents sync → deploy to the production harness, BYOK credentials,
-    and channel go-live — without provisioning agent infra yourself.
+    Deploy: rails-agents sync → deploy to the production harness, BYOK credentials, and channel go-live — without provisioning agent infra yourself.
 
     Monitor: runs, traces, evals, budgets, and usage in /agents.
 
-    BYOK providers: OpenAI, Anthropic, Google Gemini, OpenRouter, xAI, Groq,
-    Mistral AI, DeepSeek, Together AI, Fireworks AI, Perplexity, Cerebras,
-    Hugging Face, and custom OpenAI-compatible providers. Reference keys as
-    credential: :company_openai in Ruby — secrets never live in Git.
+    BYOK providers: OpenAI, Anthropic, Google Gemini, OpenRouter, xAI, Groq, Mistral AI, DeepSeek, Together AI, Fireworks AI, Perplexity, Cerebras, Hugging Face, and custom OpenAI-compatible providers. Reference keys as credential: :company_openai in Ruby — secrets never live in Git.
 
-    Rails 6.1+, Ruby 3.2+. Alternative to RubyLLM and ActiveAgent when you need
-    the whole agent lifecycle, not just an LLM client.
+    Rails 6.1+, Ruby 3.2+. Alternative to RubyLLM and ActiveAgent when you need the whole agent lifecycle, not just an LLM client.
   DESC
   spec.homepage      = "https://rails-agent.com"
   spec.license       = "MIT"

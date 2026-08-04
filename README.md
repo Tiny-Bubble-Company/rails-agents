@@ -126,7 +126,7 @@ OpenAI · Anthropic · Google Gemini · OpenRouter · xAI · Groq · Mistral AI 
 
 ```ruby
 # Gemfile
-gem "rails-agent-stack", "~> 0.2.1"
+gem "rails-agent-stack", "~> 0.2.2"
 ```
 
 ```bash

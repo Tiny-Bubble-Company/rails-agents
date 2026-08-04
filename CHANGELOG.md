@@ -2,6 +2,13 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.2] - 2026-08-04
+
+### Changed
+
+- Preserve blank lines between paragraphs in the RubyGems description so Build /
+  Test / Deploy / Monitor / providers render as separated sections on the gem page.
+
 ## [0.2.1] - 2026-08-04
 
 ### Changed
