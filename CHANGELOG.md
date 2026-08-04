@@ -2,6 +2,15 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.1] - 2026-08-04
+
+### Changed
+
+- Expanded RubyGems summary/description to cover the full Build → Test → Deploy →
+  Monitor lifecycle and name supported BYOK providers (OpenAI, Anthropic, Google
+  Gemini, OpenRouter, xAI, Groq, Mistral AI, DeepSeek, Together AI, Fireworks AI,
+  Perplexity, Cerebras, Hugging Face, and custom OpenAI-compatible providers).
+
 ## [0.2.0] - 2026-08-03
 
 ### Changed

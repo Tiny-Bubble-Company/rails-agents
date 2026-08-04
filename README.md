@@ -7,8 +7,8 @@
 <h1 align="center">Rails Agent</h1>
 
 <p align="center">
-  <strong>The most advanced agentic platform for Ruby on Rails.</strong><br />
-  Build Rails AI agents in your repo. Test, deploy, and monitor at <code>/agents</code>.
+  <strong>A single, beautiful full-stack agentic platform for Ruby on Rails.</strong><br />
+  Build, test, deploy, and monitor production AI agents at <code>/agents</code>.
 </p>
 
 <p align="center">
@@ -32,7 +32,11 @@
 
 ## About
 
-[Rails Agent](https://rails-agent.com) is the fullstack **Rails agent framework** for production **Ruby on Rails agents**. Define instructions, tools, skills, packages, knowledge, channels, memory, and evals as files in your app — then use the mounted `/agents` dashboard to connect BYOK credentials, attach guardrails, ship channels, and observe cost.
+[Rails Agent](https://rails-agent.com) is a single, beautiful full-stack **agentic platform for Ruby on Rails**. Easily build chatbots, knowledge (RAG-style) agents, workflow agents, operations jobs, monitoring agents, and every agentic workflow you can think of — as files in `app/agents/`, with a mounted `/agents` dashboard and hosted cloud runtime.
+
+**Build** with instructions, tools (function calling), connectors, channels, skills, packages, knowledge, memory, guardrails, playbooks, and a shared library. **Test** in the cloud sandbox with streaming, evals, and traces. **Deploy** with `rails-agents sync` → production harness and BYOK credentials. **Monitor** runs, cost, budgets, and evals in `/agents`.
+
+**BYOK providers:** OpenAI, Anthropic, Google Gemini, OpenRouter, xAI, Groq, Mistral AI, DeepSeek, Together AI, Fireworks AI, Perplexity, Cerebras, Hugging Face, and custom OpenAI-compatible providers. Reference keys as `credential: :company_openai` — secrets never live in Git.
 
 If you are searching for a **Rails AI agents** stack, an **ActiveAgent alternative**, or a **RubyLLM alternative**, Rails Agent is built for the full lifecycle: author in Git, run in the cloud, integrate responses into your product.
 
@@ -62,31 +66,58 @@ Positioning in one line: **most advanced agentic platform for Ruby on Rails** �
 
 ## Features
 
-### Build (agent tabs)
+### Build
 
 | Capability | What you get |
 |------------|----------------|
 | **Instructions** | `prompt.md` system prompt — reviewed in Git |
-| **Tools** | Ruby methods over your ActiveRecord models |
+| **Tools** | Ruby function calling over your ActiveRecord models |
 | **Connectors** | OAuth SaaS (Sheets, Notion, HubSpot, …) from the dashboard |
-| **Channels** | Slack & Microsoft Teams via **Open-Wire**, web chat, cron, API |
+| **Channels** | Slack & Microsoft Teams via **Open-Wire**, web chat, cron, HTTP API |
 | **Skills** | Composable multi-step behaviors |
 | **Packages** | Install from Skills.sh / Microsoft APM / Smithery |
 | **Knowledge** | Docs + database grounding for RAG-style answers |
 | **Memory** | Conversation memory (Mem0-backed), on by default |
-| **Guardrails** | Budget, model access, prompt injection, sensitive info |
+| **Guardrails** | Model access, prompt injection, sensitive info |
+| **Playbooks** | Proven scaffolds you customize locally |
+| **Library** | Share tools, skills, packages, knowledge, connectors (`app/agents_library/` + `imports.yml`) |
 
-### Platform
+### Test
 
-- **Playbooks** — proven scaffolds (instructions + tools + skills) you customize locally
-- **Library** — share tools, skills, packages, knowledge, and connectors across agents (`app/agents_library/` + `imports.yml`)
-- **Budget** — per-agent / policy spend limits alongside usage monitoring
-- **Monitor** — runs, traces, evals, and cost in `/agents`
-- **BYOK** — attach OpenAI, Anthropic, and other provider keys in cloud; reference them in Ruby with no secrets in Git
+| Capability | What you get |
+|------------|----------------|
+| **Sandbox runs** | Cloud test tab — iterate without production traffic |
+| **Streaming** | Token streaming for interactive channels and the dashboard |
+| **Evals** | Golden success/failure cases under `evals/` before deploy |
+| **Traces** | Tool calls, model turns, and run history while testing |
+
+### Deploy
+
+| Capability | What you get |
+|------------|----------------|
+| **Sync** | `rails-agents sync` — push `app/agents/` to the cloud |
+| **Production deploy** | `rails-agents deploy` — hosted production harness |
+| **BYOK** | Attach provider keys in cloud; reference as `credential: :name` |
+| **Channels go-live** | Open-Wire Slack/Teams, web, cron, API on the deployed agent |
+| **CLI** | `run`, `logs`, and related commands for the agent lifecycle |
+
+### Monitor
+
+| Capability | What you get |
+|------------|----------------|
+| **Runs & traces** | Every production run, tool call, and model turn |
+| **Budget** | Per-agent / policy spend limits |
+| **Evals in Monitor** | Keep regression cases visible after ship |
+| **Usage & cost** | Observe spend in `/agents` |
+
+### BYOK providers
+
+OpenAI · Anthropic · Google Gemini · OpenRouter · xAI · Groq · Mistral AI · DeepSeek · Together AI · Fireworks AI · Perplexity · Cerebras · Hugging Face · custom OpenAI-compatible providers
+
+### Also
+
 - **Open-Wire** — Slack and Teams channel transport over `open-wire/1`
 - **Composio email** — email connectors for inbox workflows
-- **Evals** — golden cases under `evals/` before deploy
-- **Deploy** — `rails-agents sync` → `deploy` → production traffic
 - **Coding-agent docs** — Cursor, Codex, and Claude Code follow [AGENTS.md](docs/AGENTS.md) and [Coding agents](https://rails-agent.com/docs/coding-agents)
 
 ---
@@ -95,7 +126,7 @@ Positioning in one line: **most advanced agentic platform for Ruby on Rails** �
 
 ```ruby
 # Gemfile
-gem "rails-agent-stack", "~> 0.2"
+gem "rails-agent-stack", "~> 0.2.1"
 ```
 
 ```bash
