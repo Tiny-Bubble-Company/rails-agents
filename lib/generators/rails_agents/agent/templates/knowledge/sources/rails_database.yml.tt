@@ -1,0 +1,7 @@
+# Rails app database knowledge source
+type: rails_database
+adapter: activerecord
+scope: full_database
+tables: "*"
+mode: read_only
+connected_at: <%= Time.now.utc.iso8601 %>

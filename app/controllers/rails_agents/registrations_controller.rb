@@ -8,6 +8,9 @@ module RailsAgents
 
     def new
       @github_url = github_oauth_url
+      if params[:change_email].present?
+        session.delete(:ra_auth)
+      end
       pending = session[:ra_auth]
       if pending.is_a?(Hash) && pending["email"].present? && pending["purpose"] == "signup"
         @step = :code
@@ -18,6 +21,9 @@ module RailsAgents
       else
         @step = :email
         @workspace = default_workspace
+        @email = nil
+        @name = nil
+        @dev_code = nil
       end
     end
 

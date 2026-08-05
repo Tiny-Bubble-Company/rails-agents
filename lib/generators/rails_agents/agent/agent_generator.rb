@@ -35,6 +35,9 @@ module RailsAgents
         if database?
           template "agent_database.rb.tt", File.join(agent_path, "agent.rb")
           template "prompt_database.md.tt", File.join(agent_path, "prompt.md")
+          empty_directory File.join(agent_path, "knowledge", "sources")
+          template "knowledge/sources/rails_database.yml.tt",
+            File.join(agent_path, "knowledge", "sources", "rails_database.yml")
         else
           template "agent.rb.tt", File.join(agent_path, "agent.rb")
           template "prompt.md.tt", File.join(agent_path, "prompt.md")

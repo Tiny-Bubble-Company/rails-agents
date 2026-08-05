@@ -2,6 +2,15 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.3] - 2026-08-05
+
+### Fixed
+
+- Signup/sign-in OTP "Use a different email" now clears the pending auth session
+  so the email form is shown again (`?change_email=1`).
+- Knowledge `--database` generator writes `knowledge/sources/rails_database.yml`
+  as connected (no perpetual pending-snapshot flag).
+
 ## [0.2.2] - 2026-08-04
 
 ### Changed

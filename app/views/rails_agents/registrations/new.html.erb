@@ -42,7 +42,7 @@
         <% end %>
 
         <p class="rails-agents-connect__foot">
-          <%= link_to "Use a different email", rails_agents.signup_path %>
+          <%= link_to "Use a different email", rails_agents.signup_path(change_email: 1) %>
         </p>
       <% else %>
         <a class="rails-agents-btn rails-agents-btn--ghost rails-agents-btn--spaced"
