@@ -9,22 +9,22 @@ RSpec.describe RailsAgents::LibraryImports do
     Dir.mktmpdir do |root|
       @root = Pathname.new(root)
       @agent_dir = @root.join("app/agents/support")
-      @library_dir = @root.join("app/agents_library")
+      @shared_dir = @root.join("app/agents/shared")
       FileUtils.mkdir_p(@agent_dir)
-      FileUtils.mkdir_p(@library_dir)
+      FileUtils.mkdir_p(@shared_dir)
       example.run
     end
   end
 
-  it "builds virtual agent files from shared Library imports" do
-    FileUtils.mkdir_p(@library_dir.join("skills"))
-    @library_dir.join("skills/triage.rb").write("module Triage; end\n")
+  it "builds virtual agent files from app/agents/shared imports" do
+    FileUtils.mkdir_p(@shared_dir.join("skills"))
+    @shared_dir.join("skills/triage.rb").write("module Triage; end\n")
     @agent_dir.join("imports.yml").write(<<~YAML)
       version: 1
       imports:
         - kind: skill
           slug: triage
-          from: library/skills/triage.rb
+          from: shared/skills/triage.rb
     YAML
 
     files = described_class.new(@agent_dir).virtual_files
@@ -38,15 +38,33 @@ RSpec.describe RailsAgents::LibraryImports do
     )
   end
 
+  it "still resolves legacy from: library/ and app/agents_library/" do
+    legacy = @root.join("app/agents_library")
+    FileUtils.rm_rf(@shared_dir)
+    FileUtils.mkdir_p(legacy.join("skills"))
+    legacy.join("skills/triage.rb").write("module Triage; end\n")
+    @agent_dir.join("imports.yml").write(<<~YAML)
+      version: 1
+      imports:
+        - kind: skill
+          slug: triage
+          from: library/skills/triage.rb
+    YAML
+
+    files = described_class.new(@agent_dir).virtual_files
+
+    expect(files.first["path"]).to eq("app/agents/support/skills/triage.rb")
+  end
+
   it "exposes imported knowledge at its agent-relative runtime path" do
-    FileUtils.mkdir_p(@library_dir.join("knowledge"))
-    @library_dir.join("knowledge/policy.md").write("# Policy\n")
+    FileUtils.mkdir_p(@shared_dir.join("knowledge"))
+    @shared_dir.join("knowledge/policy.md").write("# Policy\n")
     @agent_dir.join("imports.yml").write(<<~YAML)
       version: 1
       imports:
         - kind: knowledge
           slug: policy
-          from: library/knowledge/policy.md
+          from: shared/knowledge/policy.md
           as: knowledge/company/policy.md
     YAML
 
@@ -58,13 +76,13 @@ RSpec.describe RailsAgents::LibraryImports do
     )
   end
 
-  it "rejects paths that escape the Library" do
+  it "rejects paths that escape the shared root" do
     @agent_dir.join("imports.yml").write(<<~YAML)
       version: 1
       imports:
         - kind: tool
           slug: secret
-          from: library/../../config/master.key
+          from: shared/../../config/master.key
     YAML
 
     expect { described_class.new(@agent_dir).entries }

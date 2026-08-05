@@ -5,37 +5,22 @@ class <%= class_name %> < RailsAgents::KnowledgeAgent
   memory :conversation
   knowledge_from "knowledge/**/*"
 
-  tool :lookup_order do |order_number:|
-    order = Order.find_by(number: order_number)
-    return { error: "Order not found", order_number: order_number } unless order
+  # Generic read-only access to the connected Rails database.
+  tool :sql_query do |sql:|
+    text = sql.to_s.strip
+    return { error: "sql is required" } if text.empty?
 
-    {
-      number: order.number,
-      status: order.status,
-      customer_name: order.customer_name,
-      customer_email: order.customer_email,
-      total_cents: order.total_cents,
-      currency: order.currency,
-      shipped_at: order.shipped_at&.iso8601
-    }
-  end
-
-  tool :search_products do |query:|
-    scope = Product.where(status: "active")
-    if query.present?
-      pattern = "%#{query}%"
-      scope = scope.where("name LIKE ? OR sku LIKE ?", pattern, pattern)
+    normalized = text.sub(/;\s*\z/, "")
+    unless normalized.match?(/\A\s*(WITH|SELECT)\b/im)
+      return { error: "Only read-only SELECT/WITH queries are allowed" }
+    end
+    if normalized.match?(/\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|GRANT|REVOKE|COPY|EXECUTE|CALL)\b/i)
+      return { error: "Write or DDL statements are not allowed" }
     end
 
-    scope.limit(10).map do |product|
-      {
-        sku: product.sku,
-        name: product.name,
-        price_cents: product.price_cents,
-        stock: product.stock,
-        collection: product.collection&.name
-      }
-    end
+    limited = normalized.match?(/\bLIMIT\b/i) ? normalized : "#{normalized} LIMIT 50"
+    rows = ActiveRecord::Base.connection.exec_query(limited).to_a
+    { ok: true, row_count: rows.length, rows: rows.first(50) }
   end
 
   channel :web

@@ -108,7 +108,7 @@ module RailsAgents
       )
 
       Client.new.sync_files(agent: name, files: files)
-      suffix = imported.empty? ? "" : " (#{imported.size} from app/agents_library)"
+      suffix = imported.empty? ? "" : " (#{imported.size} from app/agents/shared)"
       say "Synced #{files.size} files for #{name}#{suffix}"
     rescue LibraryImports::Error => e
       say_error e.message

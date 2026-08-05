@@ -80,7 +80,7 @@ Positioning in one line: **most advanced agentic platform for Ruby on Rails** �
 | **Memory** | Conversation memory (Mem0-backed), on by default |
 | **Guardrails** | Model access, prompt injection, sensitive info |
 | **Playbooks** | Proven scaffolds you customize locally |
-| **Library** | Share tools, skills, packages, knowledge, connectors (`app/agents_library/` + `imports.yml`) |
+| **Shared** | Share tools, skills, packages, knowledge, connectors (`app/agents/shared/` + `imports.yml`) |
 
 ### Test
 
@@ -141,7 +141,7 @@ Connect your company workspace at `/agents`, then scaffold a database Knowledge 
 bin/rails generate rails_agents:agent store_assistant --type knowledge --database
 ```
 
-**Zeitwerk:** fresh installs add `config/initializers/rails_agents_autoload.rb` so `app/agents/` and `app/agents_library/` are agent assets, not application namespaces.
+**Zeitwerk:** fresh installs add `config/initializers/rails_agents_autoload.rb` so `app/agents/` (including `shared/`) are agent assets, not application namespaces.
 
 External coding agents (Cursor, Claude Code, Codex): start with **[docs/AGENTS.md](docs/AGENTS.md)**.
 
@@ -178,7 +178,7 @@ end
 app/agents/store_assistant/
 ├── agent.rb            # RailsAgents::KnowledgeAgent subclass
 ├── prompt.md           # System prompt
-├── imports.yml         # Optional workspace Library attachments
+├── imports.yml         # Optional shared attachments
 ├── tools/              # Optional extracted tools
 ├── skills/             # Composable behaviors
 ├── packages/           # Registry-installed capabilities
@@ -188,7 +188,7 @@ app/agents/store_assistant/
 ├── channels/           # Slack, Teams, web, API, …
 └── evals/              # Smoke / regression cases
 
-app/agents_library/
+app/agents/shared/
 ├── tools/
 ├── skills/
 ├── packages/
@@ -196,7 +196,7 @@ app/agents_library/
 └── connectors/
 ```
 
-Keep one-off work inside the agent. Move stable capabilities to `app/agents_library/` when another agent should reuse them, then reference via `imports.yml`. `rails-agents sync` includes imported Library files in the runtime bundle without duplicating shared source in Git.
+Keep one-off work inside the agent. Move stable capabilities to `app/agents/shared/` when another agent should reuse them, then reference via `imports.yml`. `rails-agents sync` includes imported shared files in the runtime bundle without duplicating shared source in Git.
 
 ---
 

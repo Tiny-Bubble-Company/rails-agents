@@ -1,9 +1,9 @@
 version: 1
 
-# Reuse capabilities from app/agents_library without duplicating source files.
+# Reuse capabilities from app/agents/shared without duplicating source files.
 # Example:
 # imports:
 #   - kind: skill
 #     slug: triage
-#     from: library/skills/triage.rb
+#     from: shared/skills/triage.rb
 imports: []

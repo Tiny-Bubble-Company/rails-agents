@@ -5,8 +5,9 @@ require "yaml"
 
 module RailsAgents
   # Resolves workspace-shared capabilities declared by an agent's imports.yml.
-  # Sources live under app/agents_library; sync uploads virtual agent-local
-  # copies so the cloud runtime keeps its existing app/agents/<slug>/ contract.
+  # Sources live under app/agents/shared (preferred) or legacy app/agents_library.
+  # Sync uploads virtual agent-local copies so the cloud runtime keeps its
+  # existing app/agents/<slug>/ contract.
   class LibraryImports
     class Error < StandardError; end
 
@@ -21,6 +22,9 @@ module RailsAgents
       "knowledge" => ".md",
       "package" => ".yml"
     }.freeze
+    # Logical import prefixes → physical shared root (app/agents/shared).
+    # "library/" kept for backwards-compatible imports.yml files.
+    FROM_PREFIXES = %w[shared/ library/].freeze
 
     attr_reader :agent_directory, :library_root
 
@@ -43,12 +47,12 @@ module RailsAgents
 
     def virtual_files
       entries.flat_map do |entry|
-        raise Error, "Missing Library source: #{entry.source}" unless entry.source.exist?
+        raise Error, "Missing shared source: #{entry.source}" unless entry.source.exist?
 
         if entry.kind == "package"
           package_virtual_files(entry)
         else
-          raise Error, "Missing Library source: #{entry.source}" unless entry.source.file?
+          raise Error, "Missing shared source: #{entry.source}" unless entry.source.file?
 
           [{
             "path" => cloud_path(entry.target),
@@ -63,6 +67,17 @@ module RailsAgents
       entries.select { |entry| entry.kind == "knowledge" }.map { |entry| entry.target.to_s }
     end
 
+    def self.resolve_library_root(agents_root)
+      agents_root = Pathname.new(agents_root)
+      shared = agents_root.join("shared")
+      return shared if shared.exist?
+
+      legacy = agents_root.parent.join("agents_library")
+      return legacy if legacy.exist?
+
+      shared
+    end
+
     private
 
     def package_virtual_files(entry)
@@ -74,7 +89,7 @@ module RailsAgents
         else
           entry.source
         end
-      raise Error, "Missing Library package directory: #{root}" unless root.directory?
+      raise Error, "Missing shared package directory: #{root}" unless root.directory?
 
       Dir.glob(root.join("**", "*").to_s).select { |path| File.file?(path) }.map do |path|
         file = Pathname.new(path)
@@ -93,7 +108,7 @@ module RailsAgents
     end
 
     def default_library_root
-      agent_directory.parent.parent.join("agents_library")
+      self.class.resolve_library_root(agent_directory.parent)
     end
 
     def build_entry(raw)
@@ -102,12 +117,15 @@ module RailsAgents
       kind = raw["kind"].to_s
       kind = "connector" if kind == "plugin"
       slug = normalize_slug(raw["slug"])
-      raise Error, "Unsupported Library kind: #{kind.inspect}" unless KINDS.include?(kind)
-      raise Error, "Library import slug is required" if slug.empty?
+      raise Error, "Unsupported shared kind: #{kind.inspect}" unless KINDS.include?(kind)
+      raise Error, "Shared import slug is required" if slug.empty?
 
       from = raw["from"].to_s
-      prefix = "library/"
-      raise Error, "Library import #{slug} must use from: library/..." unless from.start_with?(prefix)
+      prefix = FROM_PREFIXES.find { |p| from.start_with?(p) }
+      unless prefix
+        raise Error,
+          "Shared import #{slug} must use from: shared/... (or legacy library/...)"
+      end
 
       source_relative = safe_relative(from.delete_prefix(prefix), "source")
       source = library_root.join(source_relative)
@@ -131,7 +149,7 @@ module RailsAgents
       path = Pathname.new(value)
       clean = path.cleanpath
       if path.absolute? || clean.to_s == ".." || clean.to_s.start_with?("../")
-        raise Error, "Library import #{label} must stay inside its root"
+        raise Error, "Shared import #{label} must stay inside its root"
       end
       clean
     end

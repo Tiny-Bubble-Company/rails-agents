@@ -1,6 +1,7 @@
-# Agent Library
+# Shared agent capabilities
 
-Reusable capabilities shared by agents in this Rails application.
+Reusable tools, skills, packages, knowledge, and connectors used by more than
+one agent in this Rails app.
 
 - `tools/` — Ruby actions and service wrappers
 - `skills/` — reusable multi-step behavior
@@ -18,11 +19,14 @@ version: 1
 imports:
   - kind: skill
     slug: triage
-    from: library/skills/triage.rb
+    from: shared/skills/triage.rb
   - kind: package
     slug: frontend_design
-    from: library/packages/frontend_design
+    from: shared/packages/frontend_design
 ```
+
+Legacy `from: library/...` paths still resolve to this folder (or to
+`app/agents_library/` on older installs).
 
 `rails-agents sync <agent>` uploads imported files into that agent's runtime
 bundle without duplicating the shared source in the repository.

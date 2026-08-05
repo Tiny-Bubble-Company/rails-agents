@@ -22,12 +22,13 @@ module RailsAgents
         template "AGENTS.md.tt", "AGENTS.md"
       end
 
-      def create_workspace_library
+      def create_agents_tree
+        empty_directory "app/agents"
         %w[tools skills connectors plugins knowledge knowledge/sources packages].each do |folder|
-          empty_directory File.join("app/agents_library", folder)
+          empty_directory File.join("app/agents/shared", folder)
         end
-        template "library_manifest.yml.tt", "app/agents_library/manifest.yml"
-        template "library_README.md.tt", "app/agents_library/README.md"
+        template "library_manifest.yml.tt", "app/agents/shared/manifest.yml"
+        template "library_README.md.tt", "app/agents/shared/README.md"
       end
 
       def create_env_placeholders

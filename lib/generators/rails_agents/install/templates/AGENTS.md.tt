@@ -31,10 +31,10 @@ Never commit provider API keys to this repository.
 ## Reusable capabilities
 
 Keep agent-specific files under `app/agents/<slug>/`. Put stable tools, skills,
-knowledge, or plugin manifests needed by multiple agents under
-`app/agents_library/`, then attach them through the agent's `imports.yml`.
+knowledge, or connector manifests needed by multiple agents under
+`app/agents/shared/`, then attach them through the agent's `imports.yml`.
 
-Do not move a capability into the Library until another agent needs it.
+Do not move a capability into shared until another agent needs it.
 
 ## Taxonomy
 

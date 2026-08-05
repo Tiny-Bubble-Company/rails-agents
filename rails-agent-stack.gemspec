@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description   = <<~DESC
     Rails Agent is a single, beautiful full-stack agentic platform for Ruby on Rails. Build chatbots, knowledge (RAG-style) agents, workflow agents, operations jobs, monitoring agents, and every agentic workflow you can think of — as files in app/agents/, with a mounted /agents dashboard and hosted cloud runtime.
 
-    Build: instructions (prompt.md), tools (function calling over ActiveRecord), connectors (OAuth SaaS), channels (Slack, Teams via Open-Wire, web, cron, HTTP API), skills, packages (Skills.sh / APM / Smithery), knowledge, memory (Mem0), guardrails, playbooks, and a shared agents library.
+    Build: instructions (prompt.md), tools (function calling over ActiveRecord), connectors (OAuth SaaS), channels (Slack, Teams via Open-Wire, web, cron, HTTP API), skills, packages (Skills.sh / APM / Smithery), knowledge, memory (Mem0), guardrails, playbooks, and app/agents/shared for reusable capabilities.
 
     Test: cloud sandbox runs, streaming, evals (golden cases), traces, and cost before you ship.
 

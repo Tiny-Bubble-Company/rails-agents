@@ -2,6 +2,23 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.5] - 2026-08-05
+
+### Added
+
+- Tool Bridge reserved `sql_query` / `query_database` — read-only SELECT against
+  the Rails DB without a hand-written per-table tool.
+
+## [0.2.4] - 2026-08-05
+
+### Changed
+
+- Shared capabilities live under `app/agents/shared/` (one tree with agents).
+  Fresh installs no longer create sibling `app/agents_library/`.
+- `imports.yml` prefers `from: shared/...`; legacy `from: library/...` and
+  existing `app/agents_library/` installs still resolve.
+- Agent generator rejects reserved slugs `shared` and `library`.
+
 ## [0.2.3] - 2026-08-05
 
 ### Fixed

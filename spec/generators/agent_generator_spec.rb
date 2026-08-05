@@ -12,18 +12,19 @@ RSpec.describe "Agent generator templates" do
     expect(content).not_to include("model :auto")
   end
 
-  it "database template scaffolds KnowledgeAgent with order and product tools" do
-    content = File.read(File.join(templates_root, "agent_database.rb.tt"))
+  it "database template scaffolds KnowledgeAgent with sql_query for full-DB access" do
+    content = File.read(File.join(templates_root, "agent_database.rb.tt"), encoding: "UTF-8")
     expect(content).to include("KnowledgeAgent")
-    expect(content).to include("lookup_order")
-    expect(content).to include("search_products")
-    expect(content).to include("Order.find_by")
-    expect(content).to include("Product.where")
+    expect(content).to include("tool :sql_query")
+    expect(content).not_to match(/^\s*tool :lookup_order/m)
+    expect(content).not_to match(/^\s*tool :search_products/m)
   end
 
-  it "database prompt documents demo orders and BYOK" do
+  it "database prompt documents support triage workflow and BYOK" do
     content = File.read(File.join(templates_root, "prompt_database.md.tt"))
-    expect(content).to include("ORD-DEMO-1001")
+    expect(content).to include("Customer Support Agent")
+    expect(content).to include("Ask followup questions if anything unclear")
+    expect(content).to include("sql_query")
     expect(content).to include("BYOK")
   end
 
@@ -31,6 +32,6 @@ RSpec.describe "Agent generator templates" do
     content = File.read(File.join(templates_root, "imports.yml.tt"))
 
     expect(content).to include("imports: []")
-    expect(content).to include("library/skills/triage.rb")
+    expect(content).to include("shared/skills/triage.rb")
   end
 end

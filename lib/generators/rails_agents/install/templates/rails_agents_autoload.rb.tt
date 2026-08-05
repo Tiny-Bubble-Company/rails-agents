@@ -7,7 +7,9 @@ Rails.application.configure do
   config.before_configuration do
     if defined?(Rails.autoloaders) && Rails.autoloaders.respond_to?(:main) && Rails.autoloaders.main
       Rails.autoloaders.main.ignore(Rails.root.join("app/agents"))
-      Rails.autoloaders.main.ignore(Rails.root.join("app/agents_library"))
+      # Legacy sibling path — still ignore if an older install kept it.
+      legacy = Rails.root.join("app/agents_library")
+      Rails.autoloaders.main.ignore(legacy) if legacy.exist?
     end
   end
 end

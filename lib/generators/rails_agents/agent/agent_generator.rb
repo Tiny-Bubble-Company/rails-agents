@@ -8,6 +8,8 @@ module RailsAgents
     class AgentGenerator < Rails::Generators::NamedBase
       source_root File.expand_path("templates", __dir__)
 
+      RESERVED_SLUGS = %w[shared library].freeze
+
       class_option :type,
         type: :string,
         default: "knowledge",
@@ -21,6 +23,11 @@ module RailsAgents
       desc "Scaffold an agent directory under app/agents/"
 
       def create_agent_directory
+        if RESERVED_SLUGS.include?(file_name)
+          raise Thor::Error,
+            "Agent name #{file_name.inspect} is reserved for app/agents/shared/. Choose another name."
+        end
+
         empty_directory agent_path
         empty_directory File.join(agent_path, "tools")
         empty_directory File.join(agent_path, "skills")

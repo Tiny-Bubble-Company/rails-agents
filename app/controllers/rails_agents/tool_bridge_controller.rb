@@ -9,11 +9,18 @@ module RailsAgents
   class ToolBridgeController < ApplicationController
     RailsAgents::Compat.skip_csrf!(self)
 
+    RESERVED_SQL_TOOLS = %w[sql_query query_database].freeze
+
     def create
       return render json: { error: "Unauthorized" }, status: :unauthorized unless authorized_runtime?
 
+      tool_name = params[:tool].to_s
+      if RESERVED_SQL_TOOLS.include?(tool_name)
+        return render_sql_query
+      end
+
       klass = load_agent_class(params[:agent])
-      tool = klass&.tool_definitions&.fetch(params[:tool].to_sym, nil)
+      tool = klass&.tool_definitions&.fetch(tool_name.to_sym, nil)
       return render json: { error: "Tool not found" }, status: :not_found unless tool
 
       arguments = request.request_parameters.presence || {}
@@ -27,6 +34,28 @@ module RailsAgents
     end
 
     private
+
+    def render_sql_query
+      arguments = request.request_parameters.presence || {}
+      sql = (arguments["sql"] || arguments[:sql]).to_s.strip
+      return render json: { ok: false, error: "sql is required" }, status: :unprocessable_entity if sql.empty?
+      return render json: { ok: false, error: "ActiveRecord is not available" }, status: :unprocessable_entity unless defined?(ActiveRecord::Base)
+
+      normalized = sql.sub(/;\s*\z/, "")
+      unless normalized.match?(/\A\s*(WITH|SELECT)\b/im)
+        return render json: { ok: false, error: "Only read-only SELECT/WITH queries are allowed" }, status: :unprocessable_entity
+      end
+      if normalized.match?(/\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|GRANT|REVOKE|COPY|EXECUTE|CALL)\b/i)
+        return render json: { ok: false, error: "Write or DDL statements are not allowed" }, status: :unprocessable_entity
+      end
+
+      limited = normalized.match?(/\bLIMIT\b/i) ? normalized : "#{normalized} LIMIT 50"
+      rows = ActiveRecord::Base.connection.exec_query(limited).to_a
+      render json: { ok: true, result: { ok: true, row_count: rows.length, rows: rows.first(50) } }
+    rescue StandardError => e
+      Rails.logger.error("[RailsAgents::ToolBridge:sql_query] #{e.class}: #{e.message}")
+      render json: { ok: false, error: e.message }, status: :unprocessable_entity
+    end
 
     def authorized_runtime?
       token = request.authorization.to_s.sub(/\ABearer\s+/i, "")
@@ -64,4 +93,3 @@ module RailsAgents
     end
   end
 end
-
