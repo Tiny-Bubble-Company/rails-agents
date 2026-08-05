@@ -37,12 +37,25 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "https://github.com/Tiny-Bubble-Company/rails-agents/releases"
   spec.metadata["rubygems_mimetype"] = "application/x-rubygem"
 
+  # Prefer git-tracked files, but always union with on-disk lib/app/config so a
+  # build never ships without newly added Ruby sources that are not yet committed.
   spec.files = Dir.chdir(__dir__) do
-    `git ls-files -z`.split("\x0").reject do |f|
-      f == "Gemfile.lock" || f.start_with?("spec/fixtures/")
-    end
-  rescue StandardError
-    Dir["{app,config,exe,lib,docs}/**/*", "exe/*", "*.{md,gemspec,rake}", "MIT-LICENSE", "AGENTS.md"]
+    tracked =
+      begin
+        `git ls-files -z`.split("\x0").reject do |f|
+          f == "Gemfile.lock" || f.start_with?("spec/fixtures/")
+        end
+      rescue StandardError
+        []
+      end
+    disk = Dir[
+      "{app,config,exe,lib,docs}/**/*",
+      "exe/*",
+      "*.{md,gemspec,rake}",
+      "MIT-LICENSE",
+      "AGENTS.md"
+    ].reject { |f| File.directory?(f) }
+    (tracked + disk).uniq
   end
 
   spec.bindir        = "exe"

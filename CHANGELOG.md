@@ -2,6 +2,13 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.7] - 2026-08-05
+
+### Fixed
+
+- Include `database_discovery` / `database_query` in the gem package (0.2.6
+  omitted them because the gem was built before those files were committed).
+
 ## [0.2.6] - 2026-08-05
 
 ### Added
