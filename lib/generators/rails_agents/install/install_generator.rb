@@ -31,6 +31,27 @@ module RailsAgents
         template "library_README.md.tt", "app/agents/shared/README.md"
       end
 
+      def discover_and_write_database_capability
+        require "rails_agents/database_discovery"
+        result = RailsAgents::DatabaseDiscovery.discover!(
+          root: destination_root,
+          live: false # generators may run before boot; static YAML inspect is enough
+        )
+        say ""
+        if result.default_attach
+          engines = []
+          engines << "ActiveRecord (#{result.adapters.join(', ')})" if result.active_record && result.adapters.any?
+          engines << "ActiveRecord" if result.active_record && result.adapters.empty?
+          engines << "Mongoid" if result.mongoid
+          say "  Database capability: #{engines.join(' + ')}", :green
+          say "  Wrote config/rails_agents_database.yml — new agents attach full-DB tools by default.", :green
+        else
+          say "  No database.yml / mongoid.yml detected — agents will not auto-attach DB tools.", :yellow
+        end
+      rescue StandardError => e
+        say "  Database discovery skipped: #{e.message}", :yellow
+      end
+
       def create_env_placeholders
         env_path = File.expand_path(".env", destination_root)
         placeholders = <<~ENV
@@ -63,8 +84,8 @@ module RailsAgents
         say ""
         say "  1. Start server:  bin/dev  (or bin/rails server)", :green
         say "  2. Connect:       #{url}", :green
-        say "  3. Read AGENTS.md — scaffold your first database Knowledge agent:", :green
-        say "     bin/rails generate rails_agents:agent my_agent --type knowledge --database", :green
+        say "  3. New agents auto-attach full-database query tools (detach anytime in Knowledge).", :green
+        say "     bin/rails generate rails_agents:agent my_agent --type knowledge", :green
         say "============================================================", :green
         say ""
       end

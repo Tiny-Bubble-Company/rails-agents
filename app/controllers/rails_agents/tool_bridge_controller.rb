@@ -10,6 +10,7 @@ module RailsAgents
     RailsAgents::Compat.skip_csrf!(self)
 
     RESERVED_SQL_TOOLS = %w[sql_query query_database].freeze
+    RESERVED_MONGO_TOOLS = %w[mongo_query].freeze
 
     def create
       return render json: { error: "Unauthorized" }, status: :unauthorized unless authorized_runtime?
@@ -17,6 +18,9 @@ module RailsAgents
       tool_name = params[:tool].to_s
       if RESERVED_SQL_TOOLS.include?(tool_name)
         return render_sql_query
+      end
+      if RESERVED_MONGO_TOOLS.include?(tool_name)
+        return render_mongo_query
       end
 
       klass = load_agent_class(params[:agent])
@@ -37,23 +41,30 @@ module RailsAgents
 
     def render_sql_query
       arguments = request.request_parameters.presence || {}
-      sql = (arguments["sql"] || arguments[:sql]).to_s.strip
-      return render json: { ok: false, error: "sql is required" }, status: :unprocessable_entity if sql.empty?
-      return render json: { ok: false, error: "ActiveRecord is not available" }, status: :unprocessable_entity unless defined?(ActiveRecord::Base)
-
-      normalized = sql.sub(/;\s*\z/, "")
-      unless normalized.match?(/\A\s*(WITH|SELECT)\b/im)
-        return render json: { ok: false, error: "Only read-only SELECT/WITH queries are allowed" }, status: :unprocessable_entity
-      end
-      if normalized.match?(/\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|GRANT|REVOKE|COPY|EXECUTE|CALL)\b/i)
-        return render json: { ok: false, error: "Write or DDL statements are not allowed" }, status: :unprocessable_entity
-      end
-
-      limited = normalized.match?(/\bLIMIT\b/i) ? normalized : "#{normalized} LIMIT 50"
-      rows = ActiveRecord::Base.connection.exec_query(limited).to_a
-      render json: { ok: true, result: { ok: true, row_count: rows.length, rows: rows.first(50) } }
+      sql = (arguments["sql"] || arguments[:sql]).to_s
+      result = RailsAgents::DatabaseQuery.sql_query(sql)
+      render json: { ok: true, result: result }
+    rescue ArgumentError => e
+      render json: { ok: false, error: e.message }, status: :unprocessable_entity
     rescue StandardError => e
       Rails.logger.error("[RailsAgents::ToolBridge:sql_query] #{e.class}: #{e.message}")
+      render json: { ok: false, error: e.message }, status: :unprocessable_entity
+    end
+
+    def render_mongo_query
+      arguments = request.request_parameters.presence || {}
+      args = arguments.respond_to?(:deep_symbolize_keys) ? arguments.deep_symbolize_keys : arguments
+      result = RailsAgents::DatabaseQuery.mongo_query(
+        collection: args[:collection] || args["collection"],
+        filter: args[:filter] || args["filter"] || {},
+        limit: args[:limit] || args["limit"] || 50,
+        projection: args[:sort] || args["sort"]
+      )
+      render json: { ok: true, result: result }
+    rescue ArgumentError => e
+      render json: { ok: false, error: e.message }, status: :unprocessable_entity
+    rescue StandardError => e
+      Rails.logger.error("[RailsAgents::ToolBridge:mongo_query] #{e.class}: #{e.message}")
       render json: { ok: false, error: e.message }, status: :unprocessable_entity
     end
 

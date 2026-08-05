@@ -5,6 +5,7 @@ Next steps:
   1. bin/dev  (or bin/rails server)
   2. Open http://localhost:3000/agents and connect your company workspace
   3. Read AGENTS.md in your app root
-  4. bin/rails generate rails_agents:agent my_agent --type knowledge --database
+  4. bin/rails generate rails_agents:agent my_agent --type knowledge
+     (full-DB tools attach by default; use --no-database to skip)
 
 Platform guide: https://rails-agent.com/docs/getting-started

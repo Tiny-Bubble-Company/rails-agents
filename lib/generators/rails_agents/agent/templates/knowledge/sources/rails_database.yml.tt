@@ -1,6 +1,11 @@
-# Rails app database knowledge source
+# Rails app database knowledge source — attached by default on agent create.
+# Detach from the Knowledge tab to remove full-DB Tool Bridge access for this agent.
 type: rails_database
-adapter: activerecord
+adapter: <%= include_mongo_query? && !include_sql_query? ? "mongoid" : "activerecord" %>
+engines:
+<% discovery_engines.each do |engine| -%>
+  - <%= engine %>
+<% end -%>
 scope: full_database
 tables: "*"
 mode: read_only

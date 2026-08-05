@@ -8,12 +8,17 @@ Project guide for external coding agents. Platform docs: [rails-agents/docs/AGEN
 - Demo ecommerce models: `Collection`, `Product`, `Order`, `OrderItem`
 - Seed data: `bin/rails db:seed` (order numbers like `ORD-DEMO-1001`)
 
-## First agent (database Knowledge)
+## Database (auto-discovered)
 
-Reference implementation: `app/agents/store_assistant/`
+`rails_agents:install` inspects `config/database.yml` / `config/mongoid.yml`
+and writes `config/rails_agents_database.yml`. New agents attach full-database
+Tool Bridge tools (`sql_query` / `mongo_query`) by default. Detach anytime from
+Knowledge in `/agents`. Skip with `--no-database`.
+
+## First agent
 
 ```bash
-bin/rails generate rails_agents:agent store_assistant --type knowledge --database
+bin/rails generate rails_agents:agent store_assistant --type knowledge
 bundle exec rails-agents sync store_assistant
 bundle exec rails-agents run store_assistant "Status of ORD-DEMO-1001?"
 ```

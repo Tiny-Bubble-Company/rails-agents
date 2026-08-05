@@ -12,10 +12,11 @@ RSpec.describe "Agent generator templates" do
     expect(content).not_to include("model :auto")
   end
 
-  it "database template scaffolds KnowledgeAgent with sql_query for full-DB access" do
+  it "database template scaffolds taxonomy base + sql_query (and optional mongo_query)" do
     content = File.read(File.join(templates_root, "agent_database.rb.tt"), encoding: "UTF-8")
-    expect(content).to include("KnowledgeAgent")
+    expect(content).to include("<%= agent_base_class %>")
     expect(content).to include("tool :sql_query")
+    expect(content).to include("include_mongo_query?")
     expect(content).not_to match(/^\s*tool :lookup_order/m)
     expect(content).not_to match(/^\s*tool :search_products/m)
   end

@@ -66,7 +66,8 @@ Sign up / connect at `/agents`. Platform API key is written to `config/rails_age
 ### 2. First agent: database Knowledge (fastest win)
 
 ```bash
-bin/rails generate rails_agents:agent store_assistant --type knowledge --database
+bin/rails generate rails_agents:agent store_assistant --type knowledge
+# Full-DB tools attach by default after install discovery; use --no-database to skip
 bin/rails db:seed   # if demo data exists
 ```
 

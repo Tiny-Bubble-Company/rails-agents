@@ -17,8 +17,8 @@ module RailsAgents
 
       class_option :database,
         type: :boolean,
-        default: false,
-        desc: "Scaffold database-connected tools (Knowledge agents)"
+        default: nil,
+        desc: "Attach full-database knowledge + query tools (default: on when install detected a DB). Use --no-database to skip."
 
       desc "Scaffold an agent directory under app/agents/"
 
@@ -39,7 +39,7 @@ module RailsAgents
       end
 
       def create_agent_files
-        if database?
+        if attach_database?
           template "agent_database.rb.tt", File.join(agent_path, "agent.rb")
           template "prompt_database.md.tt", File.join(agent_path, "prompt.md")
           empty_directory File.join(agent_path, "knowledge", "sources")
@@ -82,8 +82,46 @@ module RailsAgents
         }.fetch(agent_type)
       end
 
-      def database?
-        options[:database]
+      def attach_database?
+        return false if options[:database] == false
+        return true if options[:database] == true
+
+        require "rails_agents/database_discovery"
+        RailsAgents::DatabaseDiscovery.attached_by_default?(destination_root)
+      rescue StandardError
+        true
+      end
+
+      def include_sql_query?
+        require "rails_agents/database_discovery"
+        data = RailsAgents::DatabaseDiscovery.load(destination_root)
+        return true if data.nil?
+
+        RailsAgents::DatabaseDiscovery.sql_capable?(destination_root) ||
+          !RailsAgents::DatabaseDiscovery.mongoid_capable?(destination_root)
+      rescue StandardError
+        true
+      end
+
+      def include_mongo_query?
+        require "rails_agents/database_discovery"
+        RailsAgents::DatabaseDiscovery.mongoid_capable?(destination_root)
+      rescue StandardError
+        false
+      end
+
+      def discovery_engines
+        require "rails_agents/database_discovery"
+        data = RailsAgents::DatabaseDiscovery.load(destination_root)
+        engines = Array(data && data["engines"]).map(&:to_s)
+        return engines if engines.any?
+
+        list = []
+        list << "active_record" if include_sql_query?
+        list << "mongoid" if include_mongo_query?
+        list.presence || %w[active_record]
+      rescue StandardError
+        %w[active_record]
       end
     end
   end

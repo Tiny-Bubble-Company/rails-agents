@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-class <%= class_name %> < RailsAgents::KnowledgeAgent
+class <%= class_name %> < RailsAgents::<%= agent_base_class %>
   model :gpt_5_mini, provider: :openai, credential: :company_openai
   memory :conversation
   knowledge_from "knowledge/**/*"
 
-  # Generic read-only access to the connected Rails database.
+  # Full-database Tool Bridge access. Detach the Rails database in Knowledge to remove.
+<% if include_sql_query? -%>
   tool :sql_query do |sql:|
     text = sql.to_s.strip
     return { error: "sql is required" } if text.empty?
@@ -22,6 +23,13 @@ class <%= class_name %> < RailsAgents::KnowledgeAgent
     rows = ActiveRecord::Base.connection.exec_query(limited).to_a
     { ok: true, row_count: rows.length, rows: rows.first(50) }
   end
+<% end -%>
+<% if include_mongo_query? -%>
+  tool :mongo_query do |collection:, filter: {}, limit: 20|
+    # Reserved — Tool Bridge executes via Mongoid. Client-side stub for sync.
+    { collection: collection, filter: filter, limit: limit }
+  end
+<% end -%>
 
   channel :web
 end

@@ -9,12 +9,20 @@ module RailsAgents
       tables.concat(mongoid_collections) if tables.empty? || databases.any? { |db| db[:adapter] == "mongoid" }
       primary = databases.find { |db| db[:name] == "primary" } || databases.first
 
+      # Keep install-time discovery fresh whenever schema is inspected from /agents.
+      begin
+        RailsAgents::DatabaseDiscovery.discover!(live: true)
+      rescue StandardError
+        nil
+      end
+
       render json: {
         ok: true,
         tables: tables,
         adapter: primary&.dig(:adapter),
         databases: databases,
-        config_files: detected_config_files
+        config_files: detected_config_files,
+        capability: RailsAgents::DatabaseDiscovery.load
       }
     rescue StandardError => e
       render json: { ok: false, error: e.message, tables: [] }, status: :unprocessable_entity

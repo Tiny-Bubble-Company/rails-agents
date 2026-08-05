@@ -2,6 +2,17 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.6] - 2026-08-05
+
+### Added
+
+- `rails_agents:install` discovers `database.yml` / `mongoid.yml` and writes
+  `config/rails_agents_database.yml`.
+- New agents attach full-database knowledge + `sql_query` by default
+  (`--no-database` to skip). Detach anytime in Knowledge.
+- Tool Bridge: dialect-aware SQL limits + reserved `mongo_query` for Mongoid.
+- Schema endpoint refreshes discovery when inspected from `/agents`.
+
 ## [0.2.5] - 2026-08-05
 
 ### Added
