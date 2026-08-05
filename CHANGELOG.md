@@ -2,6 +2,13 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.8] - 2026-08-05
+
+### Changed
+
+- Default Knowledge agent `prompt.md` uses the customer-support Trigger /
+  Workflow / Guidelines template.
+
 ## [0.2.7] - 2026-08-05
 
 ### Fixed

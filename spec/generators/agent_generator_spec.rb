@@ -21,12 +21,12 @@ RSpec.describe "Agent generator templates" do
     expect(content).not_to match(/^\s*tool :search_products/m)
   end
 
-  it "database prompt documents support triage workflow and BYOK" do
+  it "database prompt documents support triage workflow" do
     content = File.read(File.join(templates_root, "prompt_database.md.tt"))
     expect(content).to include("Customer Support Agent")
-    expect(content).to include("Ask followup questions if anything unclear")
-    expect(content).to include("sql_query")
-    expect(content).to include("BYOK")
+    expect(content).to include("ask a short follow-up question")
+    expect(content).to include("search the customer database")
+    expect(content).to include("Never guess or make up information")
   end
 
   it "scaffolds an explicit workspace Library imports manifest" do
