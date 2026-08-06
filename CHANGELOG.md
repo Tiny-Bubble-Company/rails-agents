@@ -2,6 +2,13 @@
 
 All notable changes to `rails-agent-stack` will be documented in this file.
 
+## [0.2.9] - 2026-08-06
+
+### Changed
+
+- New agents default to `openrouter/free` via `provider: :rails_agent` for
+  free sandbox testing (knowledge + workflow generators).
+
 ## [0.2.8] - 2026-08-05
 
 ### Changed

@@ -5,10 +5,10 @@ require "spec_helper"
 RSpec.describe "Agent generator templates" do
   templates_root = File.expand_path("../../lib/generators/rails_agents/agent/templates", __dir__)
 
-  it "default agent template uses BYOK model DSL and taxonomy base class" do
+  it "default agent template uses free sandbox model and taxonomy base class" do
     content = File.read(File.join(templates_root, "agent.rb.tt"))
     expect(content).to include("<%= agent_base_class %>")
-    expect(content).to include("credential: :company_openai")
+    expect(content).to include('model "openrouter/free", provider: :rails_agent')
     expect(content).not_to include("model :auto")
   end
 
